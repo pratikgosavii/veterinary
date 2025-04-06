@@ -1,0 +1,130 @@
+Pet profile
+     	Name 
+	photo
+	select dog or cat
+	Breed
+	born date
+      	Age
+	productive status weight
+      	
+profile menu (clarity needded)
+	Medical report
+	appoinment and orders
+     	Vacination
+      	Lab report
+	food preference
+ 
+services
+	
+      	Grooming
+	sub services
+		bath
+		cuting
+      	Pet walk 
+      	Vaccinaton
+
+service booking
+	
+	service provider rahega na? unka alag se app rahega fir
+	services multiple
+	date
+	address only if user select service at home option
+	payment gateway
+
+
+Doctor profile
+     Name image degree title rating
+
+symptons
+	name image
+
+boarding center(rename it as day care)
+
+	name 
+	images
+	location
+ 	description
+ 	price per hour per day 
+	amenities 
+	rating 
+	review 
+	offer linked
+
+food selection
+
+	name
+	image
+
+boarding booking
+	
+	boarding foreignkey
+	dog, cats count
+	date from to
+	drop off or pick up
+	food selection ( master needed)
+	payment gateway
+
+address
+	name
+	type
+	address
+	landmark
+	pin code city state
+
+
+consultation services booking
+	
+	dr
+	symptions
+	date
+	payment gateway	
+
+pet vaccination details
+	
+	age
+	other multiple questions
+
+vaccination services booking
+	
+	vaccination ka bhi center ka master hai kya?
+	vaccination type
+	date
+	payment gateway
+
+product category
+	name 
+	image
+products
+	name 
+	category
+	image
+	rating
+	review
+	price
+
+product order
+	
+	product 
+	quantity
+	delivery address
+	payment gateway
+	
+
+
+provider profile
+	
+	provider type - dr, boarding, grooming
+	image
+	name of dr clinic or boarding or gromming
+
+video call history
+
+
+	
+Doctor app
+
+History of video calls
+Pending appointment 
+Schedule
+
+product kon deliver kr raha? app owner ya uske bhi provder alag se hai?
