@@ -33,10 +33,10 @@ urlpatterns = [
     # path('delete-testimonials/<testimonials_id>', delete_testimonials, name='delete_testimonials'),  # create or fetch list of admins
     path('get-amenity/', get_amenity , name='get_amenity '), 
 
-    path('add-testimonials/', add_testimonials, name='add_testimonials'),  # create or fetch list of admins
-    path('update-testimonials/<testimonials_id>', update_testimonials, name='update_testimonials'),  # create or fetch list of admins
-    path('list-testimonials/', list_testimonials, name='list_testimonials'),  # create or fetch list of admins
-    path('delete-testimonials/<testimonials_id>', delete_testimonials, name='delete_testimonials'),  # create or fetch list of admins
+    # path('add-testimonials/', add_testimonials, name='add_testimonials'),  # create or fetch list of admins
+    # path('update-testimonials/<testimonials_id>', update_testimonials, name='update_testimonials'),  # create or fetch list of admins
+    # path('list-testimonials/', list_testimonials, name='list_testimonials'),  # create or fetch list of admins
+    # path('delete-testimonials/<testimonials_id>', delete_testimonials, name='delete_testimonials'),  # create or fetch list of admins
     path('get-symptom/', get_symptom , name='get_symptom '), 
     path('get-service-category/', get_service_category, name='get_service_category '), 
     path('get-service-subcategory/', get_service_subcategory , name='get_service_subcategory '), 
