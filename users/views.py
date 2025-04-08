@@ -38,37 +38,99 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
 class SignupView(APIView):
+
     def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
+        id_token = request.data.get("idToken")
+        user_type = request.data.get("user_type")  # e.g. 'daycare', 'doctor', etc.
 
-        if User.objects.filter(email=email).exists():
-            return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        if not id_token or not user_type:
+            return Response({"error": "idToken and user_type are required"}, status=400)
 
-        user = User.objects.create_user(email=email, password=password, is_customer = True)
-        return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+        try:
+            decoded_token = firebase_auth.verify_id_token(id_token)
+            mobile = decoded_token.get("phone_number")
 
-class LoginView(APIView):
+            if not mobile:
+                return Response({"error": "Phone number not found in Firebase token"}, status=400)
+
+            # Set default role flags
+            role_flags = {
+                "is_customer": False,
+                "is_doctor": False,
+                "is_daycare": False,
+                "is_service_provider": False
+            }
+
+            if f"is_{user_type}" not in role_flags:
+                return Response({"error": "Invalid user_type"}, status=400)
+
+            role_flags[f"is_{user_type}"] = True
+
+            # Get or create user with appropriate role
+            user, created = User.objects.get_or_create(
+                mobile=mobile,
+                defaults=role_flags
+            )
+
+            # If user existed and user_type doesn't match, you may reject or update
+            if not created and not getattr(user, f"is_{user_type}"):
+                return Response({"error": f"User already exists as different type"}, status=400)
+
+            # Generate JWT
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                "user": {
+                    "id": user.id,
+                    "mobile": user.mobile,
+                    "user_type": user_type,
+                    "created": created
+                }
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
+
+    
+
+from firebase_admin import auth as firebase_auth
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import User  # Adjust as needed
+
+class LoginAPIView(APIView):
     def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
+        id_token = request.data.get("id_token")
 
-        # Check if user exists and is a customer
-        user = authenticate(email=email, password=password)
+        if not id_token:
+            return Response({"error": "ID token missing"}, status=status.HTTP_400_BAD_REQUEST)
 
-        if user is None:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            decoded_token = firebase_auth.verify_id_token(id_token)
+            uid = decoded_token["uid"]
+            phone_number = decoded_token.get("phone_number")
+            email = decoded_token.get("email")
 
-        if not user.is_customer:  # Check if `is_customer` is True
-            return Response({"error": "Access denied. Not a customer."}, status=status.HTTP_403_FORBIDDEN)
+            # Check if user exists
+            user, created = User.objects.get_or_create(mobile=phone_number, defaults={
+                "email": email or "",
+                "username": phone_number
+            })
 
-        # Generate JWT tokens
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            "access": str(refresh.access_token),
-            "refresh": str(refresh),
-            "user": {"id": user.id, "email": user.email}
-        }, status=status.HTTP_200_OK)
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                "user": {"id": user.id, "mobile": user.mobile}
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 def  login_admin(request):
