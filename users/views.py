@@ -49,8 +49,9 @@ class SignupView(APIView):
         try:
             decoded_token = firebase_auth.verify_id_token(id_token)
             mobile = decoded_token.get("phone_number")
+            print(decoded_token)
 
-            uid = decoded_token["uid"]
+            uid = decoded_token.get("uid")
 
             if not mobile:
                 return Response({"error": "Phone number not found in Firebase token"}, status=400)
@@ -71,7 +72,7 @@ class SignupView(APIView):
             # Get or create user with appropriate role
             user, created = User.objects.get_or_create(
                 mobile=mobile,
-                uid=uid,
+                firebase_uid=uid,
                 defaults=role_flags
             )
 
