@@ -4,7 +4,8 @@ from django.contrib.auth.hashers import make_password
 from .models import day_care
 
 class day_care_serializer(serializers.ModelSerializer):
-    email = serializers.CharField()
+    email = serializers.CharField(source="user.email")
+    mobile = serializers.CharField(source="user.mobile")
     password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
@@ -12,7 +13,7 @@ class day_care_serializer(serializers.ModelSerializer):
         fields = [
             'id', 'user', 'name', 'images', 'location', 
             'description', 'price_per_hour', 'price_per_day', 
-            'amenities', 'rating', 'email', 'password'
+            'amenities', 'rating', 'email', 'mobile', 'password'
         ]
         extra_kwargs = {
             'user': {'read_only': True},
@@ -20,15 +21,21 @@ class day_care_serializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        email = validated_data.pop('email')
+        
+        print(validated_data)
+
+        user_data = validated_data.pop('user', {})
+        email = user_data.get('email')
+        mobile = user_data.get('mobile')
         password = validated_data.pop('password', None)
         
         # Check if user exists (optional, adjust logic as needed)
       
         # Create day_care instance linked to the user
         user = User.objects.create(
+            mobile=mobile,
             email=email,
-            is_day_care=True,
+            is_daycare=True,
             password=make_password(password)  # Encrypt password
         )
 
@@ -36,12 +43,12 @@ class day_care_serializer(serializers.ModelSerializer):
         return day_care_instance
 
     def update(self, instance, validated_data):
-        email = validated_data.pop('email', None)
+        mobile = validated_data.pop('mobile', None)
         password = validated_data.pop('password', None)
 
-        # Update user email/password if provided
-        if email:
-            instance.user.email = email
+        # Update user mobile/password if provided
+        if mobile:
+            instance.user.mobile = mobile
         if password:
             instance.user.password = make_password(password)
         

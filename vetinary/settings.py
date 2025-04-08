@@ -73,6 +73,16 @@ REST_FRAMEWORK = {
 }
 
 
+# # firebase_config.py
+import os
+from firebase_admin import credentials, initialize_app
+
+# Firebase Admin SDK setup
+firebase_key_path = os.path.join(BASE_DIR, 'vetinary', 'firebase_key.json')
+cred = credentials.Certificate(firebase_key_path)
+initialize_app(cred)
+
+
 
 from datetime import timedelta
 
