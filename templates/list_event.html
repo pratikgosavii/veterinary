@@ -90,7 +90,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 class="mb-sm-0 font-size-18">List Coupons</h4>
+                            <h4 class="mb-sm-0 font-size-18">List Event</h4>
                         </div>
                     </div>
                 </div>
@@ -107,16 +107,11 @@
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Code</th> 
-                                                    <th>Title</th> 
+                                                    <th>Name</th> 
                                                     <th>Description</th>
-                                                    <th>Discount (%)</th>
-                                                    <th>Discount Amount</th>
-                                                    <th>Min Purchase</th>
-                                                    <th>Max Discount</th>
                                                     <th>Start Date</th>
-                                                    <th>End Date</th>
-                                                    <th>Active</th>
+                                                    <th>Image</th>
+                                                    <th>Created Date</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -125,26 +120,16 @@
                                                     {% for i in data %}
                                                         <tr>
                                                             <td>{{ forloop.counter }}</td>
-                                                            <td>{{ i.code }}</td>
-                                                            <td>{{ i.title }}</td>
+                                                            <td>{{ i.name }}</td>
                                                             <td>{{ i.description }}</td>
-                                                            <td>{{ i.discount_percentage|default:"-" }}%</td>
-                                                            <td>₹{{ i.discount_amount|default:"-" }}</td>
-                                                            <td>₹{{ i.min_purchase }}</td>
-                                                            <td>₹{{ i.max_discount|default:"-" }}</td>
-                                                            <td>{{ i.start_date|date:"Y-m-d H:i" }}</td>
-                                                            <td>{{ i.end_date|date:"Y-m-d H:i" }}</td>
-                                                            <td>
-                                                                {% if i.is_active %}
-                                                                    ✅
-                                                                {% else %}
-                                                                    ❌
-                                                                {% endif %}
-                                                            </td>
+                                                            <td>{{ i.start_date }}%</td>
+                                                            <td>{{ i.date_created }}</td>
+                                                            <td><img width="60" src="{{ i.image.url }}"></td>
+                                                           
                                                     <td>
                                                         <!-- remove Button -->
-                                                        <a href="{% url 'update_coupon' i.id %}" ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
-                                                        <a href="{% url 'delete_coupon' i.id %}" > <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
+                                                        <a href="{% url 'update_event' i.id %}" ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
+                                                        <a href="{% url 'delete_event' i.id %}" > <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
 
 
                                                     </td>
