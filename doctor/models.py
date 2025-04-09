@@ -7,7 +7,10 @@ from masters.models import *
 from users.models import User
 from pet.models import *
 
+from datetime import datetime
 
+def current_time():
+    return datetime.now().time()
 
 class doctor(models.Model):
 
@@ -22,6 +25,9 @@ class doctor(models.Model):
     rating = models.DecimalField(max_digits=3, decimal_places=1, null = True, blank = True)
     remark = models.CharField(max_length=120, unique=False, null = True, blank = True)
     is_active = models.BooleanField(default = True)
+        
+    available_from = models.TimeField(default=current_time)  # ✅ GOOD
+    available_to = models.TimeField(default=current_time)  
 
     
     def __str__(self):

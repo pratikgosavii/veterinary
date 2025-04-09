@@ -45,18 +45,6 @@
                             </li>
                         <li>
 
-                        <li>
-                            <li>
-                                <a href="javascript: void(0);" class="has-arrow">
-                                    <i data-feather="layers"></i>
-                                    <span data-key="t-authentication">Lab</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{% url 'add_lab' %}">Add Lab</a></li>
-                                    <li><a href="{% url 'list_lab' %}">Lab List</a></li>
-                                </ul>
-                            </li>
-                        <li>
 
                         <li>
                             <li>
@@ -75,11 +63,11 @@
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="layers"></i>
-                                    <span data-key="t-authentication">Medicine Category</span>
+                                    <span data-key="t-authentication">Dog Breed </span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{% url 'add_medicine_category' %}">Add Medicine Category</a></li>
-                                    <li><a href="{% url 'list_medicine_category' %}">Medicine Category List</a></li>
+                                    <li><a href="{% url 'add_dog_breed' %}">Add Dog Breed</a></li>
+                                    <li><a href="{% url 'list_dog_breed' %}">Dog Breed List</a></li>
                                 </ul>
                             </li>
                         <li>
@@ -88,11 +76,11 @@
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="layers"></i>
-                                    <span data-key="t-authentication">Medicine</span>
+                                    <span data-key="t-authentication">Amenity </span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{% url 'add_medicine' %}">Add Medicine</a></li>
-                                    <li><a href="{% url 'list_medicine' %}">Medicine List</a></li>
+                                    <li><a href="{% url 'add_amenity' %}">Add Amenity</a></li>
+                                    <li><a href="{% url 'list_amenity' %}">Amenity List</a></li>
                                 </ul>
                             </li>
                         <li>
@@ -104,21 +92,9 @@
                                 <span data-key="t-authentication">Homepage</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
+                                
                                 <li class="dropdown">
-                                    <a href="javascript:void(0);" class="has-arrow">Main Banner</a>
-                                    <!-- Nested sub-menu for Main Banner -->
-                                    <ul class="metismenu list-unstyled" id="side-menu">
-                                        <li>
-                                            <a href="/api/homePage/homeBanner/create/">Add Main Banner</a>
-                                        </li>
-                                        <li>
-                                            <a href="/api/homePage/homeBanner/get/">Main Banners List</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown">
-                                    <a href="javascript:void(0);" class="has-arrow">Sections</a>
-                                    <!-- Nested sub-menu for Main Banner -->
+                                   
                                     <ul class="metismenu list-unstyled" id="side-menu">
                                         <li>
                                             <a href="/api/homePage/homeSection/create/">Add Section</a>
@@ -132,16 +108,60 @@
                         </li>
 
                         
-                        <!-- <li>
+                         <li>
                             <a href="javascript: void(0);" class="has-arrow">
                                 <i data-feather="layers"></i>
-                                <span data-key="t-authentication">SubCategories</span>
+                                <span data-key="t-authentication">Services Category</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="/api/subCategories/create/">Add SubCategory</a></li>
-                                <li><a href="/api/subCategories/get/">SubCategories List</a></li>
+                                <li><a href="{% url 'add_service_category' %}">Add Services Category</a></li>
+                                <li><a href="{% url 'list_service_category' %}">Services Categorry List</a></li>
                             </ul>
-                        </li> -->
+                        </li> 
+
+                         <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Services SubCategorry</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'add_service_subcategory' %}">Add Services SubCategory</a></li>
+                                <li><a href="{% url 'list_service_subcategory' %}">Services SubCategorry List</a></li>
+                            </ul>
+                        </li> 
+
+                         <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Services</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'add_service' %}">Add Services</a></li>
+                                <li><a href="{% url 'list_service' %}">Services List</a></li>
+                            </ul>
+                        </li> 
+
+                         <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Product</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'add_product' %}">Add Product</a></li>
+                                <li><a href="{% url 'list_product' %}">Product List</a></li>
+                            </ul>
+                        </li> 
+
+                         <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Vaccination</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'add_vaccination' %}">Add Vaccination</a></li>
+                                <li><a href="{% url 'list_vaccination' %}">Vaccination List</a></li>
+                            </ul>
+                        </li> 
 
                         
                         <li>

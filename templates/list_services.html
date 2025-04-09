@@ -90,7 +90,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 class="mb-sm-0 font-size-18">List Tests</h4>
+                            <h4 class="mb-sm-0 font-size-18">List Services Subcategory</h4>
                         </div>
                     </div>
                 </div>
@@ -105,25 +105,27 @@
                                                 class="table table-bordered table-striped"
                                         >
                                             <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Name</th>
-                                                <th>MRP</th>
-                                                <th>Action</th>
-                                            </tr>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Name</th>
+                                                    <th>Category</th>
+                                                    <th>Description</th>
+                                                    <th>Action</th>
+                                                </tr>
                                             </thead>
                                             <tbody id="tableBody">
                                                 {% if data %}
-                                            {% for i in data %}
-                                                <tr>
-                                                    <td>{{ forloop.counter }}</td>
-                                                    <td>{{ i.name }}</td>
-                                                    <td>{{ i.mrp }}</td>
-                                                  
+                                                    {% for i in data %}
+                                                        <tr>
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ i.name }}</td>
+                                                            <td>{{ i.category }}</td>
+                                                            <td>{{ i.description }}</td>
+                                                            
                                                     <td>
                                                         <!-- remove Button -->
-                                                        <a href="{% url 'update_test' i.id %}" ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
-                                                        <a href="{% url 'delete_test' i.id %}" > <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
+                                                        <a href="{% url 'update_service_subcategory' i.id %}" ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
+                                                        <a href="{% url 'delete_service_subcategory' i.id %}" > <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
 
 
                                                     </td>
