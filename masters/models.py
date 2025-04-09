@@ -77,7 +77,7 @@ class symptom(models.Model):
         return self.name
 
 
-class address(models.Model):
+class customer_address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=255)

@@ -37,10 +37,10 @@ class symptom_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class address_serializer(serializers.ModelSerializer):
-    class Meta:
-        model = address
-        fields = '__all__'
+# class address_serializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = address
+#         fields = '__all__'
 
 
 class testimonials_serializer(serializers.ModelSerializer):
@@ -76,4 +76,10 @@ class vaccination_serializer(serializers.ModelSerializer):
 class event_serializer(serializers.ModelSerializer):
     class Meta:
         model = event
+        fields = '__all__'
+
+
+class customer_address_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = customer_address
         fields = '__all__'

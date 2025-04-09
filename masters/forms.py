@@ -215,3 +215,20 @@ class event_Form(forms.ModelForm):
             'start_date': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
 
         }
+
+
+
+
+class customer_address_Form(forms.ModelForm):
+    class Meta:
+        model = customer_address
+        fields = ['name', 'type', 'address', 'landmark', 'pin_code', 'city', 'state']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'type': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'landmark': forms.TextInput(attrs={'class': 'form-control'}),
+            'pin_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'state': forms.TextInput(attrs={'class': 'form-control'}),
+        }
