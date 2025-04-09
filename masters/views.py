@@ -14,6 +14,8 @@ from doctor.models import *
 from .serializer import *
 
 
+from rest_framework.generics import ListAPIView
+from django_filters.rest_framework import DjangoFilterBackend
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
