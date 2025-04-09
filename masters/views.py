@@ -215,12 +215,14 @@ def list_coupon(request):
 
 
 from django.http import JsonResponse
+from .filters import *
 
 class get_coupon(ListAPIView):
     queryset = coupon.objects.all()
     serializer_class = coupon_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
+    filterset_class = couponFilter  # enables filtering on all fields
 
 
 
@@ -305,6 +307,9 @@ class get_event(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = EventFilter  # enables filtering on all fields
 
+
+    def get_queryset(self):
+        return event.objects.filter(start_date__gte=now()).order_by('start_date')
 
 
 def add_testimonials(request):
@@ -463,6 +468,84 @@ class get_amenity(ListAPIView):
     filterset_fields = '__all__'  # enables filtering on all fields
 
 
+
+def add_customer_address(request):
+    
+    if request.method == "POST":
+
+        forms = customer_address_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_customer_address')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_customer_address.html', context)
+
+
+    else:
+
+        # create first row using admin then editing only
+
+        
+
+        return render(request, 'add_customer_address.html', { 'form' : customer_address_Form()})
+
+def update_customer_address(request, customer_address_id):
+    
+    instance = customer_address.objects.get(id = customer_address_id)
+
+    if request.method == "POST":
+
+        forms = customer_address_Form(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_customer_address')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_customer_address.html', context)
+    
+    else:
+
+        # create first row using admin then editing only
+
+        
+
+        return render(request, 'add_customer_address.html', {'data' : instance})
+
+
+def list_customer_address(request):
+
+    data = customer_address.objects.all()
+
+    return render(request, 'list_customer_address.html', {'data' : data})
+
+
+def delete_customer_address(request, customer_address_id):
+
+    data = customer_address.objects.get(id = customer_address_id).delete()
+
+    return redirect('list_customer_address')
+
+
+from django.views import View
+
+
+
+class get_customer_address(ListAPIView):
+    queryset = customer_address.objects.all()
+    serializer_class = customer_address_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
+
+
 def add_symptom(request):
     
     if request.method == "POST":
@@ -534,6 +617,7 @@ class get_symptom(ListAPIView):
     serializer_class = symptom_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
+    filterset_class = symptomFilter  # enables filtering on all fields
 
 
 
@@ -1016,6 +1100,7 @@ class get_product(ListAPIView):
     serializer_class = product_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
+    filterset_class = productFilter  # enables filtering on all fields
 
 
 @login_required(login_url='login')
