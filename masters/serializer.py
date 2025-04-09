@@ -1,9 +1,5 @@
 from rest_framework import serializers
-from .models import (
-    amenity, coupon, service_category, service_subcategory,
-    service, symptom, address, testimonials, test,
-    dog_breed, product, vaccination
-)
+from .models import *
 
 class amenity_serializer(serializers.ModelSerializer):
     class Meta:
@@ -74,4 +70,10 @@ class product_serializer(serializers.ModelSerializer):
 class vaccination_serializer(serializers.ModelSerializer):
     class Meta:
         model = vaccination
+        fields = '__all__'
+
+
+class event_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = event
         fields = '__all__'

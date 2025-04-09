@@ -20,6 +20,12 @@ urlpatterns = [
     path('list-coupon/', list_coupon, name='list_coupon'),
     path('get-coupon/', get_coupon.as_view(), name='get_coupon'),
 
+    path('add-event/', add_event, name='add_event'),
+    path('update-event/<event_id>', update_event, name='update_event'),
+    path('delete-event/<event_id>', delete_event, name='delete_event'),
+    path('list-event/', list_event, name='list_event'),
+    path('get-event/', get_event.as_view(), name='get_event'),
+
     path('add-testimonials/', add_testimonials, name='add_testimonials'),  # create or fetch list of admins
     path('update-testimonials/<testimonials_id>', update_testimonials, name='update_testimonials'),  # create or fetch list of admins
     path('list-testimonials/', list_testimonials, name='list_testimonials'),  # create or fetch list of admins

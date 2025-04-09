@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from masters.filters import EventFilter
+
 # Create your views here.
 
 
@@ -219,6 +221,89 @@ class get_coupon(ListAPIView):
     serializer_class = coupon_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
+
+
+
+@login_required(login_url='login')
+def add_event(request):
+
+    if request.method == 'POST':
+
+        forms = event_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_event')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_event.html', context)
+    
+    else:
+
+        forms = event_Form()
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_event.html', context)
+
+        
+
+@login_required(login_url='login')
+def update_event(request, event_id):
+
+    if request.method == 'POST':
+
+        instance = event.objects.get(id=event_id)
+
+        forms = event_Form(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_event')
+        else:
+            print(forms.errors)
+    
+    else:
+
+        instance = event.objects.get(id=event_id)
+        forms = event_Form(instance=instance)
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_event.html', context)
+
+        
+
+@login_required(login_url='login')
+def delete_event(request, event_id):
+
+    event.objects.get(id=event_id).delete()
+
+    return HttpResponseRedirect(reverse('list_event'))
+
+
+@login_required(login_url='login')
+def list_event(request):
+
+    data = event.objects.all()
+    context = {
+        'data': data
+    }
+    return render(request, 'list_event.html', context)
+
+
+from django.http import JsonResponse
+
+class get_event(ListAPIView):
+    queryset = event.objects.all()
+    serializer_class = event_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = EventFilter  # enables filtering on all fields
 
 
 

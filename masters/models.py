@@ -147,3 +147,14 @@ class vaccination(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class event(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='doctor_images/')
+    start_date = models.DateTimeField()
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
