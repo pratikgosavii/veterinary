@@ -40,7 +40,7 @@ class appointment(models.Model):
     payment_status = models.BooleanField(default=False)
 
 # vaccination
-class vaccination(models.Model):
+class pet_vaccination(models.Model):
     pet = models.ManyToManyField('pet.pet')
     age = models.IntegerField()
     additional_questions = models.JSONField()

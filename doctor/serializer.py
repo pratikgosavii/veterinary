@@ -6,10 +6,11 @@ from .models import *
 class doctor_serializer(serializers.ModelSerializer):
     email = serializers.CharField(source='user.email')
     password = serializers.CharField(write_only=True, required=False)
-
+    available_from = serializers.TimeField(format="%I:%M %p")  # e.g., 06:00 AM
+    available_to = serializers.TimeField(format="%I:%M %p") 
     class Meta:
         model = doctor
-        fields = ['id', 'name', 'experience', 'title', 'degree', 'mobile_no', 'address', 'email', 'password']
+        fields = ['id', 'name', 'experience', 'title', 'degree', 'mobile_no', 'available_from', 'available_to', 'address', 'email', 'password']
 
     def create(self, validated_data):
         email = validated_data.pop('email')
