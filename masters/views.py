@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from doctor.models import *
+from .serializer import *
 
 
 
@@ -123,10 +124,6 @@ def list_doctor(request):
 
 from django.http import JsonResponse
 
-def get_doctor(request):
-
-    data = list(doctor.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
 
 
 
@@ -215,12 +212,11 @@ def list_coupon(request):
 
 from django.http import JsonResponse
 
-def get_coupon(request):
-
-    data = list(coupon.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
-
-
+class get_coupon(ListAPIView):
+    queryset = coupon.objects.all()
+    serializer_class = coupon_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 
@@ -294,25 +290,11 @@ def delete_testimonials(request, testimonials_id):
 from django.views import View
 
 
-def get_testimonials(request):
-  
-    data = testimonials.objects.all()  # Assuming Testimonials is the model name
-
-    if not data.exists():
-        return JsonResponse({"error": "No data found"}, status=404)
-
-    response_data = []
-    for testimonial in data:
-        temp = {
-            "id": testimonial.id,
-            "name": testimonial.name,
-            "rating": testimonial.rating,
-            "created_at": testimonial.created_at,
-            "description": testimonial.description,
-        }
-        response_data.append(temp)
-
-    return JsonResponse({"data": response_data}, status=200)
+class get_testimonials(ListAPIView):
+    queryset = testimonials.objects.all()
+    serializer_class = testimonials_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 
@@ -386,13 +368,12 @@ def delete_amenity(request, amenity_id):
 from django.views import View
 
 
-def get_amenity (request):
-  
-    data = list(amenity.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
 
-
-
+class get_amenity(ListAPIView):
+    queryset = amenity.objects.all()
+    serializer_class = amenity_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 def add_symptom(request):
@@ -461,23 +442,11 @@ def delete_symptom(request, symptom_id):
     return redirect('list_symptom')
 
 
-def get_symptom(request):
-  
-    data = symptom.objects.all()  # Assuming symptom   is the model name
-
-    if not data.exists():
-        return JsonResponse({"error": "No data found"}, status=404)
-
-    response_data = []
-    for i in data:
-        temp = {
-            "id": i.id,
-            "name": i.name,
-            "image": i.image.url,
-        }
-        response_data.append(temp)
-
-    return JsonResponse({"data": response_data}, status=200)
+class get_symptom(ListAPIView):
+    queryset = symptom.objects.all()
+    serializer_class = symptom_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 
@@ -548,12 +517,11 @@ def delete_service_category(request, service_category_id):
     return redirect('list_service_category')
 
 
-def get_service_category(request):
-  
-    data = list(service_category.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
-
-
+class get_service_category(ListAPIView):
+    queryset = service_category.objects.all()
+    serializer_class = service_category_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 
@@ -623,10 +591,12 @@ def delete_service_subcategory(request, service_subcategory_id):
     return redirect('list_service_subcategory')
 
 
-def get_service_subcategory(request):
-  
-    data = list(service_subcategory.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
+
+class get_service_subcategory(ListAPIView):
+    queryset = service_subcategory.objects.all()
+    serializer_class = service_subcategory_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 
@@ -702,6 +672,14 @@ def get_service(request):
     return JsonResponse({'data': data})
 
 
+from rest_framework.generics import ListAPIView
+from django_filters.rest_framework import DjangoFilterBackend
+
+class get_service(ListAPIView):
+    queryset = service.objects.all()
+    serializer_class = service_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 @login_required(login_url='login')
@@ -779,11 +757,12 @@ def list_test(request):
 
 from django.http import JsonResponse
 
-def get_test(request):
 
-    data = list(test.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
-
+class get_test(ListAPIView):
+    queryset = test.objects.all()
+    serializer_class = test_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 @login_required(login_url='login')
 def add_dog_breed(request):
@@ -860,10 +839,13 @@ def list_dog_breed(request):
 
 from django.http import JsonResponse
 
-def get_dog_breed(request):
 
-    data = list(dog_breed.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
+
+class get_dog_breed(ListAPIView):
+    queryset = dog_breed.objects.all()
+    serializer_class = dog_breed_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 @login_required(login_url='login')
@@ -941,10 +923,12 @@ def list_product(request):
 
 from django.http import JsonResponse
 
-def get_product(request):
 
-    data = list(product.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
+class get_product(ListAPIView):
+    queryset = product.objects.all()
+    serializer_class = product_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
 
 
 @login_required(login_url='login')
@@ -1017,7 +1001,7 @@ def list_vaccination(request):
 
     print(data)
 
-    
+
     context = {
         'data': data
     }
@@ -1026,8 +1010,9 @@ def list_vaccination(request):
 
 from django.http import JsonResponse
 
-def get_vaccination(request):
 
-    data = list(vaccination.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
-
+class get_vaccination(ListAPIView):
+    queryset = vaccination.objects.all()
+    serializer_class = vaccination_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
