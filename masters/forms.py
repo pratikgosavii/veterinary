@@ -203,3 +203,15 @@ class vaccination_Form(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control description-box'}),
             'age_limit': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+class event_Form(forms.ModelForm):
+    class Meta:
+        model = event
+        fields = ['name', 'image', 'description', 'start_date']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control description-box'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'start_date': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+
+        }
