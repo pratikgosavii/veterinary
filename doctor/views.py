@@ -56,3 +56,48 @@ class get_doctor(ListAPIView):
     serializer_class = doctor_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = DoctorFilter   # enables filtering on all fields
+
+
+from pet.models import *
+from pet.serializers import *
+from users.permissions import *
+
+
+
+
+
+
+class list_consultation_appointment(ListAPIView):
+    serializer_class = consultation_appointment_Serializer
+    permission_classes = [IsCustomer]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['doctor', 'date', 'payment_status']  # add more as needed
+
+    def get_queryset(self):
+        doctor_instance = self.request.user.doctor
+        return consultation_appointment.objects.filter(doctor=doctor_instance).distinct()
+
+
+
+class list_vaccination_appointment(ListAPIView):
+    serializer_class = vaccination_appointment_Serializer
+    permission_classes = [IsDoctor]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['doctor', 'date', 'payment_status']  # add more as needed
+
+    def get_queryset(self):
+        # Get doctor instance linked to the logged-in user
+        doctor_instance = self.request.user.doctor
+        return vaccination_appointment.objects.filter(doctor=doctor_instance).distinct()
+    
+
+
+class list_test_booking(ListAPIView):
+    serializer_class = test_booking_Serializer
+    permission_classes = [IsCustomer]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['doctor', 'date', 'payment_status']  # add more as needed
+
+    def get_queryset(self):
+        doctor_instance = self.request.user.doctor
+        return test_booking.objects.filter(doctor=doctor_instance).distinct()

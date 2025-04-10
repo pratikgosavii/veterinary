@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from users.models import User
 from django.contrib.auth.hashers import make_password
-from .models import day_care
+from .models import *
 
 class day_care_serializer(serializers.ModelSerializer):
     email = serializers.CharField(source="user.email")
@@ -54,3 +54,19 @@ class day_care_serializer(serializers.ModelSerializer):
         
         instance.user.save()
         return super().update(instance, validated_data)
+    
+
+
+
+class DayCareBookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = day_care_booking
+        fields = '__all__'
+        read_only_fields = ['user']
+
+    def create(self, validated_data):
+        request = self.context['request']
+        validated_data['user'] = request.user
+        return super().create(validated_data)
+
+

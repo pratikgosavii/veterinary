@@ -18,6 +18,11 @@ urlpatterns = [
     path('login-day-care/', day_care_login.as_view(), name='login_day_care'),
     path('signup-day-care/', day_care_signup.as_view(), name='signup_day_care'),
 
+
+    path('book-daycare/', CreateDayCareBooking.as_view(), name='book_daycare'),
+    path('list-day-care-bookings/', ListDayCareBookings.as_view(), name='list_daycare_bookings'),
+
+
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
