@@ -20,8 +20,12 @@ urlpatterns = [
     path('list-pet-test-booking/', list_pet_test_booking.as_view(), name='list_pet_test_booking'),
     
     path('cart/', CartView.as_view(), name='cart'),
-    # path('create-order/', create_order.as_view(), name='create_order'),
-    # path('list-order/', list_order.as_view(), name='list_order'),
+
+    path('create-order/', create_order.as_view(), name='create_order'),
+    path('update-order/<order_id>', update_order, name='update_order'),
+    path('delete-order/<order_id>', delete_order, name='delete_order'),
+    path('list-order-admin/', list_order_admin, name='list_order_admin'),
+    path('list-order/', list_order.as_view(), name='list_order'),
   
 
 ] 
