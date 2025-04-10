@@ -18,6 +18,14 @@ urlpatterns = [
     path('login-doctor/', doctor_login.as_view(), name='login_doctor'),
     path('signup-doctor/', doctor_signup.as_view(), name='signup_doctor'),
 
+    path('list-consultation-appointment/', list_consultation_appointment.as_view(), name='list_consultation_appointment'),
+    path('list-vaccination-appointment/', list_vaccination_appointment.as_view(), name='list_vaccination_appointment'),
+
+    path('list-test-booking/', list_test_booking.as_view(), name='list_test_booking'),
+  
+
+
+
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

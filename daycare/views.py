@@ -39,7 +39,7 @@ class day_care_login(APIView):
         }, status=status.HTTP_200_OK)
 
 
-from .serializer import *
+from .serializers import *
 from rest_framework import generics, permissions
 
 class day_care_signup(generics.CreateAPIView):
@@ -61,3 +61,27 @@ class get_day_care(ListAPIView):
     serializer_class = day_care_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['name', 'location']  # Example fields (update based on your model)
+
+
+
+from rest_framework.generics import CreateAPIView, ListAPIView
+from .models import day_care_booking
+from .serializers import DayCareBookingSerializer
+from rest_framework.permissions import IsAuthenticated
+
+
+
+class CreateDayCareBooking(CreateAPIView):
+    queryset = day_care_booking.objects.all()
+    serializer_class = DayCareBookingSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class ListDayCareBookings(ListAPIView):
+    serializer_class = DayCareBookingSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # Or specify fields like ['date_from', 'date_to', 'payment_status']
+
+    def get_queryset(self):
+        return day_care_booking.objects.filter(user=self.request.user).distinct()

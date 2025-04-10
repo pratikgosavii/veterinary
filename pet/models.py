@@ -33,8 +33,31 @@ class medical_report(models.Model):
     date = models.DateField()
 
 # appointment & orders
-class appointment(models.Model):
+class consultation_appointment(models.Model):
+     
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
+    symptom = models.ManyToManyField('masters.symptom')
+    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    payment_status = models.BooleanField(default=False)
+
+# appointment & orders
+class vaccination_appointment(models.Model):
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pet = models.ManyToManyField('pet.pet')
+    vaccination = models.ManyToManyField('masters.vaccination')
+    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    payment_status = models.BooleanField(default=False)
+
+# appointment & orders
+class test_booking(models.Model):
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pet = models.ManyToManyField('pet.pet')
+    test = models.ManyToManyField('masters.test')
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
@@ -56,3 +79,23 @@ class lab_report(models.Model):
 class food_preference(models.Model):
     pet = models.ManyToManyField('pet.pet')
     preference = models.TextField()
+
+    
+class order(models.Model):
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'product')

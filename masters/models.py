@@ -136,6 +136,8 @@ class product(models.Model):
 
 
 
+
+
 from django.db import models
 
 class vaccination(models.Model):
@@ -158,3 +160,5 @@ class event(models.Model):
 
     def __str__(self):
         return self.name
+
+

@@ -35,14 +35,6 @@ class doctor(models.Model):
     
     
 
-class consultation_booking(models.Model):
-    doctor = models.ForeignKey(doctor, on_delete=models.CASCADE)
-    symptom = models.ManyToManyField('masters.symptom')
-    pets = models.ManyToManyField('pet.pet')
-    date = models.DateTimeField()
-    payment_status = models.BooleanField(default=False)
-
-
 
 class video_call_history(models.Model):
     doctor = models.ForeignKey(doctor, on_delete=models.CASCADE)

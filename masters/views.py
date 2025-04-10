@@ -13,7 +13,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from doctor.models import *
-from .serializer import *
+from .serializers import *
 
 
 from rest_framework.generics import ListAPIView
@@ -25,86 +25,86 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 
-@login_required(login_url='login')
-def add_doctor(request):
+# @login_required(login_url='login')
+# def add_doctor(request):
 
-    if request.method == 'POST':
+#     if request.method == 'POST':
 
-        forms = doctor_Form(request.POST, request.FILES)
+#         forms = doctor_Form(request.POST, request.FILES)
 
-        if forms.is_valid():
-            forms.save()
-            return redirect('list_doctor')
-        else:
-            print(forms.errors)
-            context = {
-                'form': forms
-            }
-            return render(request, 'add_doctor.html', context)
+#         if forms.is_valid():
+#             forms.save()
+#             return redirect('list_doctor')
+#         else:
+#             print(forms.errors)
+#             context = {
+#                 'form': forms
+#             }
+#             return render(request, 'add_doctor.html', context)
     
-    else:
+#     else:
 
-        forms = doctor_Form()
+#         forms = doctor_Form()
 
-        context = {
-            'form': forms
-        }
-        return render(request, 'add_doctor.html', context)
+#         context = {
+#             'form': forms
+#         }
+#         return render(request, 'add_doctor.html', context)
 
 
-from django.views.decorators.csrf import csrf_exempt
+# from django.views.decorators.csrf import csrf_exempt
 
-@login_required(login_url='login')
-@csrf_exempt 
-def add_doctor_json(request):
+# @login_required(login_url='login')
+# @csrf_exempt 
+# def add_doctor_json(request):
 
-    if request.method == 'POST':
-        form = doctor_Form(request.POST, request.FILES)
+#     if request.method == 'POST':
+#         form = doctor_Form(request.POST, request.FILES)
         
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'status': 'success', 'message': 'Doctor added successfully'}, status=201)
-        else:
-            return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
+#         if form.is_valid():
+#             form.save()
+#             return JsonResponse({'status': 'success', 'message': 'Doctor added successfully'}, status=201)
+#         else:
+#             return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
     
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
         
 
-@login_required(login_url='login')
-def update_doctor(request, doctor_id):
+# @login_required(login_url='login')
+# def update_doctor(request, doctor_id):
 
-    if request.method == 'POST':
+#     if request.method == 'POST':
 
-        instance = doctor.objects.get(id=doctor_id)
+#         instance = doctor.objects.get(id=doctor_id)
 
-        print('-------------------')
-        print('-------------------')
-        print('-------------------')
-        print(instance.user)
+#         print('-------------------')
+#         print('-------------------')
+#         print('-------------------')
+#         print(instance.user)
 
-        updated_request = request.POST.copy()
-        updated_request.update({'user': instance.user})
+#         updated_request = request.POST.copy()
+#         updated_request.update({'user': instance.user})
 
-        forms = doctor_Form(updated_request, request.FILES, instance=instance)
+#         forms = doctor_Form(updated_request, request.FILES, instance=instance)
 
-        print(forms.instance.user)
+#         print(forms.instance.user)
 
-        if forms.is_valid():
-            forms.save()
-            return redirect('list_doctor')
-        else:
-            print(forms.errors)
+#         if forms.is_valid():
+#             forms.save()
+#             return redirect('list_doctor')
+#         else:
+#             print(forms.errors)
     
-    else:
+#     else:
 
-        instance = doctor.objects.get(id=doctor_id)
-        forms = doctor_Form(instance=instance)
+#         instance = doctor.objects.get(id=doctor_id)
+#         forms = doctor_Form(instance=instance)
 
-        context = {
-            'form': forms
-        }
-        return render(request, 'add_doctor.html', context)
+#         context = {
+#             'form': forms
+#         }
+#         return render(request, 'add_doctor.html', context)
 
         
 
