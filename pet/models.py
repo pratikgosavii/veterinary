@@ -81,15 +81,6 @@ class food_preference(models.Model):
     preference = models.TextField()
 
     
-class order(models.Model):
-    
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
 
 class cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -99,3 +90,21 @@ class cart(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')
+
+
+
+
+class order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('packing', 'Packing'),
+        ('delay', 'Taking Time More Than Usual'),
+        ('out_for_delivery', 'Out For Delivery'),
+        ('delivered', 'Delivered'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    products = models.ManyToManyField(product)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='pending')
