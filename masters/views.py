@@ -933,7 +933,8 @@ class get_test(ListAPIView):
     queryset = test.objects.all()
     serializer_class = test_serializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'  # enables filtering on all fields
+    filterset_class = testFilter  # enables filtering on all fields
+
 
 @login_required(login_url='login')
 def add_dog_breed(request):

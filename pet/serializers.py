@@ -35,10 +35,11 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
         fields = ['id', 'pet', 'symptom', 'doctor', 'date', 'payment_status']
         read_only_fields = ['user']
 
-        def create(self, validated_data):
-            request = self.context['request']
-            validated_data['user'] = request.user
-            return super().create(validated_data)
+    def create(self, validated_data):
+        request = self.context['request']
+        validated_data['user'] = request.user
+        return super().create(validated_data)
+    
 
 class vaccination_appointment_Serializer(serializers.ModelSerializer):
     

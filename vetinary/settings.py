@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'doctor',
     'pet',
     'serviceprovider',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

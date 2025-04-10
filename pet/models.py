@@ -18,7 +18,7 @@ class pet(models.Model):
     name = models.CharField(max_length=255)
     photo = models.ImageField(upload_to='pet_photos/', null=True, blank=True)
     pet_type = models.CharField(max_length=10, choices=pet_type_choices)
-    breed = models.CharField(max_length=255)
+    breed = models.ForeignKey(dog_breed, on_delete=models.CASCADE)
     born_date = models.DateField()
     age = models.IntegerField()
     productive_status = models.CharField(max_length=255)
