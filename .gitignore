@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 *.pyo
 vetinary/firebase_key.json
+media
