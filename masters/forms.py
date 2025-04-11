@@ -182,7 +182,7 @@ class service_Form(forms.ModelForm):
 class product_Form(forms.ModelForm):
     class Meta:
         model = product
-        fields = ['name', 'description', 'image', 'price', 'rating', 'is_active']
+        fields = ['name', 'description', 'image', 'price', 'rating', 'is_popular', 'is_featured', 'is_active']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),

@@ -469,30 +469,34 @@ class get_amenity(ListAPIView):
 
 
 
-def add_customer_address(request):
-    
-    if request.method == "POST":
-
-        forms = customer_address_Form(request.POST, request.FILES)
-
-        if forms.is_valid():
-            forms.save()
-            return redirect('list_customer_address')
-        else:
-            print(forms.errors)
-            context = {
-                'form': forms
-            }
-            return render(request, 'add_customer_address.html', context)
+from users.permissions import *
+from rest_framework.response import Response
 
 
-    else:
+class add_customer_address(View):
 
-        # create first row using admin then editing only
+    permission_classes = [IsCustomer]
+
+    def get(self, request):
+        serializer = customer_address_serializer()
+        return render(request, 'add_customer_address.html', {'form': serializer})
+
+
+    def post(self, request):
+        # Detect if request is single object or list
+        is_many = isinstance(request.data, list)
+
+        serializer = customer_address_serializer(
+            data=request.data,
+            many=is_many,
+            context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"message": "Address(es) added successfully!"})
 
         
-
-        return render(request, 'add_customer_address.html', { 'form' : customer_address_Form()})
+        
 
 def update_customer_address(request, customer_address_id):
     
