@@ -818,9 +818,12 @@ def update_service(request, service_id):
 
         # create first row using admin then editing only
 
-        
+        forms = service_Form(instance=instance)
 
-        return render(request, 'add_services.html', {'data' : instance})
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_services.html', context)
 
 
 def list_service(request):
@@ -837,20 +840,16 @@ def delete_service(request, service_id):
     return redirect('list_service')
 
 
-def get_service(request):
-  
-    data = list(service.objects.values())  # ✅ Converts QuerySet to a list of dictionaries
-    return JsonResponse({'data': data})
-
-
-from rest_framework.generics import ListAPIView
-from django_filters.rest_framework import DjangoFilterBackend
-
 class get_service(ListAPIView):
+  
+    
     queryset = service.objects.all()
     serializer_class = service_serializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'  # enables filtering on all fields
+    filterset_class = serviceFilter  # enables filtering on all fields
+
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 @login_required(login_url='login')
@@ -1189,3 +1188,91 @@ class get_vaccination(ListAPIView):
     serializer_class = vaccination_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
+
+
+
+
+
+def add_home_banner(request):
+    
+    if request.method == "POST":
+
+        forms = home_banner_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_home_banner')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+
+            return render(request, 'add_home_banner.html', context)
+    
+    else:
+
+        # create first row using admin then editing only
+
+        
+
+        return render(request, 'add_home_banner.html', { 'form' : home_banner_Form()})
+
+def update_home_banner(request, home_banner_id):
+    
+    instance = home_banner.objects.get(id = home_banner_id)
+
+    if request.method == "POST":
+
+
+        instance = home_banner.objects.get(id=home_banner_id)
+
+        forms = home_banner_Form(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_home_banner')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+
+            return render(request, 'add_home_banner.html', context)
+
+    
+    else:
+
+        # create first row using admin then editing only
+
+        
+
+        return render(request, 'add_home_banner.html', {'data' : instance})
+
+
+def list_home_banner(request):
+
+    data = home_banner.objects.all()
+
+    return render(request, 'list_home_banner.html', {'data' : data})
+
+
+def delete_home_banner(request, home_banner_id):
+
+    data = home_banner.objects.get(id = home_banner_id).delete()
+
+    return redirect('list_home_banner')
+
+
+from django.views import View
+
+def get_home_banner(request):
+  
+    data = home_banner.objects.all()  # Assuming home_banner is the model name
+
+
+    serialized_data = HomeBannerSerializer(data, many=True).data  
+
+    return JsonResponse({"data": serialized_data}, status=200, safe=False)  
+
+

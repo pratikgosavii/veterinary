@@ -63,7 +63,8 @@ class service(models.Model):
     category = models.ForeignKey(service_category, on_delete=models.CASCADE, null=True, blank=True)
     subcategory = models.ForeignKey(service_subcategory, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField()  
+    image = models.ImageField(upload_to='symptom_images/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -162,3 +163,16 @@ class event(models.Model):
         return self.name
 
 
+
+
+
+class home_banner(models.Model):
+    title = models.CharField(max_length=225, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='homeBanners/')
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    

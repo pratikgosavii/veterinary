@@ -25,3 +25,8 @@ class productFilter(django_filters.FilterSet):
     class Meta:
         model = product
         exclude = ['image']  # ⛔ Exclude unsupported field
+
+class serviceFilter(django_filters.FilterSet):
+    class Meta:
+        model = service
+        exclude = ['image']  # ⛔ Exclude unsupported field

@@ -93,6 +93,13 @@ urlpatterns = [
     path('get-vaccination/', get_vaccination.as_view(), name='get_vaccination'),
 
 
+    
+    path('add-home-banner/', add_home_banner, name='add_home_banner'),  # create or fetch list of admins
+    path('update-home-banner/<home_banner_id>', update_home_banner, name='update_home_banner'),  # create or fetch list of admins
+    path('list-home-banner/', list_home_banner, name='list_home_banner'),  # create or fetch list of admins
+    path('delete-home-banner/<home_banner_id>', delete_home_banner, name='delete_home_banner'),  # create or fetch list of admins
+    path('get-home-banner/', get_home_banner, name='get_home_banner'), 
+
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

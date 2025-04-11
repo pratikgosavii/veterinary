@@ -172,6 +172,8 @@ class service_Form(forms.ModelForm):
 
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter Coupon Code'}),
 
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+
 
         }
 
