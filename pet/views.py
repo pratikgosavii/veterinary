@@ -20,6 +20,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 
 
 
@@ -34,7 +35,11 @@ class PetViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-        
+    @action(detail=False, methods=['get'], url_path='upcoming')
+    def upcoming_appointments(self, request):
+        upcoming = self.get_queryset().filter(date__gte=timezone.now()).order_by('date')
+        serializer = self.get_serializer(upcoming, many=True)
+        return Response(serializer.data)
 
 class consultation_appointment_ViewSet(ModelViewSet):
     serializer_class = consultation_appointment_Serializer
