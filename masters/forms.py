@@ -179,6 +179,19 @@ class service_Form(forms.ModelForm):
 
 
 
+
+class product_category_Form(forms.ModelForm):
+    class Meta:
+        model = product_category
+        fields = '__all__'
+        widgets = {
+           
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'name'
+            }),
+
+        }
+
 class product_Form(forms.ModelForm):
     class Meta:
         model = product
