@@ -468,6 +468,83 @@ class get_amenity(ListAPIView):
     filterset_fields = '__all__'  # enables filtering on all fields
 
 
+def add_product_category(request):
+    
+    if request.method == "POST":
+
+        forms = product_category_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_product_category')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_product_category.html', context)
+
+
+    else:
+
+        # create first row using admin then editing only
+
+        
+
+        return render(request, 'add_product_category.html', { 'form' : product_category_Form()})
+
+def update_product_category(request, product_category_id):
+    
+    instance = product_category.objects.get(id = product_category_id)
+
+    if request.method == "POST":
+
+        forms = product_category_Form(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_product_category')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_product_category.html', context)
+    
+    else:
+
+        # create first row using admin then editing only
+
+        
+
+        return render(request, 'add_product_category.html', {'data' : instance})
+
+
+def list_product_category(request):
+
+    data = product_category.objects.all()
+
+    return render(request, 'list_product_category.html', {'data' : data})
+
+
+def delete_product_category(request, product_category_id):
+
+    data = product_category.objects.get(id = product_category_id).delete()
+
+    return redirect('list_product_category')
+
+
+from django.views import View
+
+
+
+class get_product_category(ListAPIView):
+    queryset = product_category.objects.all()
+    serializer_class = product_category_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
+
+
 
 from users.permissions import *
 from rest_framework.response import Response

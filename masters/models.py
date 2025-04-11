@@ -121,10 +121,18 @@ class dog_breed(models.Model):
         return self.name
 
 
+class product_category(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 
 class product(models.Model):
     
     name = models.CharField(max_length=255)
+    category = models.ForeignKey(product_category, on_delete=models.CASCADE, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='product_images/')
     price = models.DecimalField(max_digits=10, decimal_places=2)
