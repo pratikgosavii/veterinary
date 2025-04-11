@@ -93,27 +93,49 @@ class CartView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = AddToCartSerializer(data=request.data)
-        if serializer.is_valid():
-            product_id = serializer.validated_data['product_id']
-            quantity = serializer.validated_data['quantity']
-            try:
-                product_instance = product.objects.get(id=product_id)
-            except product.DoesNotExist:
-                return Response({"error": "product not found"}, status=404)
+        data = request.data
 
-            cart_item, created = cart.objects.get_or_create(
-                user=request.user,
-                product=product_instance,
-                defaults={'quantity': quantity}
-            )
-            if not created:
-                cart_item.quantity += quantity
-                cart_item.save()
+        # Detect if it's a single item or list of items
+        if isinstance(data, dict):
+            data = [data]
 
-            return Response({"message": "Item added to cart"}, status=201)
+        success_count = 0
+        failed_items = []
 
-        return Response(serializer.errors, status=400)
+        for item in data:
+            serializer = AddToCartSerializer(data=item)
+            if serializer.is_valid():
+                product_id = serializer.validated_data['product_id']
+                quantity = serializer.validated_data['quantity']
+                try:
+                    product_instance = product.objects.get(id=product_id)
+                except product.DoesNotExist:
+                    failed_items.append({
+                        "product_id": product_id,
+                        "error": "Product not found"
+                    })
+                    continue
+
+                cart_item, created = cart.objects.get_or_create(
+                    user=request.user,
+                    product=product_instance,
+                    defaults={'quantity': quantity}
+                )
+                if not created:
+                    cart_item.quantity += quantity
+                    cart_item.save()
+
+                success_count += 1
+            else:
+                failed_items.append({
+                    "data": item,
+                    "errors": serializer.errors
+                })
+
+        return Response({
+            "message": f"{success_count} item(s) added to cart.",
+            "failed_items": failed_items
+        }, status=201 if success_count else 400)
 
 
 
