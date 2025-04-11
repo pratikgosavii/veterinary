@@ -18,80 +18,62 @@ from users.permissions import *
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.viewsets import ModelViewSet
 
 
 
-class list_pet(ListAPIView):
+class PetViewSet(ModelViewSet):
     serializer_class = PetSerializer
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsDaycare]  # Or use IsAuthenticated if needed
 
     def get_queryset(self):
         return pet.objects.filter(owner=self.request.user)
 
-
-from rest_framework.parsers import MultiPartParser, FormParser
-
-
-# Add a new pet
-class register_pet(CreateAPIView):
-    queryset = pet.objects.all()
-    serializer_class = PetSerializer
-    parser_classes = [MultiPartParser, FormParser]
-    permission_classes = [IsDaycare]
-
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+        
 
-class create_pet_consultation_appointment(CreateAPIView):
-    
-    queryset = consultation_appointment.objects.all()
-    serializer_class = consultation_appointment_Serializer
-    permission_classes = [IsCustomer]
-
-
-
-class list_pet_consultation_appointment(ListAPIView):
+class consultation_appointment_ViewSet(ModelViewSet):
     serializer_class = consultation_appointment_Serializer
     permission_classes = [IsCustomer]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['doctor', 'date', 'payment_status']  # add more as needed
+    filterset_fields = ['doctor', 'date', 'payment_status']
 
     def get_queryset(self):
         return consultation_appointment.objects.filter(user=self.request.user).distinct()
 
-
-class create_pet_vaccination_appointment(CreateAPIView):
-    
-    queryset = vaccination_appointment.objects.all()
-    serializer_class = vaccination_appointment_Serializer
-    permission_classes = [IsCustomer]
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class list_pet_vaccination_appointment(ListAPIView):
+class vaccination_appointment_ViewSet(ModelViewSet):
     serializer_class = vaccination_appointment_Serializer
     permission_classes = [IsCustomer]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['doctor', 'date', 'payment_status']  # add more as needed
+    filterset_fields = ['doctor', 'date', 'payment_status']
 
     def get_queryset(self):
         return vaccination_appointment.objects.filter(user=self.request.user).distinct()
 
-class create_pet_test_booking(CreateAPIView):
-    
-    queryset = test_booking.objects.all()
-    serializer_class = test_booking_Serializer
-    permission_classes = [IsCustomer]
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
-class list_pet_test_booking(ListAPIView):
+class pet_test_booking_ViewSet(ModelViewSet):
     serializer_class = test_booking_Serializer
     permission_classes = [IsCustomer]
+    parser_classes = [MultiPartParser, FormParser]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['doctor', 'date', 'payment_status']  # add more as needed
+    filterset_fields = ['doctor', 'date', 'payment_status']
 
     def get_queryset(self):
         return test_booking.objects.filter(user=self.request.user).distinct()
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 from rest_framework.views import APIView

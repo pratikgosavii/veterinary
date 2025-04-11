@@ -5,20 +5,19 @@ from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+from rest_framework.routers import DefaultRouter
+from .views import pet_test_booking_ViewSet
+
+router = DefaultRouter()
+router.register(r'pet-test-booking', pet_test_booking_ViewSet, basename='pet-test-booking')
+router.register(r'pet-vaccination-appointment', vaccination_appointment_ViewSet, basename='pet-vaccination-appointment')
+router.register(r'pet-consultation-appointment', consultation_appointment_ViewSet, basename='pet-consultation-appointment')
+router.register(r'pet', PetViewSet, basename='pet')
+
+
 urlpatterns = [
 
-    path('list-pets/', list_pet.as_view(), name='list_pets'),
-    path('register-pets/', register_pet.as_view(), name='create_pet'),
-    
-    path('create-pet-consultation-appointment/', create_pet_consultation_appointment.as_view(), name='create_pet_consultation_appointment'),
-    path('list-pet-consultation-appointment/', list_pet_consultation_appointment.as_view(), name='list_pet_consultation_appointment'),
-    
-    path('create-pet-vaccination-appointment/', create_pet_vaccination_appointment.as_view(), name='create_pet_vaccination_appointment'),
-    path('list-pet-vaccination-appointment/', list_pet_vaccination_appointment.as_view(), name='list_pet_vaccination_appointment'),
-  
-    path('create-pet-test-booking/', create_pet_test_booking.as_view(), name='create_pet_test_booking'),
-    path('list-pet-test-booking/', list_pet_test_booking.as_view(), name='list_pet_test_booking'),
-    
     path('cart/', CartView.as_view(), name='cart'),
 
     path('create-order/', create_order.as_view(), name='create_order'),
@@ -28,6 +27,6 @@ urlpatterns = [
     path('list-order/', list_order.as_view(), name='list_order'),
   
 
-] 
+] + router.urls
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
