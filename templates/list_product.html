@@ -86,8 +86,12 @@
                                                 <th>#</th>
                                                 <th>Image</th>
                                                 <th>Name</th>
+                                                <th>Category</th>
                                                 <th>Price</th>
                                                 <th>Rating</th>
+                                                <th>Is Popular</th>
+                                                <th>Is Featured</th>
+                                                <th>Is Active</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -104,8 +108,12 @@
                                                         {% endif %}
                                                     </td>
                                                     <td>{{ i.name }}</td>
+                                                    <td>{{ i.category }}</td>
                                                     <td>₹{{ i.price }}</td>
                                                     <td>{{ i.rating }}</td>
+                                                    <td>{{ i.is_popular }}</td>
+                                                    <td>{{ i.is_featured }}</td>
+                                                    <td>{{ i.is_active }}</td>
                                                     <td>
                                                         <a href="{% url 'update_product' i.id %}">
                                                             <i class="bi bi-pencil-square text-primary action-icons edit" title="Edit"></i>

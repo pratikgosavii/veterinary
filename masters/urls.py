@@ -38,6 +38,12 @@ urlpatterns = [
     path('delete-amenity/<amenity_id>', delete_amenity, name='delete_amenity'),  # create or fetch list of admins
     path('get-amenity/', get_amenity.as_view() , name='get_amenity '), 
 
+    path('add-product-category/', add_product_category, name='add_product_category'),  # create or fetch list of admins
+    path('update-product-category/<product_category_id>', update_product_category, name='update_product_category'),  # create or fetch list of admins
+    path('list-product-category/', list_product_category, name='list_product_category'),  # create or fetch list of admins
+    path('delete-product-category/<product_category_id>', delete_product_category, name='delete_product_category'),  # create or fetch list of admins
+    path('get-product-category/', get_product_category.as_view() , name='get_product_category '), 
+
     path('add-customer-address/', add_customer_address.as_view(), name='add_customer_address'),  # create or fetch list of admins
     path('update-customer-address/<customer_address_id>', update_customer_address, name='update_customer_address'),  # create or fetch list of admins
     path('list-customer-address/', list_customer_address, name='list_customer_address'),  # create or fetch list of admins

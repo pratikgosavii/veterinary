@@ -67,6 +67,12 @@ class product_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class product_category_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = product
+        fields = '__all__'
+
+
 class vaccination_serializer(serializers.ModelSerializer):
     class Meta:
         model = vaccination
