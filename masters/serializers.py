@@ -83,3 +83,10 @@ class customer_address_serializer(serializers.ModelSerializer):
     class Meta:
         model = customer_address
         fields = '__all__'
+
+
+# Step 1: Create a serializer
+class HomeBannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = home_banner
+        fields = '__all__' 
