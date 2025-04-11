@@ -61,6 +61,7 @@ class test_booking(models.Model):
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
+    report = models.FileField(upload_to='reports/', null=True, blank=True)
 
 # vaccination
 class pet_vaccination(models.Model):

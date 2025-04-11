@@ -73,7 +73,7 @@ class test_booking_Serializer(serializers.ModelSerializer):
 
     class Meta:
         model = test_booking
-        fields = ['id', 'pet', 'test', 'doctor', 'date', 'payment_status']
+        fields = ['id', 'pet', 'test', 'doctor', 'date', 'payment_status', 'report']
         read_only_fields = ['user']
 
     def create(self, validated_data):
@@ -86,6 +86,7 @@ from masters.serializers import *
 
 class CartSerializer(serializers.ModelSerializer):
     product = product_serializer(read_only=True)
+    
 
     class Meta:
         model = cart
