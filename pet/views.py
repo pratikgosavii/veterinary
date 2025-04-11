@@ -1,3 +1,4 @@
+from argparse import Action
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 
@@ -34,7 +35,11 @@ class PetViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-        
+    @Action(detail=False, methods=['get'], url_path='upcoming')
+    def upcoming_appointments(self, request):
+        upcoming = self.get_queryset().filter(date__gte=timezone.now()).order_by('date')
+        serializer = self.get_serializer(upcoming, many=True)
+        return Response(serializer.data)
 
 class consultation_appointment_ViewSet(ModelViewSet):
     serializer_class = consultation_appointment_Serializer
