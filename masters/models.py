@@ -129,6 +129,8 @@ class product(models.Model):
     image = models.ImageField(upload_to='product_images/')
     price = models.DecimalField(max_digits=10, decimal_places=2)
     rating = models.DecimalField(max_digits=3, decimal_places=1, default=0.0, null=True, blank=True)
+    is_popular = models.BooleanField(default=False)
+    is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
