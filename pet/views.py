@@ -145,8 +145,24 @@ class CartView(APIView):
         for item in data:
             serializer = CartSerializer(data=item, context={'request': request})
             if serializer.is_valid():
-                serializer.save()
-                added.append(item)
+                validated_data = serializer.validated_data
+                content_type = validated_data['content_type']
+                object_id = validated_data['object_id']
+                quantity = validated_data['quantity']
+
+                cart_obj, created = cart.objects.update_or_create(
+                    user=request.user,
+                    content_type=content_type,
+                    object_id=object_id,
+                    defaults={'quantity': quantity}
+                )
+
+                added.append({
+                    "item_type": item["item_type"],
+                    "object_id": object_id,
+                    "quantity": quantity,
+                    "action": "created" if created else "updated"
+                })
             else:
                 failed.append({
                     "data": item,
@@ -154,12 +170,10 @@ class CartView(APIView):
                 })
 
         return Response({
-            "message": f"{len(added)} item(s) added to cart.",
-            "added_items": added,
+            "message": f"{len(added)} item(s) processed.",
+            "processed_items": added,
             "failed_items": failed
         }, status=status.HTTP_207_MULTI_STATUS if failed else status.HTTP_201_CREATED)
-
-
 
 
 
