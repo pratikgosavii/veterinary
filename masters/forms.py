@@ -88,6 +88,20 @@ class dog_breed_Form(forms.ModelForm):
 
         }
 
+
+
+class cat_breed_Form(forms.ModelForm):
+    class Meta:
+        model = cat_breed
+        fields = '__all__'
+        widgets = {
+           
+            'name': forms.TextInput(attrs={
+                'class': 'form-control', 'id': 'name'
+            })
+
+        }
+
         
 class amenity_Form(forms.ModelForm):
     class Meta:

@@ -86,6 +86,12 @@ urlpatterns = [
     path('list-dog-breed/', list_dog_breed, name='list_dog_breed'),
     path('get-dog-breed/', get_dog_breed.as_view(), name='get_dog_breed'),
 
+    path('add-cat-breed/', add_cat_breed, name='add_cat_breed'),
+    path('update-cat-breed/<cat_breed_id>', update_cat_breed, name='update_cat_breed'),
+    path('delete-cat-breed/<cat_breed_id>', delete_cat_breed, name='delete_cat_breed'),
+    path('list-cat-breed/', list_cat_breed, name='list_cat_breed'),
+    path('get-cat-breed/', get_cat_breed.as_view(), name='get_cat_breed'),
+
     path('add-product/', add_product, name='add_product'),
     path('update-product/<product_id>', update_product, name='update_product'),
     path('delete-product/<product_id>', delete_product, name='delete_product'),

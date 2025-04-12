@@ -64,6 +64,11 @@ class dog_breed_serializer(serializers.ModelSerializer):
         model = dog_breed
         fields = '__all__'
 
+class cat_breed_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = cat_breed
+        fields = '__all__'
+
 
 class product_serializer(serializers.ModelSerializer):
     class Meta:
