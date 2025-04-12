@@ -1119,6 +1119,89 @@ class get_dog_breed(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
 
+@login_required(login_url='login')
+def add_cat_breed(request):
+
+    if request.method == 'POST':
+
+        forms = cat_breed_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_cat_breed')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_cat_breed.html', context)
+    
+    else:
+
+        forms = cat_breed_Form()
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_cat_breed.html', context)
+
+        
+
+@login_required(login_url='login')
+def update_cat_breed(request, cat_breed_id):
+
+    if request.method == 'POST':
+
+        instance = cat_breed.objects.get(id=cat_breed_id)
+
+        forms = cat_breed_Form(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_cat_breed')
+        else:
+            print(forms.errors)
+    
+    else:
+
+        instance = cat_breed.objects.get(id=cat_breed_id)
+        forms = cat_breed_Form(instance=instance)
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_cat_breed.html', context)
+
+        
+
+@login_required(login_url='login')
+def delete_cat_breed(request, cat_breed_id):
+
+    cat_breed.objects.get(id=cat_breed_id).delete()
+
+    return HttpResponseRedirect(reverse('list_cat_breed'))
+
+
+@login_required(login_url='login')
+def list_cat_breed(request):
+
+    data = cat_breed.objects.all()
+    context = {
+        'data': data
+    }
+    return render(request, 'list_cat_breed.html', context)
+
+
+from django.http import JsonResponse
+
+
+
+class get_cat_breed(ListAPIView):
+    queryset = cat_breed.objects.all()
+    serializer_class = cat_breed_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
+
 
 @login_required(login_url='login')
 def add_product(request):
