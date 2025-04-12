@@ -190,6 +190,9 @@ class product_category_Form(forms.ModelForm):
                 'class': 'form-control', 'id': 'name'
             }),
 
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+
+
         }
 
 class product_Form(forms.ModelForm):
