@@ -69,7 +69,7 @@ class product_serializer(serializers.ModelSerializer):
 
 class product_category_serializer(serializers.ModelSerializer):
     class Meta:
-        model = product
+        model = product_category
         fields = '__all__'
 
 

@@ -123,6 +123,8 @@ class dog_breed(models.Model):
 
 class product_category(models.Model):
     name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='product_images/')
+
 
     def __str__(self):
         return self.name

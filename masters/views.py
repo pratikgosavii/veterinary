@@ -543,7 +543,8 @@ class get_product_category(ListAPIView):
     serializer_class = product_category_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
-
+    filterset_class = productFilter
+    
 
 
 from users.permissions import *

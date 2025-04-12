@@ -10,7 +10,7 @@ class doctor_serializer(serializers.ModelSerializer):
     available_to = serializers.TimeField(format="%I:%M %p") 
     class Meta:
         model = doctor
-        fields = ['id', 'name', 'experience', 'title', 'degree', 'mobile_no', 'available_from', 'available_to', 'address', 'email', 'password']
+        fields = ['id', 'name', 'image', 'experience', 'title', 'degree', 'mobile_no', 'available_from', 'available_to', 'address', 'email', 'password']
 
     def create(self, validated_data):
         email = validated_data.pop('email')
