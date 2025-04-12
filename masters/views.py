@@ -515,9 +515,9 @@ def update_product_category(request, product_category_id):
 
         # create first row using admin then editing only
 
-        
+        forms = product_category_Form(instance=instance)
 
-        return render(request, 'add_product_category.html', {'data' : instance})
+        return render(request, 'add_product_category.html', {'form' : forms})
 
 
 def list_product_category(request):
