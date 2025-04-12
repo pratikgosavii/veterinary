@@ -83,14 +83,23 @@ class food_preference(models.Model):
 
     
 
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+
+
 class cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+
+    # Generic relation to any service item (product, service, test, etc.)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    item = GenericForeignKey('content_type', 'object_id')
+
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'product')
+        unique_together = ('user', 'content_type', 'object_id')
 
 
 

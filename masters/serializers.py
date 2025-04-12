@@ -26,6 +26,10 @@ class service_subcategory_serializer(serializers.ModelSerializer):
 
 
 class service_serializer(serializers.ModelSerializer):
+
+    category = service_category_serializer(read_only=True)
+    subcategory = service_subcategory_serializer(read_only=True)
+
     class Meta:
         model = service
         fields = '__all__'

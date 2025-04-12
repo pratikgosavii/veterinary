@@ -35,11 +35,8 @@ class PetViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    @action(detail=False, methods=['get'], url_path='upcoming')
-    def upcoming_appointments(self, request):
-        upcoming = self.get_queryset().filter(date__gte=timezone.now()).order_by('date')
-        serializer = self.get_serializer(upcoming, many=True)
-        return Response(serializer.data)
+    
+from datetime import date
 
 class consultation_appointment_ViewSet(ModelViewSet):
     serializer_class = consultation_appointment_Serializer
@@ -49,7 +46,19 @@ class consultation_appointment_ViewSet(ModelViewSet):
 
     def get_queryset(self):
         return consultation_appointment.objects.filter(user=self.request.user).distinct()
-
+    
+    @action(detail=False, methods=['get'], url_path='upcoming')
+    def upcoming_appointments(self, request):
+        upcoming = self.get_queryset().filter(date__gte=date.today()).order_by('date')
+        serializer = self.get_serializer(upcoming, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='past')
+    def past_appointments(self, request):
+        past = self.get_queryset().filter(date__lt=date.today()).order_by('-date')
+        serializer = self.get_serializer(past, many=True)
+        return Response(serializer.data)
+    
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -87,10 +96,20 @@ from rest_framework.response import Response
 class CartView(APIView):
     permission_classes = [IsCustomer]
 
+    def get(self, request):
+        cart_items = cart.objects.filter(user=request.user)
+        data = []
+        for item in cart_items:
+            data.append({
+                'id': item.id,
+                'quantity': item.quantity,
+                'item_type': item.content_type.model,
+                'item_data': str(item.item)  # or serialize individually
+            })
+        return Response(data)
+
     def post(self, request):
         data = request.data
-
-        # Detect if it's a single item or a list of items
         if isinstance(data, dict):
             data = [data]
 
@@ -100,30 +119,16 @@ class CartView(APIView):
         for item in data:
             serializer = AddToCartSerializer(data=item)
             if serializer.is_valid():
-                product_id = serializer.validated_data['product_id']
-                quantity = serializer.validated_data['quantity']
-                try:
-                    product_instance = product.objects.get(id=product_id)
-                except product.DoesNotExist:
-                    failed_items.append({
-                        "product_id": product_id,
-                        "error": "Product not found"
-                    })
-                    continue
-
-                # Replace the quantity if item exists, otherwise create
-                cart_item, _ = cart.objects.update_or_create(
-                    user= request.user,
-                    product=product_instance,
-                    defaults={'quantity': quantity}
-                )  
-
+                validated = serializer.validated_data
+                cart_item, _ = CartItem.objects.update_or_create(
+                    user=request.user,
+                    content_type=validated['content_type'],
+                    object_id=validated['object_id'],
+                    defaults={'quantity': validated['quantity']}
+                )
                 success_count += 1
             else:
-                failed_items.append({
-                    "data": item,
-                    "errors": serializer.errors
-                })
+                failed_items.append({'data': item, 'errors': serializer.errors})
 
         return Response({
             "message": f"{success_count} item(s) added to cart.",
