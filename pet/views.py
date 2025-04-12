@@ -102,11 +102,14 @@ MODEL_SERIALIZER_MAP = {
 }
 
 
+from rest_framework import status
+
+
 class CartView(APIView):
     permission_classes = [IsCustomer]
 
     def get(self, request):
-        cart_items = cart.objects.filter(user=request.user)
+        cart_items = cart.objects.filter(user=request.user).select_related('content_type')  # Reduce queries
         data = []
 
         for item in cart_items:
@@ -114,9 +117,12 @@ class CartView(APIView):
             serializer_class = MODEL_SERIALIZER_MAP.get(model_name)
 
             if serializer_class:
-                serialized_item = serializer_class(item.item).data
+                try:
+                    serialized_item = serializer_class(item.item).data
+                except Exception as e:
+                    serialized_item = {'error': f'Error serializing {model_name}: {str(e)}'}
             else:
-                serialized_item = {'error': f'No serializer for {model_name}'}
+                serialized_item = {'error': f'No serializer found for model: {model_name}'}
 
             data.append({
                 'id': item.id,
@@ -128,32 +134,30 @@ class CartView(APIView):
         return Response(data)
 
     def post(self, request):
+
         data = request.data
         if isinstance(data, dict):
-            data = [data]
+            data = [data]  # Convert single item to list
 
-        success_count = 0
-        failed_items = []
+        added = []
+        failed = []
 
         for item in data:
-            serializer = AddToCartSerializer(data=item)
+            serializer = CartSerializer(data=item, context={'request': request})
             if serializer.is_valid():
-                validated = serializer.validated_data
-                cart_item, _ = CartItem.objects.update_or_create(
-                    user=request.user,
-                    content_type=validated['content_type'],
-                    object_id=validated['object_id'],
-                    defaults={'quantity': validated['quantity']}
-                )
-                success_count += 1
+                serializer.save()
+                added.append(item)
             else:
-                failed_items.append({'data': item, 'errors': serializer.errors})
+                failed.append({
+                    "data": item,
+                    "errors": serializer.errors
+                })
 
         return Response({
-            "message": f"{success_count} item(s) added to cart.",
-            "failed_items": failed_items
-        }, status=201 if success_count else 400)
-
+            "message": f"{len(added)} item(s) added to cart.",
+            "added_items": added,
+            "failed_items": failed
+        }, status=status.HTTP_207_MULTI_STATUS if failed else status.HTTP_201_CREATED)
 
 
 

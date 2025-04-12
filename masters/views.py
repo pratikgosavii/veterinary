@@ -359,9 +359,13 @@ def update_testimonials(request, testimonials_id):
 
         # create first row using admin then editing only
 
+        forms = testimonials_Form(instance=instance)
+                
+        context = {
+            'form': forms
+        }
         
-
-        return render(request, 'add_testimonials.html', {'data' : instance})
+        return render(request, 'add_testimonials.html', context)
 
 
 def list_testimonials(request):
@@ -438,9 +442,13 @@ def update_amenity(request, amenity_id):
 
         # create first row using admin then editing only
 
+        forms = amenity_Form(instance=instance)
         
+        context = {
+                'form': forms
+            }
 
-        return render(request, 'add_amenity.html', {'data' : instance})
+        return render(request, 'add_amenity.html', forms)
 
 
 def list_amenity(request):
@@ -597,9 +605,13 @@ def update_customer_address(request, customer_address_id):
 
         # create first row using admin then editing only
 
+        forms = customer_address_Form(instance=instance)
         
+        context = {
+                'form': forms
+            }
 
-        return render(request, 'add_customer_address.html', {'data' : instance})
+        return render(request, 'add_customer_address.html', context)
 
 
 def list_customer_address(request):
@@ -674,9 +686,13 @@ def update_symptom(request, symptom_id):
 
         # create first row using admin then editing only
 
-        
+        forms = symptom_Form(instance=instance)
 
-        return render(request, 'add_symptom.html', {'data' : instance})
+        context = {
+            'form': forms
+        }
+
+        return render(request, 'add_symptom.html', context)
 
 
 def list_symptom(request):
@@ -749,10 +765,14 @@ def update_service_category(request, service_category_id):
     else:
 
         # create first row using admin then editing only
-
         
+        forms = service_category_Form(instance=instance)
 
-        return render(request, 'add_services_category.html', {'data' : instance})
+        context = {
+            'form': forms
+        }
+
+        return render(request, 'add_services_category.html', context)
 
 
 def list_service_category(request):
@@ -773,7 +793,7 @@ class get_service_category(ListAPIView):
     queryset = service_category.objects.all()
     serializer_class = service_category_serializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'  # enables filtering on all fields
+    filterset_class = service_categoryFilter  # enables filtering on all fields
 
 
 
@@ -1326,9 +1346,13 @@ def update_home_banner(request, home_banner_id):
 
         # create first row using admin then editing only
 
-        
+        forms = home_banner_Form(instance=instance)
+                
+        context = {
+            'form': forms
+        }
 
-        return render(request, 'add_home_banner.html', {'data' : instance})
+        return render(request, 'add_home_banner.html', context)
 
 
 def list_home_banner(request):

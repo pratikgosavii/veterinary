@@ -44,6 +44,7 @@ class coupon(models.Model):
 
 class service_category(models.Model):
     name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='product_images/')
     description = models.TextField()
 
     def __str__(self):

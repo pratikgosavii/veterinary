@@ -89,18 +89,16 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 class cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-
-    # Generic relation to any service item (product, service, test, etc.)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
+    
+    # Required fields for GenericForeignKey
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    
+    # This creates the actual generic relation
     item = GenericForeignKey('content_type', 'object_id')
-
+    
+    quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('user', 'content_type', 'object_id')
-
 
 
 
