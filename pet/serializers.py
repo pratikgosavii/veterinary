@@ -84,13 +84,28 @@ class test_booking_Serializer(serializers.ModelSerializer):
 
 from masters.serializers import *
 
-class CartSerializer(serializers.ModelSerializer):
-    product = product_serializer(read_only=True)
-    
+from rest_framework import serializers
+from django.contrib.contenttypes.models import ContentType
 
-    class Meta:
-        model = cart
-        fields = ['id', 'product', 'quantity', 'added_at']
+
+
+class CartSerializer(serializers.ModelSerializer):
+    model = serializers.CharField()  # e.g., "product", "vaccination"
+    object_id = serializers.IntegerField()
+    quantity = serializers.IntegerField()
+
+    def validate(self, data):
+        model = data['model'].lower()
+        try:
+            content_type = ContentType.objects.get(model=model)
+            model_class = content_type.model_class()
+            model_class.objects.get(id=data['object_id'])  # Ensure object exists
+            data['content_type'] = content_type
+        except ContentType.DoesNotExist:
+            raise serializers.ValidationError(f"No model named {model}")
+        except model_class.DoesNotExist:
+            raise serializers.ValidationError(f"Item with ID {data['object_id']} not found in {model}")
+        return data
 
 class AddToCartSerializer(serializers.Serializer):
     product_id = serializers.IntegerField()
