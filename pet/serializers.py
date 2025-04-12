@@ -90,25 +90,38 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class CartSerializer(serializers.ModelSerializer):
-    model = serializers.CharField()  # e.g., "product", "vaccination"
+    item_type = serializers.CharField(write_only=True)  # e.g., "product", "vaccination"
     object_id = serializers.IntegerField()
     quantity = serializers.IntegerField()
 
+    class Meta:
+        model = cart
+        fields = ['item_type', 'object_id', 'quantity']
+
     def validate(self, data):
-        model = data['model'].lower()
+        model = data['item_type'].lower()
         try:
             content_type = ContentType.objects.get(model=model)
             model_class = content_type.model_class()
             model_class.objects.get(id=data['object_id'])  # Ensure object exists
             data['content_type'] = content_type
         except ContentType.DoesNotExist:
-            raise serializers.ValidationError(f"No model named {model}")
+            raise serializers.ValidationError(f"No model named '{model}' exists.")
         except model_class.DoesNotExist:
-            raise serializers.ValidationError(f"Item with ID {data['object_id']} not found in {model}")
+            raise serializers.ValidationError(f"{model.title()} with ID {data['object_id']} not found.")
         return data
 
+    def create(self, validated_data):
+        return cart.objects.create(
+            user=self.context['request'].user,
+            content_type=validated_data['content_type'],
+            object_id=validated_data['object_id'],
+            quantity=validated_data['quantity']
+        )
+
 class AddToCartSerializer(serializers.Serializer):
-    product_id = serializers.IntegerField()
+    item_type = serializers.ChoiceField(choices=['product', 'service', 'vaccination', 'test'])
+    object_id = serializers.IntegerField()
     quantity = serializers.IntegerField(min_value=1)
 
 

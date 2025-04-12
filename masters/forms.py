@@ -112,6 +112,9 @@ class service_category_Form(forms.ModelForm):
                 'class': 'form-control', 'id': 'name'
             }),
 
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+
+
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter Coupon Code'}),
 
 
@@ -250,4 +253,16 @@ class customer_address_Form(forms.ModelForm):
             'pin_code': forms.TextInput(attrs={'class': 'form-control'}),
             'city': forms.TextInput(attrs={'class': 'form-control'}),
             'state': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class home_banner_Form(forms.ModelForm):
+    class Meta:
+        model = home_banner
+        fields = '__all__'
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'discription': forms.TextInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+
         }
