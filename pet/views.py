@@ -87,15 +87,10 @@ from rest_framework.response import Response
 class CartView(APIView):
     permission_classes = [IsCustomer]
 
-    def get(self, request):
-        cart_items = cart.objects.filter(user=request.user)
-        serializer = CartSerializer(cart_items, many=True)
-        return Response(serializer.data)
-
     def post(self, request):
         data = request.data
 
-        # Detect if it's a single item or list of items
+        # Detect if it's a single item or a list of items
         if isinstance(data, dict):
             data = [data]
 
@@ -116,14 +111,12 @@ class CartView(APIView):
                     })
                     continue
 
-                cart_item, created = cart.objects.get_or_create(
-                    user=request.user,
+                # Replace the quantity if item exists, otherwise create
+                cart_item, _ = cart.objects.update_or_create(
+                    user= request.user,
                     product=product_instance,
                     defaults={'quantity': quantity}
-                )
-                if not created:
-                    cart_item.quantity += quantity
-                    cart_item.save()
+                )  
 
                 success_count += 1
             else:
@@ -136,6 +129,8 @@ class CartView(APIView):
             "message": f"{success_count} item(s) added to cart.",
             "failed_items": failed_items
         }, status=201 if success_count else 400)
+
+
 
 
 
