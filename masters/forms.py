@@ -164,6 +164,12 @@ class service_Form(forms.ModelForm):
             'name': forms.TextInput(attrs={
                 'class': 'form-control', 'id': 'name'
             }),
+           
+            'price': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'id': 'price',
+                'step': 'any'
+            }),
 
             'category': forms.Select(attrs={
                 'class': 'form-control', 'id': 'category'
