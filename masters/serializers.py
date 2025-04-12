@@ -95,4 +95,4 @@ class customer_address_serializer(serializers.ModelSerializer):
 class HomeBannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = home_banner
-        fields = '__all__' 
+        fields = ['image'] 

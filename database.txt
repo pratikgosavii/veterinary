@@ -7,7 +7,7 @@ Pet profile
       	Age
 	productive status weight
       	
-profile menu (clarity needded)
+profile menu (clarity needded) ignore this table
 	Medical report
 	appoinment and orders
      	Vacination
@@ -32,7 +32,7 @@ service booking
 	payment gateway
 
 
-Doctor profile
+Doctor profile ignore this table also
      Name image degree title rating
 
 symptons
@@ -58,7 +58,7 @@ food selection
 boarding booking
 	
 	boarding foreignkey
-	dog, cats count
+	pets foreginkey
 	date from to
 	drop off or pick up
 	food selection ( master needed)
@@ -84,7 +84,7 @@ pet vaccination details
 	age
 	other multiple questions
 
-vaccination services booking
+vaccination services booking ignnore this
 	
 	vaccination ka bhi center ka master hai kya?
 	vaccination type
@@ -102,8 +102,13 @@ products
 	review
 	price
 
+product
+	rating
+	review
+
 product order
 	
+	user foreginkey
 	product 
 	quantity
 	delivery address
@@ -113,11 +118,12 @@ product order
 
 provider profile
 	
+	user
 	provider type - dr, boarding, grooming
 	image
 	name of dr clinic or boarding or gromming
 
-video call history
+	video call history
 
 
 	
@@ -127,4 +133,5 @@ History of video calls
 Pending appointment 
 Schedule
 
+ignore below this
 product kon deliver kr raha? app owner ya uske bhi provder alag se hai?
