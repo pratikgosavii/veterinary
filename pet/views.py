@@ -93,19 +93,38 @@ class pet_test_booking_ViewSet(ModelViewSet):
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+
+MODEL_SERIALIZER_MAP = {
+    'product': product_serializer,
+    'service': service_serializer,
+    'vaccination': vaccination_serializer,
+    'test': test_serializer,
+}
+
+
 class CartView(APIView):
     permission_classes = [IsCustomer]
 
     def get(self, request):
         cart_items = cart.objects.filter(user=request.user)
         data = []
+
         for item in cart_items:
+            model_name = item.content_type.model
+            serializer_class = MODEL_SERIALIZER_MAP.get(model_name)
+
+            if serializer_class:
+                serialized_item = serializer_class(item.item).data
+            else:
+                serialized_item = {'error': f'No serializer for {model_name}'}
+
             data.append({
                 'id': item.id,
+                'item_type': model_name,
                 'quantity': item.quantity,
-                'item_type': item.content_type.model,
-                'item_data': str(item.item)  # or serialize individually
+                'item_data': serialized_item
             })
+
         return Response(data)
 
     def post(self, request):
