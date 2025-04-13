@@ -1,13 +1,21 @@
 from django import forms
 from .models import order
 
-class order_Form(forms.ModelForm):
+
+class OrderForm(forms.ModelForm):
     class Meta:
         model = order
-        fields = ['user', 'products', 'total', 'status']
-        widgets = {
-            'user': forms.Select(attrs={'class': 'form-control'}),
-            'products': forms.SelectMultiple(attrs={'class': 'form-control'}),
-            'total': forms.NumberInput(attrs={'class': 'form-control'}),
-            'status': forms.Select(attrs={'class': 'form-control'}),
-        }
+        fields = ['total', 'status']
+
+    
+    def __init__(self, *args, **kwargs):
+        super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields['status'].widget.attrs.update({'class': 'form-control'})
+        self.fields['total'].widget.attrs.update({'class': 'form-control'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        items_data = self.data.get('items')  # Get it from POST data
+        # You can validate it or store it temporarily
+        print("Items JSON from frontend:", items_data)
+        return cleaned_data

@@ -41,15 +41,14 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
 
+from doctor.serializer import *
+from masters.serializers import *
+
 class vaccination_appointment_Serializer(serializers.ModelSerializer):
     
-    pet = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=vaccination_appointment._meta.get_field('pet').remote_field.model.objects.all()
-    )
-
-    vaccination = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=vaccination_appointment._meta.get_field('vaccination').remote_field.model.objects.all()
-    )
+    pet = PetSerializer(many=True)  # Use the PetSerializer to include all pet details
+    vaccination = vaccination_serializer(many=True)  # Use the VaccinationSerializer to include all vaccination details
+    doctor = doctor_serializer() 
 
     class Meta:
         model = vaccination_appointment
@@ -126,15 +125,55 @@ class AddToCartSerializer(serializers.Serializer):
 
 
 
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = order
-        fields = ['id', 'products', 'total', 'created_at']
 
-        read_only_fields = ['user']
+from rest_framework import serializers
+from django.contrib.contenttypes.models import ContentType
+from .models import order, order_item
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    item_type = serializers.CharField(write_only=True)
+    object_id = serializers.IntegerField(write_only=True)
+    item = serializers.SerializerMethodField()
+
+    class Meta:
+        model = order_item
+        fields = ['item_type', 'object_id', 'quantity', 'item']
+
+    def get_item(self, obj):
+        return str(obj.content_object)
+
+    def validate(self, data):
+        try:
+            content_type = ContentType.objects.get(model=data['item_type'].lower())
+            model_class = content_type.model_class()
+            model_class.objects.get(id=data['object_id'])  # ensure object exists
+            data['content_type'] = content_type
+        except Exception:
+            raise serializers.ValidationError("Invalid item_type or object_id")
+        return data
 
     def create(self, validated_data):
-        request = self.context.get('request')
-        if request and hasattr(request, 'user'):
-            validated_data['user'] = request.user
-        return super().create(validated_data)
+        return order_item.objects.create(
+            order=self.context['order'],
+            content_type=validated_data['content_type'],
+            object_id=validated_data['object_id'],
+            quantity=validated_data['quantity']
+        )
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    items = OrderItemSerializer(many=True)
+
+    class Meta:
+        model = order
+        fields = ['id', 'user', 'total', 'status', 'created_at', 'items']
+        read_only_fields = ['user', 'created_at']
+
+    def create(self, validated_data):
+        items_data = validated_data.pop('items')
+        order_instance = order.objects.create(user=self.context['request'].user, **validated_data)
+        for item_data in items_data:
+            serializer = OrderItemSerializer(data=item_data, context={'order': order_instance})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+        return order_instance
