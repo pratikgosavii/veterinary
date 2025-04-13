@@ -182,7 +182,6 @@ class service_Form(forms.ModelForm):
             'price': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'id': 'price',
-                'step': 'any'
             }),
 
             'category': forms.Select(attrs={
