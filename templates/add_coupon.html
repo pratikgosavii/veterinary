@@ -83,8 +83,8 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label for="code" class="form-label">Description:</label>
-                            {{ form.description }}
+                            <label for="code" class="form-label">Type :</label>
+                            {{ form.type }}
                         </div>
                         
                         <div class="mb-4">
@@ -105,6 +105,11 @@
                         <div class="mb-4">
                             <label for="max_discount" class="form-label">Maximum Discount:</label>
                             {{ form.max_discount }}
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="code" class="form-label">Description:</label>
+                            {{ form.description }}
                         </div>
                         
                         <div class="mb-4">
@@ -154,6 +159,36 @@
 {% block extra_js %}
     <!-- apexcharts -->
     <script src="{% static 'libs/apexcharts/dist/apexcharts.min.js' %}"></script>
+    
+    
+    
+    <script>
+        function toggleDiscountFields() {
+
+            const typeSelect = document.getElementById("id_type");
+            const percentField = document.getElementById('id_discount_percentage').parentElement;
+            const amountField = document.getElementById('id_discount_amount').parentElement;
+    
+            if (typeSelect.value === "percent") {
+                percentField.style.display = "block";
+                amountField.style.display = "none";
+            } else if (typeSelect.value === "amount") {
+                percentField.style.display = "none";
+                amountField.style.display = "block";
+            }
+        }
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            const typeSelect = document.getElementById("id_type");
+            if (typeSelect) {
+                toggleDiscountFields();
+                typeSelect.addEventListener("change", toggleDiscountFields);
+            }
+        });
+    </script>
+
+
+
     <script>
         // Image preview logic
         document.getElementById("bannerImage").addEventListener("change", function () {
@@ -222,5 +257,9 @@ function displaySelectedImages() {
 
 
     </script>
+
+    
+    
+
 
 {% endblock extra_js %}
