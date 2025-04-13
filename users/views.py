@@ -42,21 +42,21 @@ class SignupView(APIView):
     def post(self, request):
         id_token = request.data.get("idToken")
         user_type = request.data.get("user_type")  # e.g. 'daycare', 'doctor', etc.
+        name = request.data.get("name")  # From frontend
+        email = request.data.get("email")  # Optional, in case it's not in Firebase
 
-        if not id_token or not user_type:
-            return Response({"error": "idToken and user_type are required"}, status=400)
+        if not id_token or not user_type or not name:
+            return Response({"error": "idToken, user_type, and name are required"}, status=400)
 
         try:
             decoded_token = firebase_auth.verify_id_token(id_token)
             mobile = decoded_token.get("phone_number")
-            print(decoded_token)
-
             uid = decoded_token.get("uid")
 
             if not mobile:
                 return Response({"error": "Phone number not found in Firebase token"}, status=400)
 
-            # Set default role flags
+            # Role flags setup
             role_flags = {
                 "is_customer": False,
                 "is_doctor": False,
@@ -69,18 +69,35 @@ class SignupView(APIView):
 
             role_flags[f"is_{user_type}"] = True
 
-            # Get or create user with appropriate role
+            # Add extra fields
+            role_flags.update({
+                "email": email or decoded_token.get("email"),
+                "first_name": name
+            })
+
+            # Get or create user
             user, created = User.objects.get_or_create(
                 mobile=mobile,
                 firebase_uid=uid,
                 defaults=role_flags
             )
 
-            # If user existed and user_type doesn't match, you may reject or update
+            # If existing user with mismatched role
             if not created and not getattr(user, f"is_{user_type}"):
-                return Response({"error": f"User already exists as different type"}, status=400)
+                return Response({"error": "User already exists as different type"}, status=400)
 
-            # Generate JWT
+            # Update name/email if needed
+            updated = False
+            if not user.first_name and name:
+                user.first_name = name
+                updated = True
+            if not user.email and (email or decoded_token.get("email")):
+                user.email = email or decoded_token.get("email")
+                updated = True
+            if updated:
+                user.save()
+
+            # Generate tokens
             refresh = RefreshToken.for_user(user)
             return Response({
                 "access": str(refresh.access_token),
@@ -88,6 +105,8 @@ class SignupView(APIView):
                 "user": {
                     "id": user.id,
                     "mobile": user.mobile,
+                    "email": user.email,
+                    "name": user.first_name,
                     "user_type": user_type,
                     "created": created
                 }
@@ -96,7 +115,57 @@ class SignupView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=400)
 
-    
+
+from .permissions import *
+
+
+class UserUpdateView(APIView):
+    permission_classes = [IsCustomer]
+
+    def put(self, request):
+        user = request.user
+        name = request.data.get("name")
+        email = request.data.get("email")
+
+        updated = False
+
+        if name:
+            user.first_name = name
+            updated = True
+
+        if email:
+            user.email = email
+            updated = True
+
+        if updated:
+            user.save()
+            return Response({"message": "Profile updated successfully."})
+        else:
+            return Response({"message": "No changes provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResetPasswordView(APIView):
+    def post(self, request):
+        id_token = request.data.get("idToken")
+        new_password = request.data.get("new_password")
+
+        if not id_token or not new_password:
+            return Response({"error": "idToken and new_password are required"}, status=400)
+
+        try:
+            # Decode the token to get UID
+            decoded = firebase_auth.verify_id_token(id_token)
+            uid = decoded.get("uid")
+
+            # Update Firebase password
+            firebase_auth.update_user(uid, password=new_password)
+
+            return Response({"message": "Password updated successfully."})
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
+        
+        
 
 from firebase_admin import auth as firebase_auth
 from rest_framework.views import APIView

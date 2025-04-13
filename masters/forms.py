@@ -244,6 +244,8 @@ class vaccination_Form(forms.ModelForm):
             'disease': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control description-box'}),
             'age_limit': forms.NumberInput(attrs={'class': 'form-control'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+
         }
 
 class event_Form(forms.ModelForm):

@@ -119,12 +119,14 @@
                                                 {% if data %}
                                                     {% for i in data %}
                                                         <tr>
-                                                            <td>{{ forloop.counter }}</td>
-                                                            <td>{{ i.id }}</td>
-                                                            <td>{{ i.user }}</td>
-                                                            <td>{{ i.status }}</td>
-                                                            <td>{{ i.product }}</td>
-                                                            <td>{{ i.total|default:"-" }}%</td>
+                                                            <td>
+                                                                {% for item in i.items.all %}
+                                                                    {{ item.product }} x{{ item.quantity }}<br>
+                                                                {% empty %}
+                                                                    No items
+                                                                {% endfor %}
+                                                            </td>
+                                                            
                                                            
                                                           
                                                     <td>

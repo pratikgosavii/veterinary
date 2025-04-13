@@ -24,7 +24,7 @@ urlpatterns = [
     path('update-order/<order_id>', update_order, name='update_order'),
     path('delete-order/<order_id>', delete_order, name='delete_order'),
     path('list-order-admin/', list_order_admin, name='list_order_admin'),
-    path('list-order/', list_order.as_view(), name='list_order'),
+    path('get-order/', ListOrderView.as_view(), name='list_order'),
   
 
 ] + router.urls
