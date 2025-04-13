@@ -1459,8 +1459,7 @@ def get_home_banner(request):
     data = home_banner.objects.all()  # Assuming home_banner is the model name
 
 
-    serialized_data = HomeBannerSerializer(data, many=True).data  
-
-    return JsonResponse({"data": serialized_data}, status=200, safe=False)  
+    serialized_data = HomeBannerSerializer(data, many=True, context={'request': request}).data
+    return JsonResponse({"data": serialized_data}, status=200)
 
 
