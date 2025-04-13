@@ -19,20 +19,21 @@ class PetSerializer(serializers.ModelSerializer):
             validated_data['owner'] = request.user
         return super().create(validated_data)
     
+
+from doctor.serializer import *
+from masters.serializers import *
     
 class consultation_appointment_Serializer(serializers.ModelSerializer):
     
-    pet = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=consultation_appointment._meta.get_field('pet').remote_field.model.objects.all()
-    )
+   
 
-    symptom = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=consultation_appointment._meta.get_field('symptom').remote_field.model.objects.all()
-    )
+    pet = PetSerializer(many=True, read_only=True)
+    symptom = symptom_serializer(many=True, read_only=True)
+    doctor = doctor_serializer(read_only=True)
 
     class Meta:
         model = consultation_appointment
-        fields = ['id', 'pet', 'symptom', 'doctor', 'date', 'payment_status']
+        fields = ['id', 'pet', 'symptom', 'doctor', 'date', 'is_online', 'payment_status']
         read_only_fields = ['user']
 
     def create(self, validated_data):
@@ -62,13 +63,11 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
 
 class test_booking_Serializer(serializers.ModelSerializer):
     
-    pet = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=test_booking._meta.get_field('pet').remote_field.model.objects.all()
-    )
 
-    test = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=test_booking._meta.get_field('test').remote_field.model.objects.all()
-    )
+    test = test_serializer(many=True)
+    pet = PetSerializer(many=True)  # Use the PetSerializer to include all pet details
+    doctor = doctor_serializer() 
+
 
     class Meta:
         model = test_booking

@@ -119,6 +119,16 @@ class SignupView(APIView):
 from .permissions import *
 
 
+class UsergetView(APIView):
+    permission_classes = [IsCustomer]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "name": user.first_name,
+            "email": user.email,
+        })
+
 class UserUpdateView(APIView):
     permission_classes = [IsCustomer]
 
@@ -165,7 +175,7 @@ class ResetPasswordView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=400)
         
-        
+
 
 from firebase_admin import auth as firebase_auth
 from rest_framework.views import APIView
