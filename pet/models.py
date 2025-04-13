@@ -41,6 +41,7 @@ class consultation_appointment(models.Model):
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
+    payment_status = models.BooleanField(default=False)
 
 # appointment & orders
 class vaccination_appointment(models.Model):

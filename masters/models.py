@@ -26,6 +26,13 @@ class amenity(models.Model):
 
 
 class coupon(models.Model):
+
+    TYPE_CHOICES = [
+        ('percent', 'Percentage'),
+        ('amount', 'Amount'),
+    ]
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='percent')  # 👈 Add this
+
     code = models.CharField(max_length=50, unique=True)
     title = models.CharField(max_length=50)
     description = models.CharField(max_length=500, null=True, blank=True)
