@@ -74,14 +74,28 @@ from rest_framework.permissions import IsAuthenticated
 class CreateDayCareBooking(CreateAPIView):
     queryset = day_care_booking.objects.all()
     serializer_class = DayCareBookingSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsCustomer]
 
 
 class ListDayCareBookings(ListAPIView):
     serializer_class = DayCareBookingSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsCustomer]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # Or specify fields like ['date_from', 'date_to', 'payment_status']
 
     def get_queryset(self):
         return day_care_booking.objects.filter(user=self.request.user).distinct()
+    
+
+    
+from rest_framework.generics import RetrieveAPIView
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from .models import day_care
+from .serializers import day_care_serializer
+
+
+class DayCareDetailView(RetrieveAPIView):
+    queryset = day_care.objects.all()
+    serializer_class = day_care_serializer
+    permission_classes = [IsCustomer]
+    lookup_field = 'id'  # default is 'pk', you can keep or customize this

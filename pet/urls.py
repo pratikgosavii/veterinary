@@ -25,7 +25,10 @@ urlpatterns = [
     path('delete-order/<order_id>', delete_order, name='delete_order'),
     path('list-order-admin/', list_order_admin, name='list_order_admin'),
     path('get-order/', ListOrderView.as_view(), name='list_order'),
-  
+    
+    # path("stream/token/", GenerateStreamToken.as_view()),
+
+
 
 ] + router.urls
 
