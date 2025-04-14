@@ -98,12 +98,6 @@ class SignupView(APIView):
 
 
 
-            # If existing user with mismatched role
-            if not created and not getattr(user, f"is_{user_type}"):
-                return Response({"error": "User already exists as different type"}, status=400)
-
-        
-
             # Generate tokens
             refresh = RefreshToken.for_user(user)
             return Response({

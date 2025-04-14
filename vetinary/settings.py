@@ -148,9 +148,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 
-STREAM_API_KEY = "c7wwttj85hg7"
-STREAM_API_SECRET = "cgptvrzsttwj9vcebwy25k7y6aqkd6nxh56gkwxhsj3djs989g7k5wraprep926d"
-
 
 
 # Internationalization
