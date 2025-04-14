@@ -340,37 +340,32 @@ class ListDayCareBookings(ListAPIView):
     
 
 
-# # views.py
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from rest_framework.permissions import IsAuthenticated
-# from stream import StreamClient
-# import os
+# views.py
 
-# class GenerateStreamToken(APIView):
-#     permission_classes = [IsAuthenticated]
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from stream_video import StreamVideo
 
-#     def get(self, request):
-#         # Fetch environment variables for Stream API
-#         api_key = os.getenv("STREAM_API_KEY")
-#         api_secret = os.getenv("STREAM_API_SECRET")
+import os
 
-#         # The user (patient) is the authenticated user
-#         user_id = str(request.user.id)
+class GenerateStreamToken(APIView):
+    permission_classes = [IsAuthenticated]
 
-#         # Get doctor ID from the URL parameter
-#         doctor_id = request.query_params.get('doctor_id')
+    def get(self, request):
+        api_key = os.getenv("STREAM_API_KEY")
+        api_secret = os.getenv("STREAM_API_SECRET")
 
-#         # Create Stream client with API key and secret
-#         client = StreamClient(api_key, api_secret)
+        if not api_key or not api_secret:
+            return Response({"error": "Missing Stream API credentials"}, status=500)
 
-#         # Generate a token for the patient and doctor
-#         token = client.create_token(user_id)
+        user_id = str(request.user.id)
 
-#         # Send the token to the frontend, along with user ID and doctor ID
-#         return Response({
-#             "user_id": user_id,
-#             "token": token,
-#             "api_key": api_key,
-#             "doctor_id": doctor_id
-#         })
+        stream = StreamVideo(api_key=api_key, api_secret=api_secret)
+        token = stream.get_token(user_id)
+
+        return Response({
+            "user_id": user_id,
+            "token": token,
+            "api_key": api_key,
+        })

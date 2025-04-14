@@ -26,7 +26,7 @@ urlpatterns = [
     path('list-order-admin/', list_order_admin, name='list_order_admin'),
     path('get-order/', ListOrderView.as_view(), name='list_order'),
     
-    # path("stream/token/", GenerateStreamToken.as_view()),
+    path("stream/token/", GenerateStreamToken.as_view()),
 
     path('book-daycare/', CreateDayCareBooking.as_view(), name='book_daycare'),
 
