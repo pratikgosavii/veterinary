@@ -42,7 +42,7 @@ class day_care_login(APIView):
 from .serializers import *
 from rest_framework import generics, permissions
 
-class day_care_signup(generics.CreateAPIView):
+class day_care_register(generics.CreateAPIView):
     
     queryset = day_care.objects.all()
     serializer_class = day_care_serializer
@@ -55,7 +55,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 class get_day_care(ListAPIView):
 
-    permission_classes = [IsDaycare]  
+    permission_classes = [IsCustomer]  
 
     queryset = day_care.objects.all()
     serializer_class = day_care_serializer
