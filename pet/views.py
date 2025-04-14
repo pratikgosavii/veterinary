@@ -345,7 +345,7 @@ class ListDayCareBookings(ListAPIView):
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from stream_video import StreamVideo
+from stream_chat import StreamChat  # ✅ Correct import
 
 import os
 
@@ -361,8 +361,9 @@ class GenerateStreamToken(APIView):
 
         user_id = str(request.user.id)
 
-        stream = StreamVideo(api_key=api_key, api_secret=api_secret)
-        token = stream.get_token(user_id)
+        client = StreamChat(api_key=api_key, api_secret=api_secret)  # ✅
+        client.upsert_user({"id": user_id, "name": request.user.username})
+        token = client.create_token(user_id)
 
         return Response({
             "user_id": user_id,
