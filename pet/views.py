@@ -317,3 +317,40 @@ class ListOrderView(generics.ListAPIView):
 
     def get_queryset(self):
         return order.objects.filter(user=self.request.user)
+
+
+
+# # views.py
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework.permissions import IsAuthenticated
+# from stream import StreamClient
+# import os
+
+# class GenerateStreamToken(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request):
+#         # Fetch environment variables for Stream API
+#         api_key = os.getenv("STREAM_API_KEY")
+#         api_secret = os.getenv("STREAM_API_SECRET")
+
+#         # The user (patient) is the authenticated user
+#         user_id = str(request.user.id)
+
+#         # Get doctor ID from the URL parameter
+#         doctor_id = request.query_params.get('doctor_id')
+
+#         # Create Stream client with API key and secret
+#         client = StreamClient(api_key, api_secret)
+
+#         # Generate a token for the patient and doctor
+#         token = client.create_token(user_id)
+
+#         # Send the token to the frontend, along with user ID and doctor ID
+#         return Response({
+#             "user_id": user_id,
+#             "token": token,
+#             "api_key": api_key,
+#             "doctor_id": doctor_id
+#         })
