@@ -11,6 +11,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
+from pet.serializers import DayCareBookingSerializer
 from users.permissions import *
 
 
@@ -64,27 +65,16 @@ class get_day_care(ListAPIView):
 
 
 
-from rest_framework.generics import CreateAPIView, ListAPIView
-from .models import day_care_booking
-from .serializers import DayCareBookingSerializer
-from rest_framework.permissions import IsAuthenticated
 
 
-
-class CreateDayCareBooking(CreateAPIView):
-    queryset = day_care_booking.objects.all()
-    serializer_class = DayCareBookingSerializer
-    permission_classes = [IsCustomer]
 
 
 class ListDayCareBookings(ListAPIView):
     serializer_class = DayCareBookingSerializer
-    permission_classes = [IsCustomer]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'  # Or specify fields like ['date_from', 'date_to', 'payment_status']
+    permission_classes = [IsDaycare]
 
     def get_queryset(self):
-        return day_care_booking.objects.filter(user=self.request.user).distinct()
+        return day_care_booking.objects.filter(user=self.request.user).select_related('daycare').prefetch_related('pets').order_by('-id')
     
 
     

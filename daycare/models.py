@@ -23,15 +23,3 @@ class day_care(models.Model):
     amenities = models.ManyToManyField('masters.amenity', null=True, blank=True)
     rating = models.FloatField(null=True, blank=True)
 
-
-class day_care_booking(models.Model):
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    daycare = models.ForeignKey(day_care, on_delete=models.CASCADE)
-    pets = models.ManyToManyField('pet.pet')
-    date_from = models.DateField()
-    date_to = models.DateField()
-    drop_off = models.BooleanField()
-    pick_up = models.BooleanField()
-    food_selection = models.TextField()
-    payment_status = models.BooleanField(default=False)

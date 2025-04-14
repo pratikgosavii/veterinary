@@ -176,3 +176,69 @@ class OrderSerializer(serializers.ModelSerializer):
             serializer.is_valid(raise_exception=True)
             serializer.save()
         return order_instance
+
+
+
+from daycare.serializers import *
+
+class DayCareBookingSerializer(serializers.ModelSerializer):
+    
+    daycare = day_care_serializer(read_only=True)
+    pets = PetSerializer(many=True, read_only=True)
+
+    # For creating
+    daycare_id = serializers.PrimaryKeyRelatedField(
+        queryset=day_care.objects.all(), write_only=True, source='daycare'
+    )
+    pet_ids = serializers.PrimaryKeyRelatedField(
+        queryset=pet.objects.all(), many=True, write_only=True
+    )
+
+    class Meta:
+        model = day_care_booking
+        fields = [
+            'id', 'user', 'daycare', 'daycare_id',
+            'pets', 'pet_ids', 'date_from', 'date_to',
+            'drop_off', 'pick_up', 'food_selection', 'payment_status',
+            'half_day_on_checkin', 'half_day_on_checkout', 'total_cost'
+        ]
+        read_only_fields = ['id', 'user', 'daycare', 'pets', 'total_cost', 'payment_status']
+
+    def validate(self, data):
+        date_from = data.get('date_from')
+        date_to = data.get('date_to')
+        half_in = data.get('half_day_on_checkin', False)
+        half_out = data.get('half_day_on_checkout', False)
+
+        if date_from and date_to and date_from > date_to:
+            raise serializers.ValidationError("date_from must be before or equal to date_to")
+
+        if date_from == date_to and half_in and half_out:
+            raise serializers.ValidationError("Can't select both half-day check-in and check-out on same day.")
+        return data
+
+    def create(self, validated_data):
+        request = self.context['request']
+        user = request.user
+
+        pets = validated_data.pop('pet_ids', [])
+        daycare = validated_data.pop('daycare')
+
+        validated_data['user'] = user
+
+        booking = day_care_booking.objects.create(daycare=daycare, **validated_data)
+        booking.pets.set(pets)
+        booking.total_cost = self.calculate_total_cost(booking)
+        booking.save()
+
+        return booking
+
+    def calculate_total_cost(self, booking):
+        days = (booking.date_to - booking.date_from).days + 1
+        if booking.half_day_on_checkin:
+            days -= 0.5
+        if booking.half_day_on_checkout:
+            days -= 0.5
+        return round(float(booking.daycare.price_per_day) * days, 2)
+
+

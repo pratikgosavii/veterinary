@@ -319,6 +319,26 @@ class ListOrderView(generics.ListAPIView):
         return order.objects.filter(user=self.request.user)
 
 
+from rest_framework.generics import CreateAPIView, ListAPIView
+from .models import day_care_booking
+from .serializers import DayCareBookingSerializer
+from rest_framework.permissions import IsAuthenticated
+
+class CreateDayCareBooking(CreateAPIView):
+    queryset = day_care_booking.objects.all()
+    serializer_class = DayCareBookingSerializer
+    permission_classes = [IsCustomer]
+
+
+
+class ListDayCareBookings(ListAPIView):
+    serializer_class = DayCareBookingSerializer
+    permission_classes = [IsCustomer]
+
+    def get_queryset(self):
+        return day_care_booking.objects.filter(user=self.request.user).select_related('daycare').prefetch_related('pets').order_by('-id')
+    
+
 
 # # views.py
 # from rest_framework.views import APIView

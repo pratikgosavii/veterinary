@@ -55,16 +55,3 @@ class day_care_serializer(serializers.ModelSerializer):
             instance.amenities.set(amenities)
         return super().update(instance, validated_data)
 
-
-class DayCareBookingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = day_care_booking
-        fields = '__all__'
-        read_only_fields = ['user']
-
-    def create(self, validated_data):
-        request = self.context['request']
-        validated_data['user'] = request.user
-        return super().create(validated_data)
-
-

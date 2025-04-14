@@ -28,7 +28,9 @@ urlpatterns = [
     
     # path("stream/token/", GenerateStreamToken.as_view()),
 
+    path('book-daycare/', CreateDayCareBooking.as_view(), name='book_daycare'),
 
+    path('list-day-care-bookings/', ListDayCareBookings.as_view(), name='list_daycare_bookings'),
 
 ] + router.urls
 

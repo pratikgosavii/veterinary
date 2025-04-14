@@ -4,6 +4,7 @@ from django.db import models
 
 
 
+from daycare.models import *
 from users.models import *
 from masters.models import *
 
@@ -64,6 +65,26 @@ class test_booking(models.Model):
     payment_status = models.BooleanField(default=False)
     report = models.FileField(upload_to='reports/', null=True, blank=True)
 
+
+
+class day_care_booking(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    daycare = models.ForeignKey("daycare.day_care", on_delete=models.CASCADE)
+    pets = models.ManyToManyField('pet.pet')
+    date_from = models.DateField()
+    date_to = models.DateField()
+    drop_off = models.BooleanField()
+    pick_up = models.BooleanField()
+    food_selection = models.TextField()
+    payment_status = models.BooleanField(default=False)
+
+    half_day_on_checkin = models.BooleanField(default=False)   # for date_from
+    half_day_on_checkout = models.BooleanField(default=False)  # for date_to    
+
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    
 # vaccination
 class pet_vaccination(models.Model):
     pet = models.ManyToManyField('pet.pet')
