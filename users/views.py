@@ -44,9 +44,12 @@ class SignupView(APIView):
         user_type = request.data.get("user_type")  # e.g. 'daycare', 'doctor', etc.
         name = request.data.get("name")  # From frontend
         email = request.data.get("email")  # Optional, in case it's not in Firebase
+        
 
-        if not id_token or not user_type or not name:
-            return Response({"error": "idToken, user_type, and name are required"}, status=400)
+        print(id_token)
+        print(user_type)
+        if not id_token or not user_type:
+            return Response({"error": "idToken and user_type are required"}, status=400)
 
         try:
             decoded_token = firebase_auth.verify_id_token(id_token)
@@ -69,33 +72,37 @@ class SignupView(APIView):
 
             role_flags[f"is_{user_type}"] = True
 
-            # Add extra fields
-            role_flags.update({
-                "email": email or decoded_token.get("email"),
-                "first_name": name
-            })
 
-            # Get or create user
-            user, created = User.objects.get_or_create(
-                mobile=mobile,
-                firebase_uid=uid,
-                defaults=role_flags
-            )
+            if name:
+            
+                # Add extra fields
+                role_flags.update({
+                    "email": email or decoded_token.get("email"),
+                    "first_name": name
+                })
+
+                # Get or create user
+                user, created = User.objects.get_or_create(
+                    mobile=mobile,
+                    firebase_uid=uid,
+                    defaults=role_flags
+                )
+            
+            else:
+
+                user, created = User.objects.get_or_create(
+                    mobile=mobile,
+                    firebase_uid=uid,
+                )
+            
+
+
 
             # If existing user with mismatched role
             if not created and not getattr(user, f"is_{user_type}"):
                 return Response({"error": "User already exists as different type"}, status=400)
 
-            # Update name/email if needed
-            updated = False
-            if not user.first_name and name:
-                user.first_name = name
-                updated = True
-            if not user.email and (email or decoded_token.get("email")):
-                user.email = email or decoded_token.get("email")
-                updated = True
-            if updated:
-                user.save()
+        
 
             # Generate tokens
             refresh = RefreshToken.for_user(user)
