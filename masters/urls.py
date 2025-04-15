@@ -38,6 +38,12 @@ urlpatterns = [
     path('delete-food-menu/<food_menu_id>', delete_food_menu, name='delete_food_menu'),  # create or fetch list of admins
     path('get-food-menu/', get_food_menu.as_view(), name='get_food_menu'), 
 
+    # path('add-food-menu/', add_food_menu, name='add_food_menu'),  # create or fetch list of admins
+    # path('update-food-menu/<food_menu_id>', update_food_menu, name='update_food_menu'),  # create or fetch list of admins
+    # path('list-food-menu/', list_food_menu, name='list_food_menu'),  # create or fetch list of admins
+    # path('delete-food-menu/<food_menu_id>', delete_food_menu, name='delete_food_menu'),  # create or fetch list of admins
+    # path('get-food-menu/', get_food_menu.as_view(), name='get_food_menu'), 
+
     path('add-amenity/', add_amenity, name='add_amenity'),  # create or fetch list of admins
     path('update-amenity/<amenity_id>', update_amenity, name='update_amenity'),  # create or fetch list of admins
     path('list-amenity/', list_amenity, name='list_amenity'),  # create or fetch list of admins

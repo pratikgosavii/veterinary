@@ -18,8 +18,7 @@ class day_care(models.Model):
     images = models.ImageField(upload_to='daycare_photos/', null=True, blank=True)
     location = models.TextField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    price_per_hour = models.FloatField(null=True, blank=True)
-    price_per_day = models.FloatField(null=True, blank=True)
+    price_half_day = models.FloatField(null=True, blank=True)
+    price_full_day = models.FloatField(null=True, blank=True)
     amenities = models.ManyToManyField('masters.amenity', null=True, blank=True)
     rating = models.FloatField(null=True, blank=True)
-

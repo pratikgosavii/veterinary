@@ -244,10 +244,12 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
 
     def calculate_total_cost(self, booking):
         days = (booking.date_to - booking.date_from).days + 1
-      
+        if booking.half_day:
+            stay_cost = float(booking.daycare.price_half_day) * days
+        if booking.half_day_on_checkout:
+            stay_cost = float(booking.daycare.price_full_day) * days
 
         # Base cost (stay)
-        stay_cost = float(booking.daycare.price_per_day) * days
 
         # Food cost per day
         food_items = booking.food_selection.all()

@@ -19,7 +19,7 @@ router.register(r'pet', PetViewSet, basename='pet')
 urlpatterns = [
 
     path('cart/', CartView.as_view(), name='cart'),
-    path('cart/<cart_id>', CartdeleteView.as_view(), name='cart'),
+    path('cart/<cart_id>/delete/', CartdeleteView.as_view(), name='cart'),
 
     path('create-order/', create_order.as_view(), name='create_order'),
     path('update-order/<order_id>', update_order, name='update_order'),
