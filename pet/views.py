@@ -107,7 +107,7 @@ from rest_framework import status
 
 
 class CartdeleteView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsCustomer]
 
     def delete(self, request, pk):
         cart_item = get_object_or_404(cart, pk=pk, user=request.user)
