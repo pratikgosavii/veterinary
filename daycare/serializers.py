@@ -20,7 +20,7 @@ class day_care_serializer(serializers.ModelSerializer):
         model = day_care
         fields = [
             'id', 'user', 'name', 'images', 'location', 
-            'description', 'price_per_hour', 'price_per_day', 
+            'description', 'price_full_day', 'price_half_day', 
             'amenities', 'amenity_ids', 'rating', 'email', 'mobile'
         ]
         extra_kwargs = {
