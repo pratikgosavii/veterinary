@@ -72,15 +72,15 @@ class day_care_booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     daycare = models.ForeignKey("daycare.day_care", on_delete=models.CASCADE)
     pets = models.ManyToManyField('pet.pet')
+    food_selection = models.ManyToManyField('masters.food_menu')  # ✅ Keep only this one
+
     date_from = models.DateField()
     date_to = models.DateField()
-    drop_off = models.BooleanField()
-    pick_up = models.BooleanField()
-    food_selection = models.TextField()
+    
     payment_status = models.BooleanField(default=False)
 
-    half_day_on_checkin = models.BooleanField(default=False)   # for date_from
-    half_day_on_checkout = models.BooleanField(default=False)  # for date_to    
+    half_day = models.BooleanField(default=False)
+    full_day = models.BooleanField(default=False)
 
     total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 

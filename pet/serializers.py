@@ -185,36 +185,43 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
     
     daycare = day_care_serializer(read_only=True)
     pets = PetSerializer(many=True, read_only=True)
+    food_selection = food_menu_serializer(many=True, read_only=True)
 
-    # For creating
+    # For writing
     daycare_id = serializers.PrimaryKeyRelatedField(
         queryset=day_care.objects.all(), write_only=True, source='daycare'
     )
     pet_ids = serializers.PrimaryKeyRelatedField(
         queryset=pet.objects.all(), many=True, write_only=True
     )
+    food_selection_ids = serializers.PrimaryKeyRelatedField(
+        queryset=food_menu.objects.all(), many=True, write_only=True, source='food_selection'
+    )
 
     class Meta:
         model = day_care_booking
         fields = [
             'id', 'user', 'daycare', 'daycare_id',
-            'pets', 'pet_ids', 'date_from', 'date_to',
-            'drop_off', 'pick_up', 'food_selection', 'payment_status',
-            'half_day_on_checkin', 'half_day_on_checkout', 'total_cost'
+            'pets', 'pet_ids',
+            'food_selection', 'food_selection_ids',
+            'date_from', 'date_to',
+            'half_day', 'full_day',
+            'payment_status', 'total_cost'
         ]
-        read_only_fields = ['id', 'user', 'daycare', 'pets', 'total_cost', 'payment_status']
+        read_only_fields = ['id', 'user', 'daycare', 'pets', 'food_selection', 'total_cost', 'payment_status']
 
     def validate(self, data):
         date_from = data.get('date_from')
         date_to = data.get('date_to')
-        half_in = data.get('half_day_on_checkin', False)
-        half_out = data.get('half_day_on_checkout', False)
+        half_in = data.get('half_day', False)
+        half_out = data.get('full_day', False)
 
         if date_from and date_to and date_from > date_to:
             raise serializers.ValidationError("date_from must be before or equal to date_to")
 
         if date_from == date_to and half_in and half_out:
             raise serializers.ValidationError("Can't select both half-day check-in and check-out on same day.")
+
         return data
 
     def create(self, validated_data):
@@ -222,12 +229,14 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
         user = request.user
 
         pets = validated_data.pop('pet_ids', [])
+        food_items = validated_data.pop('food_selection', [])
         daycare = validated_data.pop('daycare')
 
         validated_data['user'] = user
 
         booking = day_care_booking.objects.create(daycare=daycare, **validated_data)
         booking.pets.set(pets)
+        booking.food_selection.set(food_items)
         booking.total_cost = self.calculate_total_cost(booking)
         booking.save()
 
@@ -235,10 +244,8 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
 
     def calculate_total_cost(self, booking):
         days = (booking.date_to - booking.date_from).days + 1
-        if booking.half_day_on_checkin:
+        if booking.half_day:
             days -= 0.5
-        if booking.half_day_on_checkout:
+        if booking.full_day:
             days -= 0.5
         return round(float(booking.daycare.price_per_day) * days, 2)
-
-

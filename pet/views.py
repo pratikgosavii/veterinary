@@ -338,7 +338,6 @@ from rest_framework.permissions import IsAuthenticated
 class CreateDayCareBooking(CreateAPIView):
     queryset = day_care_booking.objects.all()
     serializer_class = DayCareBookingSerializer
-    permission_classes = [IsCustomer]
 
 
 
