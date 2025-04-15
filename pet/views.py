@@ -105,6 +105,17 @@ MODEL_SERIALIZER_MAP = {
 from rest_framework import status
 
 
+
+class CartdeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        cart_item = get_object_or_404(cart, pk=pk, user=request.user)
+        cart_item.delete()
+        return Response({'message': 'success'}, status=status.HTTP_204_NO_CONTENT)
+    
+
+
 class CartView(APIView):
     permission_classes = [IsCustomer]
 
