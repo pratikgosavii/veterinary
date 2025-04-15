@@ -19,6 +19,12 @@ class service_category_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class food_menu_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = food_menu
+        fields = '__all__'
+
+
 class service_subcategory_serializer(serializers.ModelSerializer):
     class Meta:
         model = service_subcategory

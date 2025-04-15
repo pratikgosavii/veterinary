@@ -26,6 +26,11 @@ class productFilter(django_filters.FilterSet):
         model = product
         exclude = ['image']  # ⛔ Exclude unsupported field
 
+class food_menuFilter(django_filters.FilterSet):
+    class Meta:
+        model = food_menu
+        exclude = ['image']  # ⛔ Exclude unsupported field
+
 class serviceFilter(django_filters.FilterSet):
     class Meta:
         model = service
