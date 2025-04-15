@@ -394,6 +394,88 @@ class get_testimonials(ListAPIView):
 
 
 
+def add_food_menu(request):
+    
+    if request.method == "POST":
+
+        forms = food_menu_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_food_menu')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_food_menu.html', context)
+    
+    else:
+
+        # create first row using admin then editing only
+
+        
+
+        return render(request, 'add_food_menu.html', { 'form' : food_menu_Form()})
+
+def update_food_menu(request, food_menu_id):
+    
+    instance = food_menu.objects.get(id = food_menu_id)
+
+    if request.method == "POST":
+
+        forms = food_menu_Form(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_food_menu')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_food_menu.html', context)
+
+    
+    else:
+
+        # create first row using admin then editing only
+
+        forms = food_menu_Form(instance=instance)
+                
+        context = {
+            'form': forms
+        }
+        
+        return render(request, 'add_food_menu.html', context)
+
+
+def list_food_menu(request):
+
+    data = food_menu.objects.all()
+
+    return render(request, 'list_food_menu.html', {'data' : data})
+
+
+def delete_food_menu(request, food_menu_id):
+
+    data = food_menu.objects.get(id = food_menu_id).delete()
+
+    return redirect('list_food_menu')
+
+
+
+from django.views import View
+
+
+class get_food_menu(ListAPIView):
+    queryset = food_menu.objects.all()
+    serializer_class = food_menu_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = food_menuFilter  # enables filtering on all fields
+
+
+
 
 def add_amenity(request):
     
