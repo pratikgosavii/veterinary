@@ -116,11 +116,11 @@ urlpatterns = [
     path('list-consultation-type/', list_consultation_type, name='list_consultation_type'),
     path('get-consultation-type/', get_consultation_type.as_view(), name='get_consultation_type'),
 
-    path('add-video-consultation-type/', add_online_consultation_type, name='add_online_consultation_type'),
-    path('update-video-consultation-type/<online_consultation_type_id>', update_online_consultation_type, name='update_online_consultation_type'),
-    path('delete-video-consultation-type/<online_consultation_type_id>', delete_online_consultation_type, name='delete_online_consultation_type'),
-    path('list-video-consultation-type/', list_online_consultation_type, name='list_online_consultation_type'),
-    path('get-video-consultation-type/', get_online_consultation_type.as_view(), name='get_online_consultation_type'),
+    path('add-online-consultation-type/', add_online_consultation_type, name='add_online_consultation_type'),
+    path('update-online-consultation-type/<online_consultation_type_id>', update_online_consultation_type, name='update_online_consultation_type'),
+    path('delete-online-consultation-type/<online_consultation_type_id>', delete_online_consultation_type, name='delete_online_consultation_type'),
+    path('list-online-consultation-type/', list_online_consultation_type, name='list_online_consultation_type'),
+    path('get-online-consultation-type/', get_online_consultation_type.as_view(), name='get_online_consultation_type'),
 
     path('add-vaccination/', add_vaccination, name='add_vaccination'),
     path('update-vaccination/<vaccination_id>', update_vaccination, name='update_vaccination'),
