@@ -123,13 +123,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 class cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
-    # Required fields for GenericForeignKey
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    
-    # This creates the actual generic relation
-    item = GenericForeignKey('content_type', 'object_id')
-    
+    product = models.ForeignKey(product, on_delete=models.CASCADE)
+
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
 
@@ -154,7 +149,5 @@ class order(models.Model):
 
 class order_item(models.Model):
     order = models.ForeignKey(order, related_name='items', on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    product = models.ForeignKey(product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)

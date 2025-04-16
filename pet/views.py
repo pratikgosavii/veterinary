@@ -143,60 +143,37 @@ class CartdeleteView(APIView):
 
 
 class CartView(APIView):
+
+    
     permission_classes = [IsCustomer]
 
     def get(self, request):
-        cart_items = cart.objects.filter(user=request.user).select_related('content_type')  # Reduce queries
-        data = []
-
-        for item in cart_items:
-            model_name = item.content_type.model
-            serializer_class = MODEL_SERIALIZER_MAP.get(model_name)
-
-            if serializer_class:
-                try:
-                    serialized_item = serializer_class(item.item).data
-                except Exception as e:
-                    serialized_item = {'error': f'Error serializing {model_name}: {str(e)}'}
-            else:
-                serialized_item = {'error': f'No serializer found for model: {model_name}'}
-
-            data.append({
-                'id': item.id,
-                'item_type': model_name,
-                'quantity': item.quantity,
-                'item_data': serialized_item
-            })
-
-        return Response(data)
+        cart_items = cart.objects.filter(user=request.user).select_related('product')
+        serializer = CartSerializer(cart_items, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
-
         data = request.data
         if isinstance(data, dict):
-            data = [data]  # Convert single item to list
+            data = [data]
 
         added = []
         failed = []
 
         for item in data:
-            serializer = CartSerializer(data=item, context={'request': request})
+            serializer = CartSerializer(data=item)
             if serializer.is_valid():
-                validated_data = serializer.validated_data
-                content_type = validated_data['content_type']
-                object_id = validated_data['object_id']
-                quantity = validated_data['quantity']
+                product = serializer.validated_data['product']
+                quantity = serializer.validated_data['quantity']
 
                 cart_obj, created = cart.objects.update_or_create(
                     user=request.user,
-                    content_type=content_type,
-                    object_id=object_id,
+                    product=product,
                     defaults={'quantity': quantity}
                 )
 
                 added.append({
-                    "item_type": item["item_type"],
-                    "object_id": object_id,
+                    "product_id": product.id,
                     "quantity": quantity,
                     "action": "created" if created else "updated"
                 })
@@ -211,6 +188,7 @@ class CartView(APIView):
             "processed_items": added,
             "failed_items": failed
         }, status=status.HTTP_207_MULTI_STATUS if failed else status.HTTP_201_CREATED)
+    
 
     
 from rest_framework import generics

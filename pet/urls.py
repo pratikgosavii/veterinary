@@ -20,12 +20,15 @@ router.register(r'pet', PetViewSet, basename='pet')
 urlpatterns = [
 
     path('cart/', CartView.as_view(), name='cart'),
-    path('delete-order/<order_id>', delete_order, name='delete_order'),
+    path('cart/<int:pk>/delete/', CartdeleteView.as_view(), name='cart'),
 
+    
     path('create-order/', create_order.as_view(), name='create_order'),
     path('update-order/<order_id>', update_order, name='update_order'),
     path('list-order-admin/', list_order_admin, name='list_order_admin'),
+    path('delete-order/<order_id>', delete_order, name='delete_order'),
     path('get-order/', ListOrderView.as_view(), name='list_order'),
+
     
     path("stream/token/", GenerateStreamToken.as_view()),
 

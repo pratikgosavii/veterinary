@@ -34,13 +34,14 @@ from django.contrib.contenttypes.models import ContentType
 
 class CartSerializer(serializers.ModelSerializer):
 
-    product = product_category_serializer()
+    product = serializers.PrimaryKeyRelatedField(queryset=product.objects.all(), write_only=True)
+    product_data = product_category_serializer(source='product', read_only=True)
     quantity = serializers.IntegerField()
 
     class Meta:
         model = cart
-        fields = ['product', 'quantity']
-
+        fields = ['product', 'product_data', 'quantity']
+    
     
     def create(self, validated_data):
         request = self.context.get('request')
@@ -298,37 +299,18 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    item_type = serializers.CharField(write_only=True)
-    object_id = serializers.IntegerField(write_only=True)
-    item = serializers.SerializerMethodField()
+    
+    product = serializers.PrimaryKeyRelatedField(queryset=product.objects.all())
+    product_details = product_category_serializer(source='product', read_only=True)
 
     class Meta:
         model = order_item
-        fields = ['item_type', 'object_id', 'quantity', 'item']
+        fields = ['product', 'quantity', 'product_details']
 
-    def get_item(self, obj):
-        return str(obj.content_object)
-
-    def validate(self, data):
-        try:
-            content_type = ContentType.objects.get(model=data['item_type'].lower())
-            model_class = content_type.model_class()
-            model_class.objects.get(id=data['object_id'])  # ensure object exists
-            data['content_type'] = content_type
-        except Exception:
-            raise serializers.ValidationError("Invalid item_type or object_id")
-        return data
-
-    def create(self, validated_data):
-        return order_item.objects.create(
-            order=self.context['order'],
-            content_type=validated_data['content_type'],
-            object_id=validated_data['object_id'],
-            quantity=validated_data['quantity']
-        )
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    
     items = OrderItemSerializer(many=True)
 
     class Meta:
@@ -339,10 +321,8 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         items_data = validated_data.pop('items')
         order_instance = order.objects.create(user=self.context['request'].user, **validated_data)
+
         for item_data in items_data:
-            serializer = OrderItemSerializer(data=item_data, context={'order': order_instance})
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
+            order_item.objects.create(order=order_instance, **item_data)
+
         return order_instance
-
-
