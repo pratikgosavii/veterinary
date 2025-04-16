@@ -105,6 +105,16 @@ class customer_address_serializer(serializers.ModelSerializer):
         model = customer_address
         fields = '__all__'
 
+class consultation_type_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = consultation_type
+        fields = '__all__'
+
+class online_consultation_type_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = online_consultation_type
+        fields = '__all__'
+
 
 # Step 1: Create a serializer
 class HomeBannerSerializer(serializers.ModelSerializer):

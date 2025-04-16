@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from daycare.models import day_care
+from daycare.serializers import day_care_serializer
 from masters.filters import EventFilter
 
 # Create your views here.
@@ -15,6 +17,7 @@ from django.http.response import HttpResponseRedirect
 from doctor.models import *
 from .serializers import *
 
+from users.permissions import *
 
 from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend
@@ -475,6 +478,16 @@ class get_food_menu(ListAPIView):
     filterset_class = food_menuFilter  # enables filtering on all fields
 
 
+class get_day_care(ListAPIView):
+
+    permission_classes = [IsCustomer]  
+
+    queryset = day_care.objects.all()
+    serializer_class = day_care_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'location']  # Example fields (update based on your model)
+
+
 
 
 def add_amenity(request):
@@ -636,7 +649,6 @@ class get_product_category(ListAPIView):
     
 
 
-from users.permissions import *
 from rest_framework.response import Response
 
 
@@ -1367,6 +1379,172 @@ class get_product(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
     filterset_class = productFilter  # enables filtering on all fields
+
+@login_required(login_url='login')
+def add_consultation_type(request):
+
+    if request.method == 'POST':
+
+        forms = consultation_type_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_consultation_type')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_consultation_type.html', context)
+    
+    else:
+
+        forms = consultation_type_Form()
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_consultation_type.html', context)
+
+        
+
+@login_required(login_url='login')
+def update_consultation_type(request, consultation_type_id):
+
+    if request.method == 'POST':
+
+        instance = consultation_type.objects.get(id=consultation_type_id)
+
+        forms = consultation_type_Form(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_consultation_type')
+        else:
+            print(forms.errors)
+    
+    else:
+
+        instance = consultation_type.objects.get(id=consultation_type_id)
+        forms = consultation_type_Form(instance=instance)
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_consultation_type.html', context)
+
+        
+
+@login_required(login_url='login')
+def delete_consultation_type(request, consultation_type_id):
+
+    consultation_type.objects.get(id=consultation_type_id).delete()
+
+    return HttpResponseRedirect(reverse('list_consultation_type'))
+
+
+@login_required(login_url='login')
+def list_consultation_type(request):
+
+    data = consultation_type.objects.all()
+    context = {
+        'data': data
+    }
+    return render(request, 'list_consultation_type.html', context)
+
+
+from django.http import JsonResponse
+
+
+class get_consultation_type(ListAPIView):
+    queryset = consultation_type.objects.all()
+    serializer_class = consultation_type_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
+    filterset_class = consultation_typeFilter  # enables filtering on all fields
+
+@login_required(login_url='login')
+def add_online_consultation_type(request):
+
+    if request.method == 'POST':
+
+        forms = online_consultation_type_Form(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_online_consultation_type')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_online_consultation_type.html', context)
+    
+    else:
+
+        forms = online_consultation_type_Form()
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_online_consultation_type.html', context)
+
+        
+
+@login_required(login_url='login')
+def update_online_consultation_type(request, online_consultation_type_id):
+
+    if request.method == 'POST':
+
+        instance = online_consultation_type.objects.get(id=online_consultation_type_id)
+
+        forms = online_consultation_type_Form(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_online_consultation_type')
+        else:
+            print(forms.errors)
+    
+    else:
+
+        instance = online_consultation_type.objects.get(id=online_consultation_type_id)
+        forms = online_consultation_type_Form(instance=instance)
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_online_consultation_type.html', context)
+
+        
+
+@login_required(login_url='login')
+def delete_online_consultation_type(request, online_consultation_type_id):
+
+    online_consultation_type.objects.get(id=online_consultation_type_id).delete()
+
+    return HttpResponseRedirect(reverse('list_online_consultation_type'))
+
+
+@login_required(login_url='login')
+def list_online_consultation_type(request):
+
+    data = online_consultation_type.objects.all()
+    context = {
+        'data': data
+    }
+    return render(request, 'list_online_consultation_type.html', context)
+
+
+from django.http import JsonResponse
+
+
+class get_online_consultation_type(ListAPIView):
+    queryset = online_consultation_type.objects.all()
+    serializer_class = online_consultation_type_serializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'  # enables filtering on all fields
+    filterset_class = online_consultation_typeFilter  # enables filtering on all fields
 
 
 @login_required(login_url='login')

@@ -62,6 +62,30 @@ class consultation_appointment_ViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+class online_consultation_appointment_ViewSet(ModelViewSet):
+    serializer_class = online_consultation_appointment_Serializer
+    permission_classes = [IsCustomer]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['doctor', 'date', 'payment_status']
+
+    def get_queryset(self):
+        return consultation_appointment.objects.filter(user=self.request.user).distinct()
+    
+    @action(detail=False, methods=['get'], url_path='upcoming')
+    def upcoming_appointments(self, request):
+        upcoming = self.get_queryset().filter(date__gte=date.today()).order_by('date')
+        serializer = self.get_serializer(upcoming, many=True)
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], url_path='past')
+    def past_appointments(self, request):
+        past = self.get_queryset().filter(date__lt=date.today()).order_by('-date')
+        serializer = self.get_serializer(past, many=True)
+        return Response(serializer.data)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class vaccination_appointment_ViewSet(ModelViewSet):
     serializer_class = vaccination_appointment_Serializer
@@ -186,60 +210,7 @@ class CartView(APIView):
             "failed_items": failed
         }, status=status.HTTP_207_MULTI_STATUS if failed else status.HTTP_201_CREATED)
 
-    def delete(self, request):
-        
-        
-        data = request.data
-
-        if isinstance(data, dict):
-            data = [data]  # Convert single delete request to list
-
-        deleted = []
-        failed = []
-
-        for item in data:
-            item_type = item.get("item_type")
-            object_id = item.get("object_id")
-
-            if not item_type or not object_id:
-                failed.append({
-                    "data": item,
-                    "error": "Both 'item_type' and 'object_id' are required."
-                })
-                continue
-
-            try:
-                content_type = ContentType.objects.get(model=item_type.lower())
-                cart_obj = cart.objects.filter(
-                    user=request.user,
-                    content_type=content_type,
-                    object_id=object_id
-                ).first()
-
-                if cart_obj:
-                    cart_obj.delete()
-                    deleted.append({
-                        "item_type": item_type,
-                        "object_id": object_id
-                    })
-                else:
-                    failed.append({
-                        "data": item,
-                        "error": "Cart item not found."
-                    })
-
-            except ContentType.DoesNotExist:
-                failed.append({
-                    "data": item,
-                    "error": f"Invalid model: {item_type}"
-                })
-
-        return Response({
-            "message": f"{len(deleted)} item(s) deleted.",
-            "deleted_items": deleted,
-            "failed_items": failed
-        }, status=status.HTTP_207_MULTI_STATUS if failed else status.HTTP_200_OK)
-
+    
 from rest_framework import generics
 
 class create_order(generics.CreateAPIView):

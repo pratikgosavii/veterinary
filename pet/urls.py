@@ -13,17 +13,17 @@ router = DefaultRouter()
 router.register(r'pet-test-booking', pet_test_booking_ViewSet, basename='pet-test-booking')
 router.register(r'pet-vaccination-appointment', vaccination_appointment_ViewSet, basename='pet-vaccination-appointment')
 router.register(r'pet-consultation-appointment', consultation_appointment_ViewSet, basename='pet-consultation-appointment')
+router.register(r'pet-online-consultation-appointment', online_consultation_appointment_ViewSet, basename='pet-online-consultation-appointment')
 router.register(r'pet', PetViewSet, basename='pet')
 
 
 urlpatterns = [
 
     path('cart/', CartView.as_view(), name='cart'),
-    path('cart/<int:pk>/delete/', CartdeleteView.as_view(), name='cart'),
+    path('delete-order/<order_id>', delete_order, name='delete_order'),
 
     path('create-order/', create_order.as_view(), name='create_order'),
     path('update-order/<order_id>', update_order, name='update_order'),
-    path('delete-order/<order_id>', delete_order, name='delete_order'),
     path('list-order-admin/', list_order_admin, name='list_order_admin'),
     path('get-order/', ListOrderView.as_view(), name='list_order'),
     
