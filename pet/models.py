@@ -38,10 +38,21 @@ class consultation_appointment(models.Model):
      
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
+    consultation_type = models.ManyToManyField('masters.consultation_type')
     symptom = models.ManyToManyField('masters.symptom')
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
     date = models.DateTimeField()
-    is_online = models.BooleanField(default=False)
+    payment_status = models.BooleanField(default=False)
+
+# appointment & orders
+class online_consultation_appointment(models.Model):
+     
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pet = models.ManyToManyField('pet.pet')
+    online_consultation_type = models.ManyToManyField('masters.online_consultation_type')
+    symptom = models.ManyToManyField('masters.symptom')
+    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
+    date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
 
 # appointment & orders

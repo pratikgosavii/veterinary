@@ -45,3 +45,13 @@ class service_categoryFilter(django_filters.FilterSet):
     class Meta:
         model = service_category
         exclude = ['image']  # ⛔ Exclude unsupported field
+
+class consultation_typeFilter(django_filters.FilterSet):
+    class Meta:
+        model = consultation_type
+        exclude = ['image']  # ⛔ Exclude unsupported field
+
+class online_consultation_typeFilter(django_filters.FilterSet):
+    class Meta:
+        model = online_consultation_type
+        exclude = ['image']  # ⛔ Exclude unsupported field

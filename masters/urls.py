@@ -110,12 +110,25 @@ urlpatterns = [
     path('list-product/', list_product, name='list_product'),
     path('get-product/', get_product.as_view(), name='get_product'),
 
+    path('add-consultation-type/', add_consultation_type, name='add_consultation_type'),
+    path('update-consultation-type/<consultation_type_id>', update_consultation_type, name='update_consultation_type'),
+    path('delete-consultation-type/<consultation_type_id>', delete_consultation_type, name='delete_consultation_type'),
+    path('list-consultation-type/', list_consultation_type, name='list_consultation_type'),
+    path('get-consultation-type/', get_consultation_type.as_view(), name='get_consultation_type'),
+
+    path('add-video-consultation-type/', add_online_consultation_type, name='add_online_consultation_type'),
+    path('update-video-consultation-type/<online_consultation_type_id>', update_online_consultation_type, name='update_online_consultation_type'),
+    path('delete-video-consultation-type/<online_consultation_type_id>', delete_online_consultation_type, name='delete_online_consultation_type'),
+    path('list-video-consultation-type/', list_online_consultation_type, name='list_online_consultation_type'),
+    path('get-video-consultation-type/', get_online_consultation_type.as_view(), name='get_online_consultation_type'),
+
     path('add-vaccination/', add_vaccination, name='add_vaccination'),
     path('update-vaccination/<vaccination_id>', update_vaccination, name='update_vaccination'),
     path('delete-vaccination/<vaccination_id>', delete_vaccination, name='delete_vaccination'),
     path('list-vaccination/', list_vaccination, name='list_vaccination'),
     path('get-vaccination/', get_vaccination.as_view(), name='get_vaccination'),
 
+    path('get-day-care/', get_day_care.as_view(), name='get_day_care'),
 
     
     path('add-home-banner/', add_home_banner, name='add_home_banner'),  # create or fetch list of admins

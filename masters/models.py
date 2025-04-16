@@ -220,3 +220,34 @@ class home_banner(models.Model):
 
 
 
+
+
+class consultation_type(models.Model):
+    title = models.CharField(max_length=225, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    price = models.IntegerField()
+    image = models.ImageField(upload_to='homeBanners/')
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    
+
+
+
+class online_consultation_type(models.Model):
+    title = models.CharField(max_length=225, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='homeBanners/')
+    price = models.IntegerField()
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    
+
+
+
+
