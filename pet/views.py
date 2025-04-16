@@ -100,10 +100,12 @@ class vaccination_appointment_ViewSet(ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+from rest_framework.parsers import JSONParser
+
 class pet_test_booking_ViewSet(ModelViewSet):
     serializer_class = test_booking_Serializer
     permission_classes = [IsCustomer]
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['doctor', 'date', 'payment_status']
 

@@ -144,32 +144,29 @@ from masters.serializers import *
 class vaccination_appointment_Serializer(serializers.ModelSerializer):
     
 
-     # Write-only fields (for POST)
+    # Write-only fields for POST
     pet_ids = serializers.PrimaryKeyRelatedField(
         queryset=pet.objects.all(), many=True, write_only=True, source="pet"
     )
-    symptom_ids = serializers.PrimaryKeyRelatedField(
-        queryset=symptom.objects.all(), many=True, write_only=True, source="symptom"
-    )
-    online_consultation_type_ids = serializers.PrimaryKeyRelatedField(
-        queryset=online_consultation_type.objects.all(), many=True, write_only=True, source="online_consultation_type"
+    vaccination_ids = serializers.PrimaryKeyRelatedField(
+        queryset=vaccination.objects.all(), many=True, write_only=True, source="vaccination"
     )
     doctor_id = serializers.PrimaryKeyRelatedField(
         queryset=doctor.objects.all(), write_only=True, source="doctor"
     )
 
-    
+    # Read-only nested serializers
     pet = PetSerializer(many=True, read_only=True)
-    symptom = symptom_serializer(many=True, read_only=True)
+    vaccination = vaccination_serializer(many=True, read_only=True)
     doctor = doctor_serializer(read_only=True)
-    online_consultation_type = online_consultation_type_serializer(many=True, read_only=True)
-
-   
 
     class Meta:
-        model = online_consultation_appointment
+        model = vaccination_appointment
         fields = [
-            'id', 'pet', 'symptom', 'online_consultation_type', 'doctor', 'date', 'payment_status'
+            'id', 'pet', 'pet_ids',
+            'vaccination', 'vaccination_ids',
+            'doctor', 'doctor_id',
+            'date', 'payment_status'
         ]
         read_only_fields = ['user']
 
@@ -177,24 +174,40 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
         request = self.context['request']
         validated_data['user'] = request.user
         return super().create(validated_data)
+    
+
 
 
 class test_booking_Serializer(serializers.ModelSerializer):
 
-    test = test_serializer(many=True)
-    pet = PetSerializer(many=True)  # Use the PetSerializer to include all pet details
-    doctor = doctor_serializer() 
+    test_ids = serializers.PrimaryKeyRelatedField(
+        queryset=test.objects.all(), many=True, write_only=True, source='test'
+    )
+    pet_ids = serializers.PrimaryKeyRelatedField(
+        queryset=pet.objects.all(), many=True, write_only=True, source='pet'
+    )
+    doctor_id = serializers.PrimaryKeyRelatedField(
+        queryset=doctor.objects.all(), write_only=True, source='doctor'
+    )
 
+    test = test_serializer(many=True, read_only=True)
+    pet = PetSerializer(many=True, read_only=True)
+    doctor = doctor_serializer(read_only=True)
 
     class Meta:
         model = test_booking
-        fields = ['id', 'pet', 'test', 'doctor', 'date', 'payment_status', 'report']
+        fields = ['id', 'pet', 'pet_ids', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status', 'report']
         read_only_fields = ['user']
+        extra_kwargs = {
+            'report': {'required': False, 'allow_null': True}  # <-- Mark this optional
+        }
 
     def create(self, validated_data):
         request = self.context['request']
         validated_data['user'] = request.user
         return super().create(validated_data)
+
+
     
 
 from rest_framework import serializers
