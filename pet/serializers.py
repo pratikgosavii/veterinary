@@ -1,4 +1,7 @@
 from rest_framework import serializers
+
+from doctor.serializer import doctor_serializer
+
 from .models import *
 
 
@@ -20,7 +23,7 @@ class PetSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
 
-from doctor.serializer import *
+
 from masters.serializers import *
 
 
@@ -51,7 +54,7 @@ class CartSerializer(serializers.ModelSerializer):
 
 
 
-from doctor.models import pet
+from doctor.models import *
 
     
 class consultation_appointment_Serializer(serializers.ModelSerializer):
@@ -139,7 +142,6 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
 
 
 
-from doctor.serializer import *
 from masters.serializers import *
 
 class vaccination_appointment_Serializer(serializers.ModelSerializer):

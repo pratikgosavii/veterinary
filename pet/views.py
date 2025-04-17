@@ -215,7 +215,7 @@ from .forms import OrderForm
 @login_required(login_url='login')
 def update_order(request, order_id):
 
-    order_obj = get_object_or_404(order, pk=pk)
+    order_obj = get_object_or_404(order, pk=order_id)
     if request.method == 'POST':
         form = OrderForm(request.POST, instance=order_obj)
         if form.is_valid():
