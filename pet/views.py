@@ -375,6 +375,7 @@ class OnlineConsultationReportView(APIView):
 
 
 class TestReportView(APIView):
+    permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
@@ -388,7 +389,7 @@ class TestReportView(APIView):
 
 
 
-
+        
         files = request.FILES.getlist('report')
         booking_id = request.data.get('booking')
 
