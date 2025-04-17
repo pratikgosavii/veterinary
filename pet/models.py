@@ -68,7 +68,6 @@ class vaccination_appointment(models.Model):
 # appointment & orders
 class test_booking(models.Model):
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
     test = models.ManyToManyField('masters.test')
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)

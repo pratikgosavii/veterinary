@@ -198,12 +198,10 @@ class test_booking_Serializer(serializers.ModelSerializer):
     class Meta:
         model = test_booking
         fields = ['id', 'pet', 'pet_ids', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status']
-        read_only_fields = ['user']
        
 
     def create(self, validated_data):
         request = self.context['request']
-        validated_data['user'] = request.user
         return super().create(validated_data)
 
 
