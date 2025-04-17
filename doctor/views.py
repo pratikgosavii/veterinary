@@ -11,6 +11,16 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
+from rest_framework.generics import CreateAPIView, ListAPIView
+from .models import day_care_booking
+
+
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+
+from rest_framework.permissions import IsAuthenticated
+
 from doctor.filters import *
 
 class doctor_login(APIView):
@@ -101,3 +111,98 @@ class list_test_booking(ListAPIView):
     def get_queryset(self):
         doctor_instance = self.request.user.doctor
         return test_booking.objects.filter(doctor=doctor_instance).distinct()
+
+
+
+
+
+class ConsultationReportView(APIView):
+
+    permission_classes = [IsDoctor]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request):
+        reports = ConsultationAppointmentReport.objects.all()
+        serializer = ConsultationAppointmentReportSerializer(reports, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ConsultationAppointmentReportSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request):
+        report_id = request.data.get('report_id')
+        if not report_id:
+            return Response({'error': 'report_id required'}, status=400)
+
+        try:
+            report = ConsultationAppointmentReport.objects.get(id=report_id)
+            report.delete()
+            return Response({'status': 'deleted'})
+        except ConsultationAppointmentReport.DoesNotExist:
+            return Response({'error': 'Not found'}, status=404)
+
+
+class OnlineConsultationReportView(APIView):
+
+    permission_classes = [IsDoctor]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request):
+        reports = OnlineConsultationAppointmentReport.objects.all()
+        serializer = OnlineConsultationAppointmentReportSerializer(reports, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = OnlineConsultationAppointmentReportSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request):
+        report_id = request.data.get('report_id')
+        if not report_id:
+            return Response({'error': 'report_id required'}, status=400)
+
+        try:
+            report = OnlineConsultationAppointmentReport.objects.get(id=report_id)
+            report.delete()
+            return Response({'status': 'deleted'})
+        except OnlineConsultationAppointmentReport.DoesNotExist:
+            return Response({'error': 'Not found'}, status=404)
+
+
+class TestReportView(APIView):
+
+    permission_classes = [IsDoctor]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request):
+        reports = TestBookingReport.objects.all()
+        serializer = TestBookingReportSerializer(reports, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        
+        serializer = TestBookingReportSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request):
+        report_id = request.data.get('report_id')
+        if not report_id:
+            return Response({'error': 'report_id required'}, status=400)
+
+        try:
+            report = TestBookingReport.objects.get(id=report_id)
+            report.delete()
+            return Response({'status': 'deleted'})
+        except TestBookingReport.DoesNotExist:
+            return Response({'error': 'Not found'}, status=404)
+
