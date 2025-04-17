@@ -384,10 +384,28 @@ class TestReportView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+
+        print(request.FILES)
+
+
+
+        
         files = request.FILES.getlist('report')
         booking_id = request.data.get('booking')
-        reports = []
 
+        if not booking_id:
+            return Response({'error': 'booking id is required'}, status=400)
+
+        if not files:
+            return Response({'error': 'No report files provided'}, status=400)
+
+        try:
+            # Validate booking exists
+            test_booking.objects.get(id=booking_id)
+        except test_booking.DoesNotExist:
+            return Response({'error': 'Invalid booking id'}, status=404)
+
+        reports = []
         for file in files:
             report = TestBookingReport.objects.create(
                 booking_id=booking_id,
@@ -409,6 +427,26 @@ class TestReportView(APIView):
         except TestBookingReport.DoesNotExist:
             return Response({'error': 'Not found'}, status=404)
 
+
+
+class AllConsultationReportsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        consultation_reports = ConsultationAppointmentReport.objects.filter(appointment__user=request.user)
+        online_reports = OnlineConsultationAppointmentReport.objects.filter(appointment__user=request.user)
+
+        consultation_serialized = ConsultationAppointmentReportSerializer(consultation_reports, many=True).data
+        online_serialized = OnlineConsultationAppointmentReportSerializer(online_reports, many=True).data
+
+        # Add type field to distinguish
+        for report in consultation_serialized:
+            report["type"] = "consultation"
+        for report in online_serialized:
+            report["type"] = "online_consultation"
+
+        combined = consultation_serialized + online_serialized
+        return Response(combined, status=status.HTTP_200_OK)
 
 
 
