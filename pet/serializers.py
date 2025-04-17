@@ -198,10 +198,12 @@ class test_booking_Serializer(serializers.ModelSerializer):
     class Meta:
         model = test_booking
         fields = ['id', 'pet', 'pet_ids', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status']
+        read_only_fields = ['user']
        
 
     def create(self, validated_data):
         request = self.context['request']
+        validated_data['user'] = request.user
         return super().create(validated_data)
 
 
@@ -323,21 +325,3 @@ class OrderSerializer(serializers.ModelSerializer):
 
         return order_instance
     
-
-
-class ConsultationAppointmentReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ConsultationAppointmentReport
-        fields = ['id', 'file', 'uploaded_at']
-
-
-class OnlineConsultationAppointmentReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OnlineConsultationAppointmentReport
-        fields = ['id', 'file', 'uploaded_at']
-
-
-class TestBookingReportSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TestBookingReport
-        fields = ['id', 'file', 'uploaded_at']

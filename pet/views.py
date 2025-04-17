@@ -302,134 +302,42 @@ class ListDayCareBookings(ListAPIView):
     
 
 
-class ConsultationReportView(APIView):
+from doctor.serializer import *
+
+class ConsultationReportListView(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
-        reports = ConsultationAppointmentReport.objects.all()
+        user = request.user
+        appointment_ids = consultation_appointment.objects.filter(user=user).values_list('id', flat=True)
+        reports = ConsultationAppointmentReport.objects.filter(appointment_id__in=appointment_ids)
         serializer = ConsultationAppointmentReportSerializer(reports, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
-        files = request.FILES.getlist('report')
-        appointment_id = request.data.get('appointment')
-        reports = []
-
-        for file in files:
-            report = ConsultationAppointmentReport.objects.create(
-                appointment_id=appointment_id,
-                report=file
-            )
-            reports.append(ConsultationAppointmentReportSerializer(report).data)
-
-        return Response(reports, status=201)
-
-    def delete(self, request):
-        report_id = request.data.get('report_id')
-        if not report_id:
-            return Response({'error': 'report_id required'}, status=400)
-
-        try:
-            report = ConsultationAppointmentReport.objects.get(id=report_id)
-            report.delete()
-            return Response({'status': 'deleted'})
-        except ConsultationAppointmentReport.DoesNotExist:
-            return Response({'error': 'Not found'}, status=404)
-
-
-class OnlineConsultationReportView(APIView):
+# ✅ 2. Get Online Consultation Reports
+class OnlineConsultationReportListView(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
 
     def get(self, request):
-        reports = OnlineConsultationAppointmentReport.objects.all()
+        user = request.user
+        appointment_ids = online_consultation_appointment.objects.filter(user=user).values_list('id', flat=True)
+        reports = OnlineConsultationAppointmentReport.objects.filter(appointment_id__in=appointment_ids)
         serializer = OnlineConsultationAppointmentReportSerializer(reports, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
-        files = request.FILES.getlist('report')
-        appointment_id = request.data.get('appointment')
-        reports = []
-
-        for file in files:
-            report = OnlineConsultationAppointmentReport.objects.create(
-                appointment_id=appointment_id,
-                report=file
-            )
-            reports.append(OnlineConsultationAppointmentReportSerializer(report).data)
-
-        return Response(reports, status=201)
-
-    def delete(self, request):
-        report_id = request.data.get('report_id')
-        if not report_id:
-            return Response({'error': 'report_id required'}, status=400)
-
-        try:
-            report = OnlineConsultationAppointmentReport.objects.get(id=report_id)
-            report.delete()
-            return Response({'status': 'deleted'})
-        except OnlineConsultationAppointmentReport.DoesNotExist:
-            return Response({'error': 'Not found'}, status=404)
-
-
-class TestReportView(APIView):
-    parser_classes = [MultiPartParser, FormParser]
+# ✅ 3. Get Test Booking Reports
+class TestBookingReportListView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        reports = TestBookingReport.objects.all()
+        user = request.user
+        booking_ids = test_booking.objects.filter(user=user).values_list('id', flat=True)
+        reports = TestBookingReport.objects.filter(booking_id__in=booking_ids)
         serializer = TestBookingReportSerializer(reports, many=True)
         return Response(serializer.data)
-
-    def post(self, request):
-
-        print(request.FILES)
-
-
-
-
-        files = request.FILES.getlist('report')
-        booking_id = request.data.get('booking')
-
-        if not booking_id:
-            return Response({'error': 'booking id is required'}, status=400)
-
-        if not files:
-            return Response({'error': 'No report files provided'}, status=400)
-
-        try:
-            # Validate booking exists
-            test_booking.objects.get(id=booking_id)
-        except test_booking.DoesNotExist:
-            return Response({'error': 'Invalid booking id'}, status=404)
-
-        reports = []
-        for file in files:
-            report = TestBookingReport.objects.create(
-                booking_id=booking_id,
-                report=file
-            )
-            reports.append(TestBookingReportSerializer(report).data)
-
-        return Response(reports, status=201)
-
-    def delete(self, request):
-        report_id = request.data.get('report_id')
-        if not report_id:
-            return Response({'error': 'report_id required'}, status=400)
-
-        try:
-            report = TestBookingReport.objects.get(id=report_id)
-            report.delete()
-            return Response({'status': 'deleted'})
-        except TestBookingReport.DoesNotExist:
-            return Response({'error': 'Not found'}, status=404)
-
-
+    
 
 class AllConsultationReportsAPIView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         consultation_reports = ConsultationAppointmentReport.objects.filter(appointment__user=request.user)

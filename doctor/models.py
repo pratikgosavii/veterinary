@@ -40,3 +40,23 @@ class video_call_history(models.Model):
     doctor = models.ForeignKey(doctor, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+
+class ConsultationAppointmentReport(models.Model):
+    appointment = models.ForeignKey(consultation_appointment, on_delete=models.CASCADE, related_name='reports')
+    file = models.FileField(upload_to='reports/consultation/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+
+class OnlineConsultationAppointmentReport(models.Model):
+    appointment = models.ForeignKey(online_consultation_appointment, on_delete=models.CASCADE, related_name='reports')
+    file = models.FileField(upload_to='reports/online_consultation/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+
+class TestBookingReport(models.Model):
+    booking = models.ForeignKey(test_booking, on_delete=models.CASCADE, related_name='reports')
+    report = models.FileField(upload_to='reports/test_booking/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+

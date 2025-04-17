@@ -37,3 +37,29 @@ class doctor_serializer(serializers.ModelSerializer):
 
         instance.user.save()
         return super().update(instance, validated_data)
+
+
+from pet.serializers import *
+
+class ConsultationAppointmentReportSerializer(serializers.ModelSerializer):
+    appointment = consultation_appointment_Serializer(read_only=True)
+
+    class Meta:
+        model = ConsultationAppointmentReport
+        fields = ['id', 'appointment', 'file', 'uploaded_at']
+
+
+class OnlineConsultationAppointmentReportSerializer(serializers.ModelSerializer):
+    appointment = online_consultation_appointment_Serializer(read_only=True)
+
+    class Meta:
+        model = OnlineConsultationAppointmentReport
+        fields = ['id', 'appointment', 'file', 'uploaded_at']
+
+
+class TestBookingReportSerializer(serializers.ModelSerializer):
+    booking = test_booking_Serializer(read_only=True)
+
+    class Meta:
+        model = TestBookingReport
+        fields = ['id', 'report', 'booking', 'uploaded_at']
