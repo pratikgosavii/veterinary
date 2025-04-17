@@ -30,9 +30,10 @@ urlpatterns = [
     path('delete-order/<order_id>', delete_order, name='delete_order'),
     path('get-order/', ListOrderView.as_view(), name='list_order'),
 
-    path('api/consultation-reports/', ConsultationReportView.as_view()),
-    path('api/online-consultation-reports/', OnlineConsultationReportView.as_view()),
-    path('api/test-reports/', TestReportView.as_view()),
+    path('consultation-reports/', ConsultationReportView.as_view()),
+    path('online-consultation-reports/', OnlineConsultationReportView.as_view()),
+    path('test-reports/', TestReportView.as_view()),
+    path('all-test-reports/', AllConsultationReportsAPIView.as_view()),
 
     path("stream/token/", GenerateStreamToken.as_view()),
 
