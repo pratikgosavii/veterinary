@@ -197,11 +197,9 @@ class test_booking_Serializer(serializers.ModelSerializer):
 
     class Meta:
         model = test_booking
-        fields = ['id', 'pet', 'pet_ids', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status', 'report']
+        fields = ['id', 'pet', 'pet_ids', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status']
         read_only_fields = ['user']
-        extra_kwargs = {
-            'report': {'required': False, 'allow_null': True}  # <-- Mark this optional
-        }
+       
 
     def create(self, validated_data):
         request = self.context['request']
@@ -283,7 +281,7 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
         days = (booking.date_to - booking.date_from).days + 1
         if booking.half_day:
             stay_cost = float(booking.daycare.price_half_day) * days
-        if booking.half_day_on_checkout:
+        if booking.full_day:
             stay_cost = float(booking.daycare.price_full_day) * days
 
         # Base cost (stay)
@@ -326,3 +324,22 @@ class OrderSerializer(serializers.ModelSerializer):
             order_item.objects.create(order=order_instance, **item_data)
 
         return order_instance
+    
+
+
+class ConsultationAppointmentReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConsultationAppointmentReport
+        fields = ['id', 'file', 'uploaded_at']
+
+
+class OnlineConsultationAppointmentReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OnlineConsultationAppointmentReport
+        fields = ['id', 'file', 'uploaded_at']
+
+
+class TestBookingReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestBookingReport
+        fields = ['id', 'file', 'uploaded_at']

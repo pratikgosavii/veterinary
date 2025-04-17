@@ -19,9 +19,10 @@ router.register(r'pet', PetViewSet, basename='pet')
 
 urlpatterns = [
 
+    path('book-daycare/', CreateDayCareBooking.as_view(), name='book_daycare'),
+
     path('cart/', CartView.as_view(), name='cart'),
     path('cart/<int:pk>/delete/', CartdeleteView.as_view(), name='cart'),
-
     
     path('create-order/', create_order.as_view(), name='create_order'),
     path('update-order/<order_id>', update_order, name='update_order'),
@@ -29,10 +30,11 @@ urlpatterns = [
     path('delete-order/<order_id>', delete_order, name='delete_order'),
     path('get-order/', ListOrderView.as_view(), name='list_order'),
 
-    
-    path("stream/token/", GenerateStreamToken.as_view()),
+    path('api/consultation-reports/', ConsultationReportView.as_view()),
+    path('api/online-consultation-reports/', OnlineConsultationReportView.as_view()),
+    path('api/test-reports/', TestReportView.as_view()),
 
-    path('book-daycare/', CreateDayCareBooking.as_view(), name='book_daycare'),
+    path("stream/token/", GenerateStreamToken.as_view()),
 
     path('list-day-care-bookings/', ListDayCareBookings.as_view(), name='list_daycare_bookings'),
 
