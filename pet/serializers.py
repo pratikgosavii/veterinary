@@ -274,28 +274,11 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
         booking = day_care_booking.objects.create(daycare=daycare, **validated_data)
         booking.pets.set(pets)
         booking.food_selection.set(food_items)
-        booking.total_cost = self.calculate_total_cost(booking)
         booking.save()
 
         return booking
 
-    def calculate_total_cost(self, booking):
-        days = (booking.date_to - booking.date_from).days + 1
-        if booking.half_day:
-            stay_cost = float(booking.daycare.price_half_day) * days
-        if booking.full_day:
-            stay_cost = float(booking.daycare.price_full_day) * days
-
-        # Base cost (stay)
-
-        # Food cost per day
-        food_items = booking.food_selection.all()
-        food_daily_total = sum(float(item.price) for item in food_items)
-        food_cost = food_daily_total * days
-
-        total = stay_cost + food_cost
-        return round(total, 2)
-
+    
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
