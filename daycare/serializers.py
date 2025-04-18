@@ -5,11 +5,13 @@ from .models import *
 from masters.serializers import *
 
 class DayCareFoodMenuSerializer(serializers.ModelSerializer):
-    food_menu = serializers.PrimaryKeyRelatedField(queryset=food_menu.objects.all())
+    food_menu = food_menu_serializer()
+    id = serializers.IntegerField(source='pk') 
 
     class Meta:
         model = DayCareFoodMenu
-        fields = ['food_menu', 'custom_price']
+        fields = ['id', 'food_menu', 'custom_price']
+
 
 class day_care_serializer(serializers.ModelSerializer):
     
