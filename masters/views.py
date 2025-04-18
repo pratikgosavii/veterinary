@@ -488,7 +488,15 @@ class get_day_care(ListAPIView):
     filterset_fields = ['name', 'location']  # Example fields (update based on your model)
 
 
+def list_day_care(request):
 
+    data = day_care.objects.all()
+
+    context = {
+        'data': data
+    }
+
+    return render(request, 'list_day_care.html', context)
 
 def add_amenity(request):
     
@@ -1598,6 +1606,7 @@ def update_vaccination(request, vaccination_id):
         context = {
             'form': forms
         }
+        
         return render(request, 'add_vaccination.html', context)
 
         

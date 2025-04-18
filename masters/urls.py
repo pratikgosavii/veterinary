@@ -49,6 +49,8 @@ urlpatterns = [
     path('list-amenity/', list_amenity, name='list_amenity'),  # create or fetch list of admins
     path('delete-amenity/<amenity_id>', delete_amenity, name='delete_amenity'),  # create or fetch list of admins
     path('get-amenity/', get_amenity.as_view() , name='get_amenity '), 
+    
+    path('list-day-care/', list_day_care, name='list_day_care '), 
 
     path('add-product-category/', add_product_category, name='add_product_category'),  # create or fetch list of admins
     path('update-product-category/<product_category_id>', update_product_category, name='update_product_category'),  # create or fetch list of admins
