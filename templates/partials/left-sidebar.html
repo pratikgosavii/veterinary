@@ -23,11 +23,60 @@
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="layers"></i>
+                                    <span data-key="t-authentication">Order </span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="{% url 'list_order_admin' %}">Order List</a></li>
+                                </ul>
+                            </li>
+                        <li>
+
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow">
+                                    <i data-feather="layers"></i>
+                                    <span data-key="t-authentication">Product Category</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="{% url 'add_product_category' %}">Add Product Category</a></li>
+                                    <li><a href="{% url 'list_product_category' %}">Product Category List</a></li>
+                                </ul>
+                            </li> 
+    
+                             <li>
+                                <a href="javascript: void(0);" class="has-arrow">
+                                    <i data-feather="layers"></i>
+                                    <span data-key="t-authentication">Product</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="{% url 'add_product' %}">Add Product</a></li>
+                                    <li><a href="{% url 'list_product' %}">Product List</a></li>
+                                </ul>
+                            </li> 
+    
+
+
+                        <li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow">
+                                    <i data-feather="layers"></i>
                                     <span data-key="t-authentication">Doctor</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
                                     {% comment %} <li><a href="{% url 'add_doctor' %}">Add Doctor</a></li> {% endcomment %}
                                     <li><a href="{% url 'list_doctor' %}">Doctor List</a></li>
+                                </ul>
+                            </li>
+                        <li>
+
+                        <li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow">
+                                    <i data-feather="layers"></i>
+                                    <span data-key="t-authentication">Day Care</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    {% comment %} <li><a href="{% url 'add_Day Care' %}">Add Day Care</a></li> {% endcomment %}
+                                    <li><a href="{% url 'list_day_care' %}">Day Care List</a></li>
                                 </ul>
                             </li>
                         <li>
@@ -99,17 +148,6 @@
                         <li>
 
 
-                        <li>
-                            <li>
-                                <a href="javascript: void(0);" class="has-arrow">
-                                    <i data-feather="layers"></i>
-                                    <span data-key="t-authentication">Order </span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{% url 'list_order_admin' %}">Order List</a></li>
-                                </ul>
-                            </li>
-                        <li>
 
 
                         <li>
@@ -157,28 +195,7 @@
                             </ul>
                         </li> 
 
-                         <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Product Category</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_product_category' %}">Add Product Category</a></li>
-                                <li><a href="{% url 'list_product_category' %}">Product Category List</a></li>
-                            </ul>
-                        </li> 
-
-                         <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Product</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_product' %}">Add Product</a></li>
-                                <li><a href="{% url 'list_product' %}">Product List</a></li>
-                            </ul>
-                        </li> 
-
+                        
                          <li>
                             <a href="javascript: void(0);" class="has-arrow">
                                 <i data-feather="layers"></i>
@@ -191,16 +208,6 @@
                         </li> 
 
 
-                         <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Customer Address</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_customer_address' %}">Add Customer Address</a></li>
-                                <li><a href="{% url 'list_customer_address' %}">Customer Address List</a></li>
-                            </ul>
-                        </li> 
 
                         
                         <li>
@@ -294,7 +301,7 @@
                         <div style="margin: 100% 0 0 35%; align-content: center">
                             <form method="POST" action="{% url 'logout' %}">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-primary" style="background-color: #006838;" >Logout</button>
+                                <button type="submit" class="btn btn-primary" style="background-color: #775599;" >Logout</button>
                         </form>
                         </div>
 {#                        <li>#}

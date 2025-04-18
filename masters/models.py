@@ -196,7 +196,6 @@ class food_menu(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='doctor_images/')
-    price = models.IntegerField()
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

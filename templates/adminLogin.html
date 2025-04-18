@@ -13,7 +13,7 @@
 
     <style>
         body {
-            background-color: #291a4a;
+            background-color: #775599;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,7 +21,7 @@
         }
 
         .login-container {
-            background: #f0d28c;
+            background: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -80,20 +80,20 @@
         </div>
     {% endif %}
     <div class="logo">
-        <img src="{% static 'images/avenza_logo.jpg' %}" alt="Logo"/>
+        <img src="{% static 'images/vetinary_logo.png' %}" alt="Logo"/>
     </div>
     <h4 class="text-center mb-4">Admin Login</h4>
     <form action="" method="POST">
         {% csrf_token %}
         <div class="mb-3">
-            <label for="email" class="form-label">Username</label>
+            <label for="email" class="form-label">Mobile</label>
             <input
-                    type="text"
+                    type="number"
                     class="form-control"
-                    id="username"
-                    value="{{ email|default:'' }}"
-                    name="username"
-                    placeholder="Enter your username"
+                    id="mobile"
+                    value="{{ mobile|default:'' }}"
+                    name="mobile"
+                    placeholder="Enter your mobile"
                     required
             />
         </div>

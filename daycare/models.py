@@ -9,6 +9,13 @@ from pet.models import *
 
 
 
+class DayCareFoodMenu(models.Model):
+    daycare = models.ForeignKey("day_care", on_delete=models.CASCADE)
+    food_menu = models.ForeignKey(food_menu, on_delete=models.CASCADE)
+    custom_price = models.FloatField()
+
+    class Meta:
+        unique_together = ('daycare', 'food_menu')  # Prevent duplicates
 
 
 class day_care(models.Model):

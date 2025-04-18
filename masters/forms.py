@@ -288,12 +288,11 @@ class event_Form(forms.ModelForm):
 class food_menu_Form(forms.ModelForm):
     class Meta:
         model = food_menu
-        fields = ['name', 'image', 'description', 'price']
+        fields = ['name', 'image', 'description']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control description-box'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'price': forms.NumberInput(attrs={'class': 'form-control'}),
 
         }
 

@@ -8,7 +8,7 @@ from django.db.models import Count
 
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def dashboard(request):
 
 
