@@ -262,7 +262,7 @@ class online_consultation_type_Form(forms.ModelForm):
 class vaccination_Form(forms.ModelForm):
     class Meta:
         model = vaccination
-        fields = ['name', 'disease', 'description', 'age_limit']
+        fields = ['name', 'disease', 'description', 'price', 'age_limit']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'disease': forms.TextInput(attrs={'class': 'form-control'}),

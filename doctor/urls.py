@@ -23,7 +23,6 @@ urlpatterns = [
 
     path('list-test-booking/', list_test_booking.as_view(), name='list_test_booking'),
   
-
     path('consultation-reports/', ConsultationReportView.as_view()),
     path('online-consultation-reports/', OnlineConsultationReportView.as_view()),
     path('test-reports/', TestReportView.as_view()),
