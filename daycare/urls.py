@@ -18,6 +18,8 @@ urlpatterns = [
     path('register/', day_care_register.as_view(), name='register_day_care'),
     path('get/<int:id>/', DayCareDetailView.as_view(), name='day-care-detail'),
 
+    path('food-menu/<int:daycare_id>/', DayCareFoodMenuListView.as_view(), name='daycare-food-menus'),
+
     path('list-day-care-bookings/', ListDayCareBookings.as_view(), name='list_daycare_bookings'),
 
 

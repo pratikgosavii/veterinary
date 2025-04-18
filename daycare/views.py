@@ -65,7 +65,18 @@ class get_day_care(ListAPIView):
 
 
 
+class DayCareFoodMenuListView(APIView):
+    permission_classes = [IsCustomer]
 
+    def get(self, request, daycare_id):
+        try:
+            daycare = day_care.objects.get(id=daycare_id)
+        except day_care.DoesNotExist:
+            return Response({"detail": "Daycare not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        food_menus = DayCareFoodMenu.objects.filter(daycare=daycare)
+        serializer = DayCareFoodMenuSerializer(food_menus, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
