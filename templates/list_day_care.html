@@ -15,7 +15,7 @@
     <style>
         body {
             background-color: gainsboro;
-            color: #006838;;
+            color: #775599;;
         }
 
         .card {
@@ -26,7 +26,7 @@
         }
 
         .card-header {
-            background-color: #006838;;
+            background-color: #775599;;
             color: #ffffff;
             border-radius: 8px 8px 0 0;
             padding: 20px;
@@ -52,7 +52,7 @@
 
         .table tbody tr:hover {
             background-color: #f0d28c;
-            color: #006838;;
+            color: #775599;;
         }
 
         .status-approved {
@@ -108,24 +108,45 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Name</th>
-                                                <th>Action</th>
+                                                <th>Image</th>
+                                                <th>Location</th>
+                                                <th>Description</th>
+                                                <th>Price Half Day</th>
+                                                <th>Price Full Day</th>
+                                                <th>Amenity</th>
+                                                <th>rating</th>
                                             </tr>
                                             </thead>
                                             <tbody id="tableBody">
                                                 {% if data %}
                                             {% for i in data %}
-                                                <tr>
-                                                    <td>{{ forloop.counter }}</td>
-                                                    <td>{{ i.name }}</td>
-                                                  
-                                                    <td>
-                                                        <!-- remove Button -->
-                                                        <a href="{% url 'update_cat_breed' i.id %}" ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
-                                                        <a href="{% url 'delete_cat_breed' i.id %}" > <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
 
+                                            <tr>
 
-                                                    </td>
-                                                </tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ i.name }}</td>
+                                            <td>
+                                                {% if i.images %}
+                                                    <img src="{{ i.images.url }}" alt="Image" style="max-height: 60px;">
+                                                {% else %}
+                                                    No image
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ i.location }}</td>
+                                            <td>{{ i.description }}</td>
+                                            <td>{{ i.price_half_day }}</td>
+                                            <td>{{ i.price_full_day }}</td>
+                                            <td>
+                                                {% for amenity in i.amenities.all %}
+                                                    {{ amenity.name }}{% if not forloop.last %}, {% endif %}
+                                                {% empty %}
+                                                    No amenities
+                                                {% endfor %}
+                                            </td>
+                                            <td>{{ i.rating }}</td>
+                                            
+                                            </tr>
+
                                             {% endfor %}
                                             {% endif %}
                                             </tbody>

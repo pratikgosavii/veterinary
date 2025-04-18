@@ -28,7 +28,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 
-# @login_required(login_url='login')
+# @login_required(login_url='login_admin')
 # def add_doctor(request):
 
 #     if request.method == 'POST':
@@ -57,7 +57,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # from django.views.decorators.csrf import csrf_exempt
 
-# @login_required(login_url='login')
+# @login_required(login_url='login_admin')
 # @csrf_exempt 
 # def add_doctor_json(request):
 
@@ -74,7 +74,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
         
 
-# @login_required(login_url='login')
+# @login_required(login_url='login_admin')
 # def update_doctor(request, doctor_id):
 
 #     if request.method == 'POST':
@@ -111,7 +111,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_doctor(request, doctor_id):
 
     doctor.objects.get(id=doctor_id).delete()
@@ -119,7 +119,7 @@ def delete_doctor(request, doctor_id):
     return HttpResponseRedirect(reverse('list_doctor'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_doctor(request):
 
     data = doctor.objects.all()
@@ -134,7 +134,7 @@ from django.http import JsonResponse
 
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_doctor(request):
 
     data = doctor.objects.all()
@@ -144,7 +144,7 @@ def list_doctor(request):
     return render(request, 'list_doctor.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_coupon(request):
 
     if request.method == 'POST':
@@ -172,7 +172,7 @@ def add_coupon(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_coupon(request, coupon_id):
 
     if request.method == 'POST':
@@ -199,7 +199,7 @@ def update_coupon(request, coupon_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_coupon(request, coupon_id):
 
     coupon.objects.get(id=coupon_id).delete()
@@ -207,7 +207,7 @@ def delete_coupon(request, coupon_id):
     return HttpResponseRedirect(reverse('list_coupon'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_coupon(request):
 
     data = coupon.objects.all()
@@ -229,7 +229,7 @@ class get_coupon(ListAPIView):
 
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_event(request):
 
     if request.method == 'POST':
@@ -257,7 +257,7 @@ def add_event(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_event(request, event_id):
 
     if request.method == 'POST':
@@ -284,7 +284,7 @@ def update_event(request, event_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_event(request, event_id):
 
     event.objects.get(id=event_id).delete()
@@ -292,7 +292,7 @@ def delete_event(request, event_id):
     return HttpResponseRedirect(reverse('list_event'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_event(request):
 
     data = event.objects.all()
@@ -1055,7 +1055,7 @@ class get_service(ListAPIView):
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_test(request):
 
     if request.method == 'POST':
@@ -1083,7 +1083,7 @@ def add_test(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_test(request, test_id):
 
     if request.method == 'POST':
@@ -1110,7 +1110,7 @@ def update_test(request, test_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_test(request, test_id):
 
     test.objects.get(id=test_id).delete()
@@ -1118,7 +1118,7 @@ def delete_test(request, test_id):
     return HttpResponseRedirect(reverse('list_test'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_test(request):
 
     data = test.objects.all()
@@ -1138,7 +1138,7 @@ class get_test(ListAPIView):
     filterset_class = testFilter  # enables filtering on all fields
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_dog_breed(request):
 
     if request.method == 'POST':
@@ -1166,7 +1166,7 @@ def add_dog_breed(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_dog_breed(request, dog_breed_id):
 
     if request.method == 'POST':
@@ -1193,7 +1193,7 @@ def update_dog_breed(request, dog_breed_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_dog_breed(request, dog_breed_id):
 
     dog_breed.objects.get(id=dog_breed_id).delete()
@@ -1201,7 +1201,7 @@ def delete_dog_breed(request, dog_breed_id):
     return HttpResponseRedirect(reverse('list_dog_breed'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_dog_breed(request):
 
     data = dog_breed.objects.all()
@@ -1221,7 +1221,7 @@ class get_dog_breed(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_cat_breed(request):
 
     if request.method == 'POST':
@@ -1249,7 +1249,7 @@ def add_cat_breed(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_cat_breed(request, cat_breed_id):
 
     if request.method == 'POST':
@@ -1276,7 +1276,7 @@ def update_cat_breed(request, cat_breed_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_cat_breed(request, cat_breed_id):
 
     cat_breed.objects.get(id=cat_breed_id).delete()
@@ -1284,7 +1284,7 @@ def delete_cat_breed(request, cat_breed_id):
     return HttpResponseRedirect(reverse('list_cat_breed'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_cat_breed(request):
 
     data = cat_breed.objects.all()
@@ -1305,7 +1305,7 @@ class get_cat_breed(ListAPIView):
     filterset_fields = '__all__'  # enables filtering on all fields
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_product(request):
 
     if request.method == 'POST':
@@ -1333,7 +1333,7 @@ def add_product(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_product(request, product_id):
 
     if request.method == 'POST':
@@ -1360,7 +1360,7 @@ def update_product(request, product_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_product(request, product_id):
 
     product.objects.get(id=product_id).delete()
@@ -1368,7 +1368,7 @@ def delete_product(request, product_id):
     return HttpResponseRedirect(reverse('list_product'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_product(request):
 
     data = product.objects.all()
@@ -1388,7 +1388,7 @@ class get_product(ListAPIView):
     filterset_fields = '__all__'  # enables filtering on all fields
     filterset_class = productFilter  # enables filtering on all fields
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_consultation_type(request):
 
     if request.method == 'POST':
@@ -1416,7 +1416,7 @@ def add_consultation_type(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_consultation_type(request, consultation_type_id):
 
     if request.method == 'POST':
@@ -1443,7 +1443,7 @@ def update_consultation_type(request, consultation_type_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_consultation_type(request, consultation_type_id):
 
     consultation_type.objects.get(id=consultation_type_id).delete()
@@ -1451,7 +1451,7 @@ def delete_consultation_type(request, consultation_type_id):
     return HttpResponseRedirect(reverse('list_consultation_type'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_consultation_type(request):
 
     data = consultation_type.objects.all()
@@ -1471,7 +1471,7 @@ class get_consultation_type(ListAPIView):
     filterset_fields = '__all__'  # enables filtering on all fields
     filterset_class = consultation_typeFilter  # enables filtering on all fields
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_online_consultation_type(request):
 
     if request.method == 'POST':
@@ -1499,7 +1499,7 @@ def add_online_consultation_type(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_online_consultation_type(request, online_consultation_type_id):
 
     if request.method == 'POST':
@@ -1526,7 +1526,7 @@ def update_online_consultation_type(request, online_consultation_type_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_online_consultation_type(request, online_consultation_type_id):
 
     online_consultation_type.objects.get(id=online_consultation_type_id).delete()
@@ -1534,7 +1534,7 @@ def delete_online_consultation_type(request, online_consultation_type_id):
     return HttpResponseRedirect(reverse('list_online_consultation_type'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_online_consultation_type(request):
 
     data = online_consultation_type.objects.all()
@@ -1555,7 +1555,7 @@ class get_online_consultation_type(ListAPIView):
     filterset_class = online_consultation_typeFilter  # enables filtering on all fields
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def add_vaccination(request):
 
     if request.method == 'POST':
@@ -1583,7 +1583,7 @@ def add_vaccination(request):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def update_vaccination(request, vaccination_id):
 
     if request.method == 'POST':
@@ -1611,7 +1611,7 @@ def update_vaccination(request, vaccination_id):
 
         
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def delete_vaccination(request, vaccination_id):
 
     vaccination.objects.get(id=vaccination_id).delete()
@@ -1619,7 +1619,7 @@ def delete_vaccination(request, vaccination_id):
     return HttpResponseRedirect(reverse('list_vaccination'))
 
 
-@login_required(login_url='login')
+@login_required(login_url='login_admin')
 def list_vaccination(request):
 
     data = vaccination.objects.all()

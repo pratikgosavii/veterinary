@@ -223,11 +223,11 @@ def  login_admin(request):
     if request.method == 'POST':
         forms = LoginForm(request.POST)
         if forms.is_valid():
-            email = forms.cleaned_data['email']
+            mobile = forms.cleaned_data['mobile']
             password = forms.cleaned_data['password']
-            print(email)
+            print(mobile)
             print(password)
-            user = authenticate(email=email, password=password)
+            user = authenticate(mobile=mobile, password=password)
             if user:
                 login(request, user)
 
@@ -238,6 +238,13 @@ def  login_admin(request):
                 return redirect('dashboard')
             else:
                 messages.error(request, 'wrong username password')
+        else:
+
+            print(forms.errors)
+            context = {'form': forms}
+
+            return render(request, 'adminLogin.html', context)
+
     context = {'form': forms}
     return render(request, 'adminLogin.html', context)
 
@@ -270,7 +277,7 @@ def  login_admin(request):
 
 def logout_page(request):
     logout(request)
-    return redirect('login')
+    return redirect('login_admin')
 
 def user_list(request):
 
