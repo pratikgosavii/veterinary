@@ -57,7 +57,7 @@ class SignupView(APIView):
             if not mobile:
                 return Response({"error": "Phone number not found in Firebase token"}, status=400)
 
-            # Define role flags
+            # Role flags
             role_flags = {
                 "is_customer": False,
                 "is_doctor": False,
@@ -72,7 +72,7 @@ class SignupView(APIView):
             created = False
 
             if user:
-                # Already registered? Check role
+                # Already exists – check role
                 existing_roles = [key for key, value in {
                     "customer": user.is_customer,
                     "doctor": user.is_doctor,
@@ -85,12 +85,16 @@ class SignupView(APIView):
                         "error": f"This number is already registered as a {existing_roles[0]}. Cannot register again as {user_type}."
                     }, status=400)
 
-                # Update UID if needed
                 if user.firebase_uid != uid:
                     user.firebase_uid = uid
                     user.save()
+
             else:
                 role_flags[f"is_{user_type}"] = True
+
+                # Ensure email is unique
+                if email and User.objects.filter(email=email).exists():
+                    return Response({"error": "This email is already in use."}, status=400)
 
                 user = User.objects.create(
                     mobile=mobile,
@@ -122,8 +126,8 @@ class SignupView(APIView):
 class LoginAPIView(APIView):
 
     def post(self, request):
-        id_token = request.data.get("idToken")
-        user_type = request.data.get("user_type")  # Required for role validation
+        id_token = request.data.get("id_token")
+        user_type = request.data.get("user_type")
 
         if not id_token or not user_type:
             return Response({"error": "id_token and user_type are required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -141,7 +145,6 @@ class LoginAPIView(APIView):
             created = False
 
             if user:
-                # Role check
                 role_map = {
                     "customer": user.is_customer,
                     "doctor": user.is_doctor,
@@ -155,12 +158,10 @@ class LoginAPIView(APIView):
                         "error": f"This number is already registered as a {existing_roles[0]}. Cannot login as {user_type}."
                     }, status=400)
 
-                # Update Firebase UID if needed
                 if user.firebase_uid != uid:
                     user.firebase_uid = uid
                     user.save()
             else:
-                # Role setup for new user
                 role_flags = {
                     "is_customer": False,
                     "is_doctor": False,
@@ -173,6 +174,9 @@ class LoginAPIView(APIView):
 
                 role_flags[f"is_{user_type}"] = True
 
+                if email and User.objects.filter(email=email).exists():
+                    return Response({"error": "This email is already in use."}, status=400)
+
                 user = User.objects.create(
                     mobile=phone_number,
                     firebase_uid=uid,
@@ -181,7 +185,6 @@ class LoginAPIView(APIView):
                 )
                 created = True
 
-            # Generate JWT tokens
             refresh = RefreshToken.for_user(user)
             return Response({
                 "access": str(refresh.access_token),
@@ -267,11 +270,11 @@ def  login_admin(request):
     if request.method == 'POST':
         forms = LoginForm(request.POST)
         if forms.is_valid():
-            email = forms.cleaned_data['email']
+            mobile = forms.cleaned_data['mobile']
             password = forms.cleaned_data['password']
-            print(email)
+            print(mobile)
             print(password)
-            user = authenticate(email=email, password=password)
+            user = authenticate(mobile=mobile, password=password)
             if user:
                 login(request, user)
 
