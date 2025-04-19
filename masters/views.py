@@ -740,6 +740,8 @@ class get_customer_address(ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'  # enables filtering on all fields
 
+    def get_queryset(self):
+        return customer_address.objects.filter(user=self.request.user)
 
 def add_symptom(request):
     
