@@ -30,24 +30,22 @@ from .forms import *
 #     context = {'form': forms}
 #     return render(request, 'adminLogin.html', context)
 
-from .models import User
+from firebase_admin import auth as firebase_auth
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from .models import User  # Your custom user model
+
 
 class SignupView(APIView):
 
     def post(self, request):
         id_token = request.data.get("idToken")
-        user_type = request.data.get("user_type")  # e.g. 'daycare', 'doctor', etc.
-        name = request.data.get("name")  # From frontend
-        email = request.data.get("email")  # Optional, in case it's not in Firebase
-        
+        user_type = request.data.get("user_type")
+        name = request.data.get("name")
+        email = request.data.get("email")
 
-        print(id_token)
-        print(user_type)
         if not id_token or not user_type:
             return Response({"error": "idToken and user_type are required"}, status=400)
 
@@ -56,13 +54,10 @@ class SignupView(APIView):
             mobile = decoded_token.get("phone_number")
             uid = decoded_token.get("uid")
 
-            print(mobile)
-            print(uid)
-
             if not mobile:
                 return Response({"error": "Phone number not found in Firebase token"}, status=400)
 
-            # Role flags setup
+            # Define role flags
             role_flags = {
                 "is_customer": False,
                 "is_doctor": False,
@@ -73,35 +68,40 @@ class SignupView(APIView):
             if f"is_{user_type}" not in role_flags:
                 return Response({"error": "Invalid user_type"}, status=400)
 
-            role_flags[f"is_{user_type}"] = True
+            user = User.objects.filter(mobile=mobile).first()
+            created = False
 
+            if user:
+                # Already registered? Check role
+                existing_roles = [key for key, value in {
+                    "customer": user.is_customer,
+                    "doctor": user.is_doctor,
+                    "daycare": user.is_daycare,
+                    "service_provider": user.is_service_provider
+                }.items() if value]
 
-            if name:
-            
-                # Add extra fields
-                role_flags.update({
-                    "email": email or decoded_token.get("email"),
-                    "first_name": name
-                })
+                if existing_roles and user_type not in existing_roles:
+                    return Response({
+                        "error": f"This number is already registered as a {existing_roles[0]}. Cannot register again as {user_type}."
+                    }, status=400)
 
-                # Get or create user
-                user, created = User.objects.get_or_create(
-                    mobile=mobile,
-                    firebase_uid=uid,
-                    defaults=role_flags
-                )
-            
+                # Update UID if needed
+                if user.firebase_uid != uid:
+                    user.firebase_uid = uid
+                    user.save()
             else:
+                role_flags[f"is_{user_type}"] = True
 
-                user, created = User.objects.get_or_create(
+                user = User.objects.create(
                     mobile=mobile,
                     firebase_uid=uid,
+                    first_name=name or "",
+                    email=email or decoded_token.get("email", ""),
+                    username=mobile,
+                    **role_flags
                 )
-            
+                created = True
 
-
-
-            # Generate tokens
             refresh = RefreshToken.for_user(user)
             return Response({
                 "access": str(refresh.access_token),
@@ -118,6 +118,87 @@ class SignupView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=400)
+
+
+class LoginAPIView(APIView):
+
+    def post(self, request):
+        id_token = request.data.get("idToken")
+        user_type = request.data.get("user_type")  # Required for role validation
+
+        if not id_token or not user_type:
+            return Response({"error": "id_token and user_type are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            decoded_token = firebase_auth.verify_id_token(id_token)
+            uid = decoded_token["uid"]
+            phone_number = decoded_token.get("phone_number")
+            email = decoded_token.get("email")
+
+            if not phone_number:
+                return Response({"error": "Phone number not found in token"}, status=400)
+
+            user = User.objects.filter(mobile=phone_number).first()
+            created = False
+
+            if user:
+                # Role check
+                role_map = {
+                    "customer": user.is_customer,
+                    "doctor": user.is_doctor,
+                    "daycare": user.is_daycare,
+                    "service_provider": user.is_service_provider
+                }
+
+                if not role_map.get(user_type, False):
+                    existing_roles = [k for k, v in role_map.items() if v]
+                    return Response({
+                        "error": f"This number is already registered as a {existing_roles[0]}. Cannot login as {user_type}."
+                    }, status=400)
+
+                # Update Firebase UID if needed
+                if user.firebase_uid != uid:
+                    user.firebase_uid = uid
+                    user.save()
+            else:
+                # Role setup for new user
+                role_flags = {
+                    "is_customer": False,
+                    "is_doctor": False,
+                    "is_daycare": False,
+                    "is_service_provider": False
+                }
+
+                if f"is_{user_type}" not in role_flags:
+                    return Response({"error": "Invalid user_type"}, status=400)
+
+                role_flags[f"is_{user_type}"] = True
+
+                user = User.objects.create(
+                    mobile=phone_number,
+                    firebase_uid=uid,
+                    email=email or "",
+                    username=phone_number,
+                    **role_flags
+                )
+                created = True
+
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                "user": {
+                    "id": user.id,
+                    "mobile": user.mobile,
+                    "email": user.email,
+                    "created": created
+                }
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 from .permissions import *
@@ -179,44 +260,6 @@ class ResetPasswordView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=400)
         
-
-
-from firebase_admin import auth as firebase_auth
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User  # Adjust as needed
-
-class LoginAPIView(APIView):
-    def post(self, request):
-        id_token = request.data.get("id_token")
-
-        if not id_token:
-            return Response({"error": "ID token missing"}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            decoded_token = firebase_auth.verify_id_token(id_token)
-            uid = decoded_token["uid"]
-            phone_number = decoded_token.get("phone_number")
-            email = decoded_token.get("email")
-
-            # Check if user exists
-            user, created = User.objects.get_or_create(mobile=phone_number, defaults={
-                "email": email or "",
-                "username": phone_number
-            })
-
-            # Generate JWT tokens
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-                "user": {"id": user.id, "mobile": user.mobile}
-            })
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 
