@@ -97,7 +97,6 @@ class SignupView(APIView):
                     firebase_uid=uid,
                     first_name=name or "",
                     email=email or decoded_token.get("email", ""),
-                    username=mobile,
                     **role_flags
                 )
                 created = True
@@ -178,7 +177,6 @@ class LoginAPIView(APIView):
                     mobile=phone_number,
                     firebase_uid=uid,
                     email=email or "",
-                    username=phone_number,
                     **role_flags
                 )
                 created = True
