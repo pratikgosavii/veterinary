@@ -138,6 +138,9 @@ class LoginAPIView(APIView):
             phone_number = decoded_token.get("phone_number")
             email = decoded_token.get("email")
 
+            print(phone_number)
+            print(uid)
+
             if not phone_number:
                 return Response({"error": "Phone number not found in token"}, status=400)
 
