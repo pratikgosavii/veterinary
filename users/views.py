@@ -126,7 +126,7 @@ class SignupView(APIView):
 class LoginAPIView(APIView):
 
     def post(self, request):
-        id_token = request.data.get("id_token")
+        id_token = request.data.get("idToken")
         user_type = request.data.get("user_type")
 
         if not id_token or not user_type:
