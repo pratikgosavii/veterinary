@@ -65,6 +65,7 @@ class vaccination_appointment(models.Model):
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
 
+
 # appointment & orders
 class test_booking(models.Model):
     
@@ -76,6 +77,19 @@ class test_booking(models.Model):
     payment_status = models.BooleanField(default=False)
     
 
+
+from serviceprovider.models import *
+
+class service_booking(models.Model):
+    
+    service_provider = models.ForeignKey(service_provider, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    services = models.ManyToManyField('masters.service')
+    pets = models.ManyToManyField('pet.pet')
+    date = models.DateTimeField()
+    address = models.TextField(null=True, blank=True)
+    at_home = models.BooleanField(default=False)
+    payment_status = models.BooleanField(default=False)
 
 
 class day_care_booking(models.Model):

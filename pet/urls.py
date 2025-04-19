@@ -14,6 +14,7 @@ router.register(r'pet-test-booking', pet_test_booking_ViewSet, basename='pet-tes
 router.register(r'pet-vaccination-appointment', vaccination_appointment_ViewSet, basename='pet-vaccination-appointment')
 router.register(r'pet-consultation-appointment', consultation_appointment_ViewSet, basename='pet-consultation-appointment')
 router.register(r'pet-online-consultation-appointment', online_consultation_appointment_ViewSet, basename='pet-online-consultation-appointment')
+router.register(r'pet-services-booking', pet_services_booking_ViewSet, basename='pet-services-booking')
 router.register(r'pet', PetViewSet, basename='pet')
 
 
