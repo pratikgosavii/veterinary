@@ -56,6 +56,9 @@ class SignupView(APIView):
             mobile = decoded_token.get("phone_number")
             uid = decoded_token.get("uid")
 
+            print(mobile)
+            print(uid)
+
             if not mobile:
                 return Response({"error": "Phone number not found in Firebase token"}, status=400)
 
@@ -223,11 +226,11 @@ def  login_admin(request):
     if request.method == 'POST':
         forms = LoginForm(request.POST)
         if forms.is_valid():
-            mobile = forms.cleaned_data['mobile']
+            email = forms.cleaned_data['email']
             password = forms.cleaned_data['password']
-            print(mobile)
+            print(email)
             print(password)
-            user = authenticate(mobile=mobile, password=password)
+            user = authenticate(email=email, password=password)
             if user:
                 login(request, user)
 
@@ -238,13 +241,6 @@ def  login_admin(request):
                 return redirect('dashboard')
             else:
                 messages.error(request, 'wrong username password')
-        else:
-
-            print(forms.errors)
-            context = {'form': forms}
-
-            return render(request, 'adminLogin.html', context)
-
     context = {'form': forms}
     return render(request, 'adminLogin.html', context)
 

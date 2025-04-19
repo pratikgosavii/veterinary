@@ -278,7 +278,34 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
 
         return booking
 
-    
+
+from serviceprovider.serializer import *
+
+class service_booking_Serializer(serializers.ModelSerializer):
+
+    services = serializers.PrimaryKeyRelatedField(queryset=service.objects.all(), many=True, write_only=True)
+    service_provider = serializers.PrimaryKeyRelatedField(queryset=service_provider.objects.all(), write_only=True)
+
+    # Read-only fields for GET responses
+    services_details = service_serializer(source='services', many=True, read_only=True)
+    service_provider_details = service_provider_serializer(source='service_provider', read_only=True)
+
+    class Meta:
+        model = service_booking
+        fields = [
+            'id',
+            'user',
+            'service_provider',
+            'service_provider_details',
+            'services',
+            'services_details',
+            'pets',
+            'date',
+            'address',
+            'at_home',
+            'payment_status'
+        ]
+        read_only_fields = ['user', 'user_details', 'services_details', 'pets_details', 'service_provider_details']
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
