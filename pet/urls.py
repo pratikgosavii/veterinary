@@ -35,6 +35,7 @@ urlpatterns = [
     path('reports/online-consultation/', OnlineConsultationReportListView.as_view()),
     path('reports/test-booking/', TestBookingReportListView.as_view()),
     path('all-consultation-reports/', AllConsultationReportsAPIView.as_view()),
+    path('all-appoinments/', AllAppoinmentsAPIView.as_view()),
 
     path("stream/token/", GenerateStreamToken.as_view()),
 
