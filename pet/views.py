@@ -117,13 +117,15 @@ class pet_test_booking_ViewSet(ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='upcoming')
     def upcoming_bookings(self, request):
-        upcoming = self.get_queryset().filter(date__gte=datetime.now()).order_by('date')
+        today = date.today()
+        upcoming = self.get_queryset().filter(date__date__gte=today).order_by('date')
         serializer = self.get_serializer(upcoming, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'], url_path='past')
     def past_bookings(self, request):
-        past = self.get_queryset().filter(date__lt=datetime.now()).order_by('-date')
+        today = date.today()
+        past = self.get_queryset().filter(date__date__lt=today).order_by('-date')
         serializer = self.get_serializer(past, many=True)
         return Response(serializer.data)
 
