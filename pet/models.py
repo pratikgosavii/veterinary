@@ -40,7 +40,7 @@ class consultation_appointment(models.Model):
     pet = models.ManyToManyField('pet.pet')
     consultation_type = models.ManyToManyField('masters.consultation_type')
     symptom = models.ManyToManyField('masters.symptom')
-    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
+    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
 
@@ -51,7 +51,7 @@ class online_consultation_appointment(models.Model):
     pet = models.ManyToManyField('pet.pet')
     online_consultation_type = models.ManyToManyField('masters.online_consultation_type')
     symptom = models.ManyToManyField('masters.symptom')
-    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
+    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
 
@@ -61,7 +61,7 @@ class vaccination_appointment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
     vaccination = models.ManyToManyField('masters.vaccination')
-    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
+    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
 
@@ -72,7 +72,7 @@ class test_booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
     test = models.ManyToManyField('masters.test')
-    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE)
+    doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
     
@@ -82,7 +82,7 @@ from serviceprovider.models import *
 
 class service_booking(models.Model):
     
-    service_provider = models.ForeignKey(service_provider, on_delete=models.CASCADE)
+    service_provider = models.ForeignKey(service_provider, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     services = models.ManyToManyField('masters.service')
     pets = models.ManyToManyField('pet.pet')

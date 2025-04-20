@@ -115,6 +115,18 @@ class pet_test_booking_ViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @action(detail=False, methods=['get'], url_path='upcoming')
+    def upcoming_bookings(self, request):
+        upcoming = self.get_queryset().filter(date__gte=datetime.now()).order_by('date')
+        serializer = self.get_serializer(upcoming, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='past')
+    def past_bookings(self, request):
+        past = self.get_queryset().filter(date__lt=datetime.now()).order_by('-date')
+        serializer = self.get_serializer(past, many=True)
+        return Response(serializer.data)
+
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
