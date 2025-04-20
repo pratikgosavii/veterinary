@@ -375,6 +375,32 @@ class TestBookingReportListView(APIView):
         return Response(serializer.data)
     
 
+class AllAppoinmentsAPIView(APIView):
+    
+    serializer_class = test_booking_Serializer
+    permission_classes = [IsCustomer]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['doctor', 'date', 'payment_status']
+
+    def get_queryset(self):
+        return test_booking.objects.filter(user=self.request.user).distinct()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    @action(detail=False, methods=['get'], url_path='upcoming')
+    def upcoming_bookings(self, request):
+        upcoming = self.get_queryset().filter(date__date__gte=date.today()).order_by('date')
+        serializer = self.get_serializer(upcoming, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='past')
+    def past_bookings(self, request):
+        past = self.get_queryset().filter(date__date__lt=date.today()).order_by('-date')
+        serializer = self.get_serializer(past, many=True)
+        return Response(serializer.data)
+
 class AllConsultationReportsAPIView(APIView):
 
     def get(self, request):
