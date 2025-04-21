@@ -48,11 +48,21 @@ class symptom_serializer(serializers.ModelSerializer):
 
 
 class customer_address_serializer(serializers.ModelSerializer):
+    
     class Meta:
         model = customer_address
-        fields = '__all__'
+        fields = ['id', 'name', 'type', 'address', 'landmark', 'pin_code', 'city', 'state']
+        read_only_fields = ['user']
+        extra_kwargs = {
+            'user': {'required': False}
+        }
 
-
+    def create(self, validated_data):
+        request = self.context['request']
+        validated_data['user'] = request.user
+        return super().create(validated_data)
+    
+    
 class testimonials_serializer(serializers.ModelSerializer):
     class Meta:
         model = testimonials

@@ -659,8 +659,16 @@ class get_product_category(ListAPIView):
 
 from rest_framework.response import Response
 
+from rest_framework.views import APIView
 
-class add_customer_address(View):
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+ 
+    
+
+class add_customer_address(APIView):
 
     permission_classes = [IsCustomer]
 
@@ -670,18 +678,13 @@ class add_customer_address(View):
 
 
     def post(self, request):
-        # Detect if request is single object or list
-        is_many = isinstance(request.data, list)
-
         serializer = customer_address_serializer(
             data=request.data,
-            many=is_many,
             context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"message": "Address(es) added successfully!"})
-
+        return Response({"message": "Address added successfully!"})
         
         
 
