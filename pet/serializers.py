@@ -293,7 +293,12 @@ from serviceprovider.serializer import *
 class service_booking_Serializer(serializers.ModelSerializer):
 
     services = serializers.PrimaryKeyRelatedField(queryset=service.objects.all(), many=True, write_only=True)
-    service_provider = serializers.PrimaryKeyRelatedField(queryset=service_provider.objects.all(), write_only=True)
+    service_provider = serializers.PrimaryKeyRelatedField(
+        queryset=service_provider.objects.all(),
+        write_only=True,
+        required=False,
+        allow_null=True
+    )
 
     # Read-only fields for GET responses
     services_details = service_serializer(source='services', many=True, read_only=True)
