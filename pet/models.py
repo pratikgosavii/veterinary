@@ -89,7 +89,7 @@ class service_booking(models.Model):
     services = models.ManyToManyField('masters.service')
     pets = models.ManyToManyField('pet.pet')
     date = models.DateTimeField()
-    address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
+    address = models.TextField(null=True, blank=True)
     at_home = models.BooleanField(default=False)
     payment_status = models.BooleanField(default=False)
 
@@ -159,7 +159,6 @@ class order(models.Model):
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     total = models.DecimalField(max_digits=10, decimal_places=2)
-    address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='pending')
 
