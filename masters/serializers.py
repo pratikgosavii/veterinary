@@ -51,17 +51,15 @@ class customer_address_serializer(serializers.ModelSerializer):
     
     class Meta:
         model = customer_address
-        fields = ['id', 'name', 'type', 'address', 'landmark', 'pin_code', 'city', 'state']
+        fields = '__all__'
         read_only_fields = ['user']
-        extra_kwargs = {
-            'user': {'required': False}
-        }
 
     def create(self, validated_data):
-        request = self.context['request']
-        validated_data['user'] = request.user
+        # Inject authenticated user manually
+        validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
     
+
     
 class testimonials_serializer(serializers.ModelSerializer):
     class Meta:
@@ -110,10 +108,6 @@ class event_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class customer_address_serializer(serializers.ModelSerializer):
-    class Meta:
-        model = customer_address
-        fields = '__all__'
 
 class consultation_type_serializer(serializers.ModelSerializer):
     class Meta:

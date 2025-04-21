@@ -5,6 +5,15 @@ from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
+
+
+
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'customer-address', customer_address_ViewSet, basename='pet-test-booking')
+
+
 urlpatterns = [
 
 
@@ -58,11 +67,11 @@ urlpatterns = [
     path('delete-product-category/<product_category_id>', delete_product_category, name='delete_product_category'),  # create or fetch list of admins
     path('get-product-category/', get_product_category.as_view() , name='get_product_category '), 
 
-    path('add-customer-address/', add_customer_address.as_view(), name='add_customer_address'),  # create or fetch list of admins
+    # path('add-customer-address/', add_customer_address.as_view(), name='add_customer_address'),  # create or fetch list of admins
     path('update-customer-address/<customer_address_id>', update_customer_address, name='update_customer_address'),  # create or fetch list of admins
     path('list-customer-address/', list_customer_address, name='list_customer_address'),  # create or fetch list of admins
     path('delete-customer-address/<customer_address_id>', delete_customer_address, name='delete_customer_address'),  # create or fetch list of admins
-    path('get-customer-address/', get_customer_address.as_view() , name='get_customer_address '), 
+    # path('get-customer-address/', get_customer_address.as_view() , name='get_customer_address '), 
 
     path('add-service-category/', add_service_category, name='add_service_category'),  # create or fetch list of admins
     path('update-service-category/<service_category_id>', update_service_category, name='update_service_category'),  # create or fetch list of admins
@@ -139,6 +148,6 @@ urlpatterns = [
     path('delete-home-banner/<home_banner_id>', delete_home_banner, name='delete_home_banner'),  # create or fetch list of admins
     path('get-home-banner/', get_home_banner, name='get_home_banner'), 
 
-] 
+]  + router.urls
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
