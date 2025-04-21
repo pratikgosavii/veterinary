@@ -666,25 +666,25 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
  
-    
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.parsers import JSONParser
 
-class add_customer_address(APIView):
+
+
+class customer_address_ViewSet(ModelViewSet):
 
     permission_classes = [IsCustomer]
 
-    def get(self, request):
-        serializer = customer_address_serializer()
-        return render(request, 'add_customer_address.html', {'form': serializer})
+    serializer_class = customer_address_serializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    permission_classes = [IsCustomer]  # Or use IsAuthenticated if needed
 
+    def get_queryset(self):
+        return customer_address.objects.filter(user=self.request.user)
 
-    def post(self, request):
-        serializer = customer_address_serializer(
-            data=request.data,
-            context={'request': request}
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"message": "Address added successfully!"})
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
         
         
 
