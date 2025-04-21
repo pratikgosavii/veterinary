@@ -375,31 +375,82 @@ class TestBookingReportListView(APIView):
         return Response(serializer.data)
     
 
-class AllAppoinmentsAPIView(APIView):
+
+from rest_framework import viewsets
+from itertools import chain
+from django.utils import timezone
+from datetime import datetime, time
+from django.utils.timezone import make_aware, is_naive
+
+
+class AllAppointmentsViewSet(viewsets.ViewSet):
     
-    serializer_class = test_booking_Serializer
     permission_classes = [IsCustomer]
-    parser_classes = [MultiPartParser, FormParser, JSONParser]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['doctor', 'date', 'payment_status']
 
-    def get_queryset(self):
-        return test_booking.objects.filter(user=self.request.user).distinct()
+    def list(self, request):
+        user = request.user
+        now = timezone.now()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        # Fetch all types of appointments for the user
+        consultations = consultation_appointment.objects.filter(user=user)
+        online_consultations = online_consultation_appointment.objects.filter(user=user)
+        vaccinations = vaccination_appointment.objects.filter(user=user)
+        tests = test_booking.objects.filter(user=user)
+        daycares = day_care_booking.objects.filter(user=user)
+        services = service_booking.objects.filter(user=user)
 
-    @action(detail=False, methods=['get'], url_path='upcoming')
-    def upcoming_bookings(self, request):
-        upcoming = self.get_queryset().filter(date__date__gte=date.today()).order_by('date')
-        serializer = self.get_serializer(upcoming, many=True)
-        return Response(serializer.data)
+        # Combine and annotate with type
+        all_appointments = list(chain(
+            [("consultation", appt) for appt in consultations],
+            [("online_consultation", appt) for appt in online_consultations],
+            [("vaccination", appt) for appt in vaccinations],
+            [("test", appt) for appt in tests],
+            [("daycare", appt) for appt in daycares],
+            [("service", appt) for appt in services],
+        ))
 
-    @action(detail=False, methods=['get'], url_path='past')
-    def past_bookings(self, request):
-        past = self.get_queryset().filter(date__date__lt=date.today()).order_by('-date')
-        serializer = self.get_serializer(past, many=True)
-        return Response(serializer.data)
+        upcoming = []
+        past = []
+
+        def normalize_date(appt):
+            raw_date = getattr(appt, 'date_from', getattr(appt, 'date', None))
+            if isinstance(raw_date, datetime):
+                dt = raw_date
+            elif isinstance(raw_date, date):
+                dt = datetime.combine(raw_date, time.min)
+            else:
+                return None
+            return make_aware(dt) if is_naive(dt) else dt
+
+        for appt_type, appt in all_appointments:
+            appt_datetime = normalize_date(appt)
+            if not appt_datetime:
+                continue
+            if appt_datetime >= now:
+                upcoming.append((appt_type, appt, appt_datetime))
+            else:
+                past.append((appt_type, appt, appt_datetime))
+
+        def serialize(appt_type, appt):
+            serializers_map = {
+                "consultation": consultation_appointment_Serializer,
+                "online_consultation": online_consultation_appointment_Serializer,
+                "vaccination": vaccination_appointment_Serializer,
+                "test": test_booking_Serializer,
+                "daycare": DayCareBookingSerializer,
+                "service": service_booking_Serializer,
+            }
+            serializer_class = serializers_map[appt_type]
+            return {
+                "type": appt_type,
+                "data": serializer_class(appt, context={"request": request}).data
+            }
+
+        return Response({
+            "upcoming": [serialize(t, a) for t, a, _ in sorted(upcoming, key=lambda x: x[2])],
+            "past": [serialize(t, a) for t, a, _ in sorted(past, key=lambda x: x[2], reverse=True)],
+        })
+
 
 class AllConsultationReportsAPIView(APIView):
 
@@ -430,6 +481,8 @@ from rest_framework.permissions import IsAuthenticated
 from stream_chat import StreamChat  # ✅ Correct import
 
 import os
+
+
 
 class GenerateStreamToken(APIView):
     permission_classes = [IsAuthenticated]
