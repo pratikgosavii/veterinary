@@ -16,7 +16,7 @@ router.register(r'pet-consultation-appointment', consultation_appointment_ViewSe
 router.register(r'pet-online-consultation-appointment', online_consultation_appointment_ViewSet, basename='pet-online-consultation-appointment')
 router.register(r'pet-services-booking', pet_services_booking_ViewSet, basename='pet-services-booking')
 router.register(r'pet', PetViewSet, basename='pet')
-
+router.register(r'all-appointments', AllAppointmentsViewSet, basename='all-appointments')
 
 urlpatterns = [
 
@@ -35,7 +35,6 @@ urlpatterns = [
     path('reports/online-consultation/', OnlineConsultationReportListView.as_view()),
     path('reports/test-booking/', TestBookingReportListView.as_view()),
     path('all-consultation-reports/', AllConsultationReportsAPIView.as_view()),
-    path('all-appoinments/', AllAppoinmentsAPIView.as_view()),
 
     path("stream/token/", GenerateStreamToken.as_view()),
 
