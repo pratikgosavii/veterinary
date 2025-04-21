@@ -143,10 +143,9 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
 
 
 from masters.serializers import *
+from masters.models import *
 
 class vaccination_appointment_Serializer(serializers.ModelSerializer):
-    
-
     # Write-only fields for POST
     pet_ids = serializers.PrimaryKeyRelatedField(
         queryset=pet.objects.all(), many=True, write_only=True, source="pet"
@@ -157,10 +156,14 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
     doctor_id = serializers.PrimaryKeyRelatedField(
         queryset=doctor.objects.all(), write_only=True, source="doctor"
     )
+    address_id = serializers.PrimaryKeyRelatedField(
+        queryset=customer_address.objects.all(), write_only=True, source="address"
+    )
 
     # Read-only nested serializers
-    pet = PetSerializer(many=True, read_only=True)
+    address = customer_address_serializer(read_only=True)  # <== Add this
     vaccination = vaccination_serializer(many=True, read_only=True)
+    pet = PetSerializer(many=True, read_only=True)
     doctor = doctor_serializer(read_only=True)
 
     class Meta:
@@ -169,6 +172,7 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
             'id', 'pet', 'pet_ids',
             'vaccination', 'vaccination_ids',
             'doctor', 'doctor_id',
+            'address', 'address_id',
             'date', 'payment_status'
         ]
         read_only_fields = ['user']
@@ -177,7 +181,6 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
         request = self.context['request']
         validated_data['user'] = request.user
         return super().create(validated_data)
-    
 
 
 
@@ -192,6 +195,12 @@ class test_booking_Serializer(serializers.ModelSerializer):
     doctor_id = serializers.PrimaryKeyRelatedField(
         queryset=doctor.objects.all(), write_only=True, source='doctor'
     )
+    address_id = serializers.PrimaryKeyRelatedField(
+        queryset=customer_address.objects.all(), write_only=True, source="address"
+    )
+
+    # Read-only nested serializers
+    address = customer_address_serializer(read_only=True)  # <== Add this
 
     test = test_serializer(many=True, read_only=True)
     pet = PetSerializer(many=True, read_only=True)
@@ -199,7 +208,7 @@ class test_booking_Serializer(serializers.ModelSerializer):
 
     class Meta:
         model = test_booking
-        fields = ['id', 'pet', 'pet_ids', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status']
+        fields = ['id', 'pet', 'pet_ids', 'address', 'address_id', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status']
         read_only_fields = ['user']
        
 
@@ -289,7 +298,15 @@ class service_booking_Serializer(serializers.ModelSerializer):
     # Read-only fields for GET responses
     services_details = service_serializer(source='services', many=True, read_only=True)
     service_provider_details = service_provider_serializer(source='service_provider', read_only=True)
+    
+    address_id = serializers.PrimaryKeyRelatedField(
+        queryset=customer_address.objects.all(), write_only=True, source="address"
+    )
 
+    # Read-only nested serializers
+    address = customer_address_serializer(read_only=True)  # <== Add this
+
+    
     class Meta:
         model = service_booking
         fields = [
@@ -301,7 +318,7 @@ class service_booking_Serializer(serializers.ModelSerializer):
             'services_details',
             'pets',
             'date',
-            'address',
+            'address', 'address_id',
             'at_home',
             'payment_status'
         ]
@@ -322,10 +339,17 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     
     items = OrderItemSerializer(many=True)
+    
+    address_id = serializers.PrimaryKeyRelatedField(
+        queryset=customer_address.objects.all(), write_only=True, source="address"
+    )
 
+    # Read-only nested serializers
+    address = customer_address_serializer(read_only=True)  # <== Add this
+   
     class Meta:
         model = order
-        fields = ['id', 'user', 'total', 'status', 'created_at', 'items']
+        fields = ['id', 'user', 'total', 'address', 'address_id', 'status', 'created_at', 'items']
         read_only_fields = ['user', 'created_at']
 
     def create(self, validated_data):
