@@ -6,3 +6,6 @@ __pycache__/
 vetinary/firebase_key.json
 media
 .env
+# Ignore wsgi.py
+vetinary/wsgi.py
+
