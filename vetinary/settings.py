@@ -14,11 +14,13 @@ from pathlib import Path
 
 
 import os
-
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Load environment variables from .env
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(dotenv_path=BASE_DIR / ".env")
+ # Load environment variables from .env
 
 # Now your os.getenv('STREAM_API_KEY') will work
 
