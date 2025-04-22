@@ -110,7 +110,7 @@
                                                     <th>Order Id</th>
                                                     <th>User</th> 
                                                     <th>Status</th> 
-                                                    <th>Product</th>
+                                                    <th>Product X Quantity </th>
                                                     <th>total</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -118,28 +118,61 @@
                                             <tbody id="tableBody">
                                                 {% if data %}
                                                     {% for i in data %}
-                                                        <tr>
+                                                        <tr data-bs-toggle="collapse" data-bs-target="#orderItems{{ i.id }}" style="cursor: pointer;">
+                                                            <td>{{ forloop.counter }}</td>
+                                                            <td>{{ i.id }}</td>
+                                                            <td>{{ i.user }}</td>
+                                                            <td> {{ i.status }} </td>
                                                             <td>
-                                                                {% for item in i.items.all %}
-                                                                    {{ item.product }} x{{ item.quantity }}<br>
-                                                                {% empty %}
-                                                                    No items
-                                                                {% endfor %}
+                                                                Click to view items
                                                             </td>
-                                                            
+                                                            <td> {{ i.total }} </td>
+                                                            <td>
+                                                                <a href="{% url 'update_order' i.id %}">
+                                                                    <i class="bi bi-pencil-square text-primary" title="Edit"></i>
+                                                                </a>
+                                                                <a href="{% url 'delete_order' i.id %}">
+                                                                    <i class="bi bi-trash text-danger" title="Delete"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                            
+                                                        <!-- Collapsible row -->
+                                                        <tr class="collapse" id="orderItems{{ i.id }}">
+                                                            <td >
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                            <td>
+                                                            </td>
                                                            
-                                                          
-                                                    <td>
-                                                        <!-- remove Button -->
-                                                        <a href="{% url 'update_order' i.id %}" ><i class="bi bi-pencil-square text-primary action-icons edit"  title="Edit"></i>  </a>
-                                                        <a href="{% url 'delete_order' i.id %}" > <i class="bi bi-trash text-danger action-icons delete" title="Delete"></i> </a>
+                                                            <td>
+                                                                {% if i.items.all %}
+                                                                    <ul class="mb-0">
+                                                                        {% for item in i.items.all %}
 
+                                                                            <li>{{ item.product.name }} 
+                                                                                        
+                                                                                X
+                                                                            {{ item.quantity }} </li> 
 
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                {% else %}
+                                                                    <em>No items found</em>
+                                                                {% endif %}
+                                                            </td>
+                                                        <td>
+                                                        </td>
+                                                        <td>
+                                                        </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% endif %}
                                             </tbody>
+                                            
                                         </table>
                                     </div>
                                 </div>
