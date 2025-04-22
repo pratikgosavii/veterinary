@@ -37,6 +37,7 @@ urlpatterns = [
     path('all-consultation-reports/', AllConsultationReportsAPIView.as_view()),
 
     path("stream/token/", GenerateStreamToken.as_view()),
+    path("stream/generateforvideo/", GenerateOrJoinCall.as_view()),
 
     path('list-day-care-bookings/', ListDayCareBookings.as_view(), name='list_daycare_bookings'),
 

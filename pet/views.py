@@ -501,3 +501,34 @@ class GenerateStreamToken(APIView):
             "token": token,
             "api_key": api_key,
         })
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+import os
+import uuid
+
+
+
+class GenerateOrJoinCall(APIView):
+    def get(self, request):
+        api_key = os.getenv("STREAM_API_KEY")
+        api_secret = os.getenv("STREAM_API_SECRET")
+        user_id = request.GET.get("user_id")
+        call_id = request.GET.get("call_id") or str(uuid.uuid4())
+
+        if not api_key or not api_secret or not user_id:
+            return Response({"error": "Missing required params"}, status=400)
+
+        client = StreamChat(api_key=api_key, api_secret=api_secret)
+        client.upsert_user({"id": user_id})
+
+        # Create or get the call — currently this needs to be handled via frontend SDK for video
+        token = client.create_token(user_id)
+
+        return Response({
+            "user_id": user_id,
+            "token": token,
+            "api_key": api_key,
+            "call_id": call_id
+        })
