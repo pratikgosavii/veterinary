@@ -489,7 +489,7 @@ class GenerateStreamToken(APIView):
         if not api_key or not api_secret:
             return Response({"error": "Missing Stream API credentials"}, status=500)
 
-        user_id = str(request.user.id)
+        user_id = request.GET.get("user_id")
 
 
         client = StreamChat(api_key=api_key, api_secret=api_secret)  # ✅
