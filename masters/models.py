@@ -99,7 +99,16 @@ class customer_address(models.Model):
     state = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.name} - {self.city}"
+        return (
+            f"Name: {self.name}, "
+            f"Type: {self.type}, "
+            f"Address: {self.address}, "
+            f"Landmark: {self.landmark or 'N/A'}, "
+            f"Pin Code: {self.pin_code}, "
+            f"City: {self.city}, "
+            f"State: {self.state}"
+        )
+
 
 
 class testimonials(models.Model):

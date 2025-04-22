@@ -258,28 +258,21 @@ def update_order(request, order_id):
     if request.method == 'POST':
         form = OrderForm(request.POST, instance=order_obj)
         if form.is_valid():
-            order_obj = form.save()
-            order_obj.items.all().delete()  # clear old items
 
-            items = json.loads(request.POST.get("items_json", "[]"))
-            for i in items:
-                try:
-                    content_type = ContentType.objects.get(model=i['item_type'].lower())
-                    content_type.model_class().objects.get(id=i['object_id'])
-                except Exception as e:
-                    continue
+            form.save()
+            
+            return redirect('list_order_admin')
 
-                order_item.objects.create(
-                    order=order_obj,
-                    content_type=content_type,
-                    object_id=i['object_id'],
-                    quantity=i.get('quantity', 1)
-                )
-            return redirect('order_success')
+        else:
+
+            print(form.errors)
+
+            return render(request, 'add_order.html', {'form': form})
+
     else:
         form = OrderForm(instance=order_obj)
 
-    return render(request, 'order_form.html', {'form': form})
+        return render(request, 'add_order.html', {'form': form})
         
 
 @login_required(login_url='login')
@@ -293,7 +286,7 @@ def delete_order(request, order_id):
 @login_required(login_url='login')
 def list_order_admin(request):
 
-    data = order.objects.prefetch_related('items__content_type').select_related('user').all()
+    data = order.objects.all().order_by('-id')
     context = {
         'data': data
     }
@@ -486,16 +479,18 @@ import os
 
 
 class GenerateStreamToken(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         api_key = os.getenv("STREAM_API_KEY")
         api_secret = os.getenv("STREAM_API_SECRET")
 
+        print("✅ STREAM_API_KEY from .env:", os.getenv("STREAM_API_KEY"))
+
         if not api_key or not api_secret:
             return Response({"error": "Missing Stream API credentials"}, status=500)
 
         user_id = str(request.user.id)
+
 
         client = StreamChat(api_key=api_key, api_secret=api_secret)  # ✅
         client.upsert_user({"id": user_id, "name": request.user.username})

@@ -5,11 +5,13 @@ from .models import order
 class OrderForm(forms.ModelForm):
     class Meta:
         model = order
-        fields = ['total', 'status']
+        fields = '__all__'
 
     
     def __init__(self, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields['address'].widget.attrs.update({'class': 'form-control'})
+        self.fields['user'].widget.attrs.update({'class': 'form-control'})
         self.fields['status'].widget.attrs.update({'class': 'form-control'})
         self.fields['total'].widget.attrs.update({'class': 'form-control'})
 

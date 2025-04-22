@@ -83,19 +83,35 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label for="code" class="form-label">Product :</label>
-                            {{ form.products }}
-                        </div>
-                        
-                        <div class="mb-4">
                             <label for="code" class="form-label">total:</label>
                             {{ form.total }}
                         </div>
+
+                        <p> Address :- {{ form.instance.address }}</p>
+
                         
-                      
+                        </hr>
+
+                        <h4> Product List </h4>
+
+                        {% if form.instance.items.all %}
+                            <ul class="mb-0">
+                                {% for item in form.instance.items.all %}
+
+                                    <li>{{ item.product.name }} 
+                                                
+                                        X
+                                    {{ item.quantity }} </li> 
+
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <em>No items found</em>
+                        {% endif %}
+
                                 <!-- Submit Button -->
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary custom-button">Submit</button>
+                            <input type="submit" class="btn btn-primary custom-button" value="Submit" />
                         </div>
                     </form>
                 </div>

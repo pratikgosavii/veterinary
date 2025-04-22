@@ -15,6 +15,14 @@ from pathlib import Path
 
 import os
 
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load environment variables from .env
+
+# Now your os.getenv('STREAM_API_KEY') will work
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
