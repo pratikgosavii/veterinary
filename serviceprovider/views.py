@@ -39,12 +39,19 @@ class service_provider_login(APIView):
 from .serializer import *
 from rest_framework import generics, permissions
 
-class service_provider_signup(generics.CreateAPIView):
-    
-    queryset = service_provider.objects.all()
+from rest_framework import viewsets, permissions
+from .models import service_provider
+from .serializer import service_provider_serializer
+
+class ServiceProviderViewSet(viewsets.ModelViewSet):
     serializer_class = service_provider_serializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return service_provider.objects.filter(user=self.request.user)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend

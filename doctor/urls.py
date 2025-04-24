@@ -5,6 +5,13 @@ from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
+from rest_framework.routers import DefaultRouter
+from .views import DoctorViewSet
+from django.urls import path, include
+
+router = DefaultRouter()
+router.register('doctors', DoctorViewSet, basename='doctor')
+
 urlpatterns = [
 
 
@@ -15,8 +22,8 @@ urlpatterns = [
     # path('delete-doctor/<int:doctor_id>/', delete_doctor, name='delete_doctor'),
     path('get-doctor/', get_doctor.as_view(), name='get_doctor'),
 
-    path('login-doctor/', doctor_login.as_view(), name='login_doctor'),
-    path('signup-doctor/', doctor_signup.as_view(), name='signup_doctor'),
+    # path('login-doctor/', doctor_login.as_view(), name='login_doctor'),
+    # path('signup-doctor/', doctor_signup.as_view(), name='signup_doctor'),
 
     path('list-consultation-appointment/', list_consultation_appointment.as_view(), name='list_consultation_appointment'),
     path('list-vaccination-appointment/', list_vaccination_appointment.as_view(), name='list_vaccination_appointment'),
@@ -29,6 +36,6 @@ urlpatterns = [
 
 
 
-] 
+] + router.urls 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

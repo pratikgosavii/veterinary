@@ -42,12 +42,31 @@ class day_care_login(APIView):
 
 from .serializers import *
 from rest_framework import generics, permissions
+from rest_framework import viewsets, status
+from rest_framework.parsers import MultiPartParser, JSONParser
 
-class day_care_register(generics.CreateAPIView):
-    
-    queryset = day_care.objects.all()
+
+class DayCareViewSet(viewsets.ModelViewSet):
+
+    queryset = day_care.objects.filter(is_active=True)
     serializer_class = day_care_serializer
+    parser_classes = [MultiPartParser, JSONParser]
 
+    def get_queryset(self):
+        user = self.request.user
+        return day_care.objects.filter(user=user, is_active=True)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.is_active = False
+        instance.save()
+        return Response({"detail": "Soft deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
     

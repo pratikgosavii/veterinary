@@ -53,13 +53,9 @@ class day_care_serializer(serializers.ModelSerializer):
 
         amenities = validated_data.pop('amenity_ids', [])
         food_menus_data = validated_data.pop('food_menus', [])
-        mobile = validated_data.pop('user', {}).get('mobile')
 
-        if mobile:
-            user.mobile = mobile
-            user.save()
-
-        instance = day_care.objects.create(user=user, **validated_data)
+      
+        instance = day_care.objects.create(**validated_data)
 
         if amenities:
             instance.amenities.set(amenities)
