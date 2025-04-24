@@ -50,11 +50,34 @@ class doctor_login(APIView):
 
 from .serializer import *
 from rest_framework import generics, permissions
+from rest_framework import viewsets, status
+from rest_framework.parsers import MultiPartParser, JSONParser
 
-class doctor_signup(generics.CreateAPIView):
-    
+
+class DoctorViewSet(viewsets.ModelViewSet):
+
     queryset = doctor.objects.all()
     serializer_class = doctor_serializer
+    parser_classes = [MultiPartParser, JSONParser]  # ✅ Allow both JSON and form-data
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        doctor_obj = self.get_object()
+        doctor_obj.is_active = False
+        doctor_obj.save()
+        return Response({"message": "Doctor deactivated"}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"])
+    def reactivate(self, request, pk=None):
+        doc = self.get_object()
+        doc.is_active = True
+        doc.save()
+        return Response({"message": "Doctor reactivated"}, status=status.HTTP_200_OK)
 
 
 

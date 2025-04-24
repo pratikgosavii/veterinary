@@ -3,9 +3,9 @@ db.sqlite3
 __pycache__/
 *.pyc
 *.pyo
-vetinary/firebase_key.json
+dentist/firebase_key.json
 media
 .env
 # Ignore wsgi.py
-vetinary/wsgi.py
+dentist/wsgi.py
 
