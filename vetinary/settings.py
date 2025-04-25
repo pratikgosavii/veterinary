@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'doctor',
     'pet',
     'serviceprovider',
+    'rest_framework',
     'drf_yasg',
 ]
 
