@@ -52,9 +52,21 @@ class day_care_serializer(serializers.ModelSerializer):
             raise serializers.ValidationError("You have already registered a daycare.")
 
         amenities = validated_data.pop('amenity_ids', [])
-        food_menus_data = validated_data.pop('food_menus', [])
 
-      
+        # 🛠 Fix: Manually rebuild food_menus from request.POST (because of form-data)
+        food_menus_data = []
+        i = 0
+        while True:
+            food_menu_id = request.POST.get(f'food_menus[{i}][food_menu]')
+            custom_price = request.POST.get(f'food_menus[{i}][custom_price]')
+            if food_menu_id is None:
+                break
+            food_menus_data.append({
+                'food_menu': food_menu_id,
+                'custom_price': custom_price,
+            })
+            i += 1
+
         instance = day_care.objects.create(**validated_data)
 
         if amenities:
@@ -63,9 +75,10 @@ class day_care_serializer(serializers.ModelSerializer):
         for item in food_menus_data:
             DayCareFoodMenu.objects.create(
                 daycare=instance,
-                food_menu=item['food_menu'],
+                food_menu_id=item['food_menu'],  # notice: using _id
                 custom_price=item['custom_price']
             )
 
         return instance
+
 
