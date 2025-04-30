@@ -7,6 +7,8 @@ class service_provider_serializer(serializers.ModelSerializer):
     
     class Meta:
         model = service_provider
-        fields = ['full_name', 'service_center_name', 'address']
+        fields = '__all__'
+        read_only_fields = ['user']
 
+    image = serializers.ImageField(required=False, allow_null=True)
     

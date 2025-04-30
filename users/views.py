@@ -113,8 +113,14 @@ class SignupView(APIView):
                     "id": user.id,
                     "mobile": user.mobile,
                     "email": user.email,
-                    "name": user.first_name,
-                    "user_type": user_type,
+                    "name": f"{user.first_name or ''} {user.last_name or ''}".strip(),
+                     "user_type": (
+                        "doctor" if user.is_doctor else
+                        "daycare" if user.is_daycare else
+                        "customer" if user.is_customer else
+                        "service_provider" if user.is_service_provider else
+                        "unknown"
+                    ),
                     "created": created
                 }
             })
@@ -160,6 +166,14 @@ class LoginAPIView(APIView):
                         "id": user.id,
                         "mobile": user.mobile,
                         "email": user.email,
+                        "user_type": (
+                            "doctor" if user.is_doctor else
+                            "daycare" if user.is_daycare else
+                            "customer" if user.is_customer else
+                            "service_provider" if user.is_service_provider else
+                            "unknown"
+                        ),
+                        "name": f"{user.first_name or ''} {user.last_name or ''}".strip(),
                         "created": created
                     }
                 })

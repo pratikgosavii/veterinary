@@ -10,6 +10,7 @@ from .views import DayCareViewSet
 
 router = DefaultRouter()
 router.register('daycare', DayCareViewSet, basename='daycare')
+router.register('daycare-foodmenu', DayCareFoodmenuViewSet, basename='daycarefoodmenu')
 
 
 urlpatterns = [

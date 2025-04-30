@@ -42,10 +42,13 @@ from rest_framework import generics, permissions
 from rest_framework import viewsets, permissions
 from .models import service_provider
 from .serializer import service_provider_serializer
+from rest_framework.parsers import MultiPartParser, JSONParser
+
 
 class ServiceProviderViewSet(viewsets.ModelViewSet):
     serializer_class = service_provider_serializer
     permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, JSONParser]  # ✅ Allow both JSON and form-data
 
     def get_queryset(self):
         return service_provider.objects.filter(user=self.request.user)

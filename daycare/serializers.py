@@ -5,25 +5,9 @@ from .models import *
 from masters.serializers import *
 
 
-class DayCareFoodMenuSerializer(serializers.ModelSerializer):
-    food_menu_id = serializers.PrimaryKeyRelatedField(
-        queryset=food_menu.objects.all(), source='food_menu', write_only=True
-    )
-    food_menu = food_menu_serializer(read_only=True)
-
-    class Meta:
-        model = DayCareFoodMenu
-        fields = ['food_menu', 'food_menu_id', 'custom_price']
-
 
 class day_care_serializer(serializers.ModelSerializer):
     # For POST
-    food_menus = DayCareFoodMenuSerializer(many=True, write_only=True)
-
-    # For GET
-    food_menus_data = DayCareFoodMenuSerializer(
-        source='daycarefoodmenu_set', many=True, read_only=True
-    )
 
     amenities = serializers.StringRelatedField(many=True, read_only=True)
     amenity_ids = serializers.PrimaryKeyRelatedField(
@@ -39,10 +23,10 @@ class day_care_serializer(serializers.ModelSerializer):
             'id', 'user', 'name', 'images', 'location', 'description',
             'price_full_day', 'price_half_day',
             'amenities', 'amenity_ids',
-            'food_menus', 'food_menus_data',
             'rating', 'email', 'mobile'
         ]
         extra_kwargs = {'user': {'read_only': True}}
+
 
     def create(self, validated_data):
         request = self.context['request']
@@ -54,31 +38,43 @@ class day_care_serializer(serializers.ModelSerializer):
         amenities = validated_data.pop('amenity_ids', [])
 
         # 🛠 Fix: Manually rebuild food_menus from request.POST (because of form-data)
-        food_menus_data = []
-        i = 0
-        while True:
-            food_menu_id = request.POST.get(f'food_menus[{i}][food_menu]')
-            custom_price = request.POST.get(f'food_menus[{i}][custom_price]')
-            if food_menu_id is None:
-                break
-            food_menus_data.append({
-                'food_menu': food_menu_id,
-                'custom_price': custom_price,
-            })
-            i += 1
-
+      
         instance = day_care.objects.create(**validated_data)
 
         if amenities:
             instance.amenities.set(amenities)
 
-        for item in food_menus_data:
-            DayCareFoodMenu.objects.create(
-                daycare=instance,
-                food_menu_id=item['food_menu'],  # notice: using _id
-                custom_price=item['custom_price']
-            )
-
+       
         return instance
 
+
+class DayCareFoodMenuSerializer(serializers.ModelSerializer):
+    
+    food_menu_id = serializers.PrimaryKeyRelatedField(
+        queryset=food_menu.objects.all(), source='food_menu', write_only=True
+    )
+    food_menu = food_menu_serializer(read_only=True)
+    daycare = day_care_serializer(read_only=True)
+
+
+    class Meta:
+        model = DayCareFoodMenu
+        fields = ['food_menu', 'food_menu_id', 'custom_price', 'daycare']
+
+
+    def create(self, validated_data):
+        
+        print(validated_data)
+        validated_data.pop('daycare', None)
+        print(validated_data)
+        
+        # Get day_care from request context (set in the view)
+        request = self.context.get('request')
+        user = request.user
+        try:
+            daycare = day_care.objects.get(user=user, is_active=True)
+        except day_care.DoesNotExist:
+            raise serializers.ValidationError("No active daycare found for this user.")
+        
+        return DayCareFoodMenu.objects.create(daycare=daycare, **validated_data)
 
