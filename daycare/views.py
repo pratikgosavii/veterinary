@@ -69,6 +69,35 @@ class DayCareViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Soft deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
+class DayCareFoodmenuViewSet(viewsets.ModelViewSet):
+
+    queryset = DayCareFoodMenu.objects.all()
+    serializer_class = DayCareFoodMenuSerializer
+    parser_classes = [JSONParser]
+
+    def get_queryset(self):
+        user = self.request.user
+        return DayCareFoodMenu.objects.filter(daycare__user=user, is_active=True)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        try:
+            day_care_instance = day_care.objects.get(user=user, is_active=True)
+        except day_care.DoesNotExist:
+            raise serializers.ValidationError("Active day care not found for the user.")
+        
+        # Save each food menu with the correct day_care
+        serializer.save(daycare=day_care_instance)
+
+    def create(self, request, *args, **kwargs):
+        is_many = isinstance(request.data, list)  # Check if data is a list (multiple food menus)
+        serializer = self.get_serializer(data=request.data, many=is_many, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        
+        # Handle saving each of the objects
+        self.perform_create(serializer)
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     
 from rest_framework.generics import ListAPIView

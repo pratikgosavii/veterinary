@@ -11,11 +11,9 @@ from pet.models import *
 class service_provider(models.Model):
     
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='doctor_images/')
     service_center_name = models.CharField(max_length=255)
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.full_name
     
