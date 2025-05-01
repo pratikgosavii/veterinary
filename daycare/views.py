@@ -69,6 +69,8 @@ class DayCareViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Soft deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
+from rest_framework.decorators import action
+
 class DayCareFoodmenuViewSet(viewsets.ModelViewSet):
 
     queryset = DayCareFoodMenu.objects.all()
@@ -77,7 +79,7 @@ class DayCareFoodmenuViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return DayCareFoodMenu.objects.filter(daycare__user=user, is_active=True)
+        return DayCareFoodMenu.objects.filter(daycare__user=user)
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -86,19 +88,27 @@ class DayCareFoodmenuViewSet(viewsets.ModelViewSet):
         except day_care.DoesNotExist:
             raise serializers.ValidationError("Active day care not found for the user.")
         
-        # Save each food menu with the correct day_care
         serializer.save(daycare=day_care_instance)
 
     def create(self, request, *args, **kwargs):
-        is_many = isinstance(request.data, list)  # Check if data is a list (multiple food menus)
+        is_many = isinstance(request.data, list)
         serializer = self.get_serializer(data=request.data, many=is_many, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        
-        # Handle saving each of the objects
         self.perform_create(serializer)
-        
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
+    @action(detail=False, methods=['put'], url_path='bulk-update')
+    def bulk_update(self, request):
+        """
+        Custom endpoint for bulk updating food menu items.
+        Expects a list of objects with 'id' and fields to update.
+        """
+        serializer = self.get_serializer()
+        updated_instances = serializer.bulk_update(request.data)
+        return Response(
+            {"updated": len(updated_instances)},
+            status=status.HTTP_200_OK
+        )
     
 from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend
