@@ -23,6 +23,8 @@ urlpatterns = [
     path('get-doctor/', get_doctor.as_view(), name='get_doctor'),
     path('get-apponemts/', get_doctor.as_view(), name='get_doctor'),
 
+    path('get-appointment-count/', get_appointment_count.as_view(), name='get_appointment_count'),
+
     # path('login-doctor/', doctor_login.as_view(), name='login_doctor'),
     # path('signup-doctor/', doctor_signup.as_view(), name='signup_doctor'),
 

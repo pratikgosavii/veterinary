@@ -98,7 +98,53 @@ from users.permissions import *
 
 
 
+from django.db.models import Count, Q
 
+class get_appointment_count(APIView):
+
+    
+    def get(self, request):
+        
+        doctor_instance = doctor.objects.get(user = request.user)  # Assuming doctor is related to User
+
+        # Consultation Appointment Report
+        consultation_counts = ConsultationAppointmentReport.objects.filter(
+            appointment__doctor=doctor_instance
+        ).values('status').annotate(total=Count('id'))
+
+        # Online Consultation Appointment Report
+        online_counts = OnlineConsultationAppointmentReport.objects.filter(
+            appointment__doctor=doctor_instance
+        ).values('status').annotate(total=Count('id'))
+
+        # Test Booking Report
+        test_counts = TestBookingReport.objects.filter(
+            booking__doctor=doctor_instance
+        ).values('status').annotate(total=Count('id'))
+
+        def to_status_dict(queryset):
+            data = {'accepted': 0, 'completed': 0, 'cancelled': 0}
+            for entry in queryset:
+                status = entry['status'].lower()
+                if status in data:
+                    data[status] += entry['count']
+            return data
+
+        # Individual breakdown
+        consultation = to_status_dict(consultation_counts)
+        online = to_status_dict(online_counts)
+        test = to_status_dict(test_counts)
+
+        # Total combined
+        combined = {
+            "accepted": consultation['accepted'] + online['accepted'] + test['accepted'],
+            "completed": consultation['completed'] + online['completed'] + test['completed'],
+            "cancelled": consultation['cancelled'] + online['cancelled'] + test['cancelled'],
+        }
+
+        return Response({
+            "total": combined
+        })
 
 class list_consultation_appointment(ListAPIView):
     serializer_class = consultation_appointment_Serializer
