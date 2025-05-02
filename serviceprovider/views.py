@@ -89,6 +89,28 @@ class get_services_count(APIView):
 
 
 
+
+from users.permissions import *
+
+from rest_framework.generics import ListAPIView
+from django_filters.rest_framework import DjangoFilterBackend
+from .filters import *
+
+
+
+class ListServiceproviderBookings(ListAPIView):
+    
+    serializer_class = service_provider_serializer
+    permission_classes = [IsServiceProvider]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = service_providersFilter
+
+    def get_queryset(self):
+        return day_care_booking.objects.filter(user=self.request.user).select_related('serviceprovider').prefetch_related('pets').order_by('-id')
+    
+
+
+
 class ServiceProviderViewSet(viewsets.ModelViewSet):
     serializer_class = service_provider_serializer
     permission_classes = [permissions.IsAuthenticated]

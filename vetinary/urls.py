@@ -34,6 +34,11 @@ urlpatterns = [
     path('serviceprovider/', include('serviceprovider.urls')),
     path('users/', include('users.urls')),
 
+    path('all-open-bookings-doctor/', all_open_bookings_doctor.as_view({'get': 'list'}), name='all_open_bookings_doctor'),
+    path('all-open-bookings-doctor-daycare/', all_open_bookings_daycare.as_view(), name='all_open_bookings_daycare'),
+    path('all-open-bookings-service-provider/', all_open_bookings_service_provider.as_view(), name='all_open_bookings_service_provider'),
+
+
 ]
 
 from rest_framework import permissions
