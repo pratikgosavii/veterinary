@@ -110,6 +110,8 @@ class ListServiceproviderBookings(ListAPIView):
     
 
 
+from rest_framework.exceptions import ValidationError
+
 
 class ServiceProviderViewSet(viewsets.ModelViewSet):
     serializer_class = service_provider_serializer
@@ -120,6 +122,10 @@ class ServiceProviderViewSet(viewsets.ModelViewSet):
         return service_provider.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        
+        if service_provider.objects.filter(user=self.request.user).exists():
+            raise ValidationError({"detail": "A doctor already exists for this user."})
+
         serializer.save(user=self.request.user)
 
 from rest_framework.generics import ListAPIView
