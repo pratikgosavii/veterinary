@@ -37,7 +37,7 @@ class doctor_serializer(serializers.ModelSerializer):
         user.last_name = validated_data.pop('last_name', user.last_name)
         user.save()
 
-        return doctor.objects.create(user=user, **validated_data)
+        return doctor.objects.create(**validated_data)
     
 
 from rest_framework import serializers
