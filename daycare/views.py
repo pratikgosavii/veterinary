@@ -138,10 +138,13 @@ class DayCareFoodMenuListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+from .filters import *
 
 class ListDayCareBookings(ListAPIView):
     serializer_class = DayCareBookingSerializer
     permission_classes = [IsDaycare]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = DayCareBookingFilter
 
     def get_queryset(self):
         return day_care_booking.objects.filter(user=self.request.user).select_related('daycare').prefetch_related('pets').order_by('-id')

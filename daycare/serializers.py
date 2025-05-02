@@ -10,6 +10,7 @@ class day_care_serializer(serializers.ModelSerializer):
     # For POST
 
     amenities = serializers.StringRelatedField(many=True, read_only=True)
+    user_details = user_serializer(source='user', read_only=True)
     amenity_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=amenity.objects.all(), write_only=True, required=False
     )
@@ -20,7 +21,7 @@ class day_care_serializer(serializers.ModelSerializer):
     class Meta:
         model = day_care
         fields = [
-            'id', 'user', 'name', 'images', 'location', 'description',
+            'id', 'user', 'user_details', 'name', 'images', 'location', 'description',
             'price_full_day', 'price_half_day',
             'amenities', 'amenity_ids',
             'rating', 'email', 'mobile'

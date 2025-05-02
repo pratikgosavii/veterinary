@@ -78,7 +78,15 @@ class DoctorViewSet(viewsets.ModelViewSet):
         doc.is_active = True
         doc.save()
         return Response({"message": "Doctor reactivated"}, status=status.HTTP_200_OK)
-
+    
+    @action(detail=False, methods=["get"])
+    def my_profile(self, request):
+        try:
+            doctor_obj = doctor.objects.get(user=request.user, is_active=True)
+            serializer = self.get_serializer(doctor_obj)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except doctor.DoesNotExist:
+            return Response({"detail": "Doctor profile not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 from rest_framework.generics import ListAPIView
