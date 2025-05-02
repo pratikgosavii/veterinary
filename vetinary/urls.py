@@ -34,9 +34,13 @@ urlpatterns = [
     path('serviceprovider/', include('serviceprovider.urls')),
     path('users/', include('users.urls')),
 
-    path('all-open-bookings-doctor/', all_open_bookings_doctor.as_view({'get': 'list'}), name='all_open_bookings_doctor'),
-    path('all-open-bookings-doctor-daycare/', all_open_bookings_daycare.as_view(), name='all_open_bookings_daycare'),
-    path('all-open-bookings-service-provider/', all_open_bookings_service_provider.as_view(), name='all_open_bookings_service_provider'),
+    path('all-open-bookings/', all_open_bookings.as_view({'get': 'list'}), name='all_open_bookings'),
+
+
+    
+    # path('all-open-bookings-doctor/', all_open_bookings_doctor.as_view({'get': 'list'}), name='all_open_bookings_doctor'),
+    # path('all-open-bookings-doctor-daycare/', all_open_bookings_daycare.as_view(), name='all_open_bookings_daycare'),
+    # path('all-open-bookings-service-provider/', all_open_bookings_service_provider.as_view(), name='all_open_bookings_service_provider'),
     
     
     path('all-bookings-count/', all_bookings_count.as_view({'get': 'list'}), name='all_bookings_count'),
