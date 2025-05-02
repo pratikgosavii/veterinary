@@ -113,6 +113,48 @@ class DayCareFoodmenuViewSet(viewsets.ModelViewSet):
 from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 
+
+
+from django.db.models import Count, Q
+
+class get_booking_count(APIView):
+
+    
+    def get(self, request):
+        
+        daycare_instance = day_care.objects.get(user = request.user)  # Assuming daycare is related to User
+
+        # Consultation Appointment Report
+        daycare_counts = day_care_booking.objects.filter(
+            daycare=daycare_instance
+        ).values('status').annotate(total=Count('id'))
+
+        # Online Consultation Appointment Report
+        def to_status_dict(queryset):
+        
+            data = {'accepted': 0, 'completed': 0, 'cancelled': 0}
+            for entry in queryset:
+                status = entry['status'].lower()
+                if status in data:
+                    data[status] += entry['total']
+            return data
+
+        # Individual breakdown
+        daycare = to_status_dict(daycare_counts)
+
+        # Total combined
+        combined = {
+            "accepted": daycare['accepted'] ,
+            "completed": daycare['completed'] ,
+            "cancelled": daycare['cancelled'] ,
+        }
+
+        return Response({
+            "total": combined
+        })
+
+
+
 class get_day_care(ListAPIView):
 
     permission_classes = [IsCustomer]  

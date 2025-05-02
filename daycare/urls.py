@@ -16,6 +16,7 @@ router.register('daycare-foodmenu', DayCareFoodmenuViewSet, basename='daycarefoo
 urlpatterns = [
 
 
+    path('get-booking-count/', get_booking_count.as_view(), name='get_booking_count'),
 
     # path('add-day_care/', add_day_care, name='add_day_care'),
     # path('update-day_care/<int:day_care_id>/', update_day_care, name='update_day_care'),

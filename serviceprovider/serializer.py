@@ -34,4 +34,4 @@ class service_provider_serializer(serializers.ModelSerializer):
         user.last_name = validated_data.pop('last_name', user.last_name)
         user.save()
 
-        return service_provider.objects.create(user=user, **validated_data)
+        return service_provider.objects.create(**validated_data)
