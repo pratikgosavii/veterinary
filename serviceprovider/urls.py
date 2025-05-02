@@ -16,6 +16,7 @@ urlpatterns = [
     
     path('get-services-count/', get_services_count.as_view(), name='get_services_count'),
 
+    path('list-serviceprovider-bookings/', ListServiceproviderBookings.as_view(), name='list_serviceprovider_bookings'),
 
     # path('add-service_provider/', add_service_provider, name='add_service_provider'),
     # path('update-service_provider/<int:service_provider_id>/', update_service_provider, name='update_service_provider'),
