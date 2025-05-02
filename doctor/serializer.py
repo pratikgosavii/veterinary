@@ -15,6 +15,7 @@ class doctor_serializer(serializers.ModelSerializer):
     user = user_serializer(read_only=True)
     image = serializers.ImageField(required=False, allow_null=True)
 
+
     class Meta:
         model = doctor
         fields = '__all__'

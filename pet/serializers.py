@@ -252,9 +252,9 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
             'food_selection', 'food_selection_ids',
             'date_from', 'date_to',
             'half_day', 'full_day',
-            'payment_status', 'total_cost'
+            'payment_status', 'total_cost', 'status'
         ]
-        read_only_fields = ['id', 'user', 'daycare', 'pets', 'food_selection', 'total_cost', 'payment_status']
+        read_only_fields = ['id', 'user', 'daycare', 'pets', 'food_selection', 'total_cost', 'payment_status', 'status']
 
     def validate(self, data):
         date_from = data.get('date_from')

@@ -94,6 +94,13 @@ class service_booking(models.Model):
     payment_status = models.BooleanField(default=False)
 
 
+STATUS_CHOICES = [
+    ('open', 'Open'),
+    ('accepted', 'Accepted'),
+    ('completed', 'Completed'),
+    ('cancelled', 'Cancelled'),
+]
+
 class day_care_booking(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -110,6 +117,7 @@ class day_care_booking(models.Model):
     full_day = models.BooleanField(default=False)
 
     total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
 
     
 # vaccination
