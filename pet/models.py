@@ -54,6 +54,7 @@ class consultation_appointment(models.Model):
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 # appointment & orders
 class online_consultation_appointment(models.Model):
@@ -66,6 +67,7 @@ class online_consultation_appointment(models.Model):
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 # appointment & orders
 class vaccination_appointment(models.Model):
@@ -78,6 +80,7 @@ class vaccination_appointment(models.Model):
     address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
     payment_status = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 
 # appointment & orders
@@ -91,6 +94,7 @@ class test_booking(models.Model):
     address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
     payment_status = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
 
 
@@ -107,6 +111,7 @@ class service_booking(models.Model):
     at_home = models.BooleanField(default=False)
     payment_status = models.BooleanField(default=False)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 
 
