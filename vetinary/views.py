@@ -75,6 +75,7 @@ class all_open_bookings(viewsets.ViewSet):
                     "status": obj.status,
                     "date": str(getattr(obj, "date", None)),  # Adjust as needed
                     "amount": obj.amount,  # Adjust as needed
+                    "name": obj.user.first_name + obj.user.last_name,  # Adjust as needed
                 }
                 for obj in qs
             ]
