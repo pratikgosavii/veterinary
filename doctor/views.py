@@ -52,6 +52,7 @@ from .serializer import *
 from rest_framework import generics, permissions
 from rest_framework import viewsets, status
 from rest_framework.parsers import MultiPartParser, JSONParser
+from rest_framework.exceptions import ValidationError
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
@@ -61,6 +62,9 @@ class DoctorViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, JSONParser]  # ✅ Allow both JSON and form-data
 
     def perform_create(self, serializer):
+        # Ensure that a user can only have one doctor
+        if doctor.objects.filter(user=self.request.user).exists():
+            raise ValidationError({"detail": "A doctor already exists for this user."})
         serializer.save(user=self.request.user)
 
     def perform_update(self, serializer):
@@ -87,6 +91,8 @@ class DoctorViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except doctor.DoesNotExist:
             return Response({"detail": "Doctor profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+
 
 
 from rest_framework.generics import ListAPIView
