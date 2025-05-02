@@ -127,4 +127,135 @@ class all_open_bookings_service_provider(ListAPIView):
         return day_care_booking.objects.filter(status = "open").order_by('-id')
     
 
+
+
+
+
+class all_bookings_count(viewsets.ViewSet):
+    
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
         
+
+        user = request.user
+        
+
+        if hasattr(user, 'is_doctor'):
+
+        
+            doctor_instance = doctor.objects.get(user = request.user)  # Assuming doctor is related to User
+
+            # Consultation Appointment Report
+            consultation_counts = consultation_appointment.objects.filter(
+                doctor=doctor_instance
+            ).values('status').annotate(total=Count('id'))
+
+            # Online Consultation Appointment Report
+            online_counts = online_consultation_appointment.objects.filter(
+                doctor=doctor_instance
+            ).values('status').annotate(total=Count('id'))
+
+            # Test Booking Report
+            vaccination_counts = vaccination_appointment.objects.filter(
+                doctor=doctor_instance
+            ).values('status').annotate(total=Count('id'))
+
+
+            # Test Booking Report
+            test_counts = test_booking.objects.filter(
+                doctor=doctor_instance
+            ).values('status').annotate(total=Count('id'))
+
+            def to_status_dict(queryset):
+                data = {'accepted': 0, 'completed': 0, 'cancelled': 0}
+                for entry in queryset:
+                    status = entry['status'].lower()
+                    if status in data:
+                        data[status] += entry['total']
+                return data
+
+            # Individual breakdown
+            consultation = to_status_dict(consultation_counts)
+            online = to_status_dict(online_counts)
+            test = to_status_dict(test_counts)
+            vaccination = to_status_dict(vaccination_counts)
+
+            # Total combined
+            combined = {
+                "accepted": consultation['accepted'] + online['accepted'] + test['accepted'] + vaccination['accepted'],
+                "completed": consultation['completed'] + online['completed'] + test['completed'] + vaccination['completed'],
+                "cancelled": consultation['cancelled'] + online['cancelled'] + test['cancelled'] + vaccination['cancelled'] ,
+            }
+
+            return Response({
+                "total": combined
+            })
+
+
+        elif hasattr(user, 'is_daycare'):
+
+            daycare_instance = day_care.objects.get(user = request.user)  # Assuming daycare is related to User
+
+            # Consultation Appointment Report
+            daycare_counts = day_care_booking.objects.filter(
+                daycare=daycare_instance
+            ).values('status').annotate(total=Count('id'))
+
+            # Online Consultation Appointment Report
+            def to_status_dict(queryset):
+            
+                data = {'accepted': 0, 'completed': 0, 'cancelled': 0}
+                for entry in queryset:
+                    status = entry['status'].lower()
+                    if status in data:
+                        data[status] += entry['total']
+                return data
+
+            # Individual breakdown
+            daycare = to_status_dict(daycare_counts)
+
+            # Total combined
+            combined = {
+                "accepted": daycare['accepted'] ,
+                "completed": daycare['completed'] ,
+                "cancelled": daycare['cancelled'] ,
+            }
+
+            return Response({
+                "total": combined
+            })
+
+
+        elif hasattr(user, 'is_service_provider'):
+
+            daycare_instance = service_booking.objects.get(user = request.user)  # Assuming daycare is related to User
+
+            # Consultation Appointment Report
+            daycare_counts = service_booking.objects.filter(
+                daycare=daycare_instance
+            ).values('status').annotate(total=Count('id'))
+
+            # Online Consultation Appointment Report
+            def to_status_dict(queryset):
+            
+                data = {'accepted': 0, 'completed': 0, 'cancelled': 0}
+                for entry in queryset:
+                    status = entry['status'].lower()
+                    if status in data:
+                        data[status] += entry['total']
+                return data
+
+            # Individual breakdown
+            daycare = to_status_dict(daycare_counts)
+
+            # Total combined
+            combined = {
+                "accepted": daycare['accepted'] ,
+                "completed": daycare['completed'] ,
+                "cancelled": daycare['cancelled'] ,
+            }
+
+            return Response({
+                "total": combined
+            })
