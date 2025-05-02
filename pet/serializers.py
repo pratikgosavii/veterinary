@@ -89,7 +89,7 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
             'symptom', 'symptom_ids',
             'consultation_type', 'consultation_type_ids',
             'doctor', 'doctor_id',
-            'date', 'payment_status'
+            'date', 'payment_status', 'amount'
         ]
         read_only_fields = ['user']
 
@@ -130,7 +130,7 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
             'symptom', 'symptom_ids',
             'online_consultation_type_ids',
             'doctor', 'doctor_id',
-            'date', 'payment_status', 'online_consultation_type'
+            'date', 'payment_status', 'online_consultation_type', 'amount'
         ]
         read_only_fields = ['user']
 
@@ -173,7 +173,7 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
             'vaccination', 'vaccination_ids',
             'doctor', 'doctor_id',
             'address', 'address_id',
-            'date', 'payment_status'
+            'date', 'payment_status', 'amount'
         ]
         read_only_fields = ['user']
 
@@ -208,7 +208,7 @@ class test_booking_Serializer(serializers.ModelSerializer):
 
     class Meta:
         model = test_booking
-        fields = ['id', 'pet', 'pet_ids', 'address', 'address_id', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status']
+        fields = ['id', 'pet', 'pet_ids', 'address', 'address_id', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status', 'amount']
         read_only_fields = ['user']
        
 
