@@ -105,6 +105,75 @@ class all_open_bookings(viewsets.ViewSet):
         return Response({"appointments": appointments})
     
 
+from datetime import date, datetime
+
+class all_vendor_bookings(viewsets.ViewSet):
+    
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        user = request.user
+        today = date.today()
+
+        upcoming_appointments = []
+        past_appointments = []
+
+        def serialize(qs, appt_type):
+            return [
+                {
+                    "id": obj.id,
+                    "type": appt_type,
+                    "status": obj.status,
+                    "date": obj.date,
+                    "amount": getattr(obj, 'amount', None),
+                    "name": f"{obj.user.first_name} {obj.user.last_name}",
+                }
+                for obj in qs
+            ]
+
+        all_appointments = []
+
+        if hasattr(user, 'is_doctor'):
+            print('----------------1-----------------')
+            doctor_instance = doctor.objects.get(user=user)
+            all_appointments += (
+                serialize(online_consultation_appointment.objects.filter(doctor=doctor_instance), "online_consultation") +
+                serialize(consultation_appointment.objects.filter(doctor=doctor_instance), "consultation") +
+                serialize(vaccination_appointment.objects.filter(doctor=doctor_instance), "vaccination") +
+                serialize(test_booking.objects.filter(doctor=doctor_instance), "test")
+            )
+
+
+        elif hasattr(user, 'is_daycare'):
+            print('----------------2-----------------')
+
+            daycare_instance = day_care.objects.get(user=user)
+            all_appointments += serialize(day_care_booking.objects.filter(daycare=daycare_instance), "daycare")
+
+        elif hasattr(user, 'is_service_provider'):
+            print('----------------3-----------------')
+
+            service_provider_instance = service_provider.objects.get(user=user)
+            all_appointments += serialize(service_booking.objects.filter(service_provider=service_provider_instance), "service")
+
+        else:
+            return Response({"detail": "Invalid user type"}, status=400)
+
+        for appt in all_appointments:
+            appt_date = appt["date"]
+           
+            if appt_date and appt_date.date() >= today:
+                print('------------------------')
+                upcoming_appointments.append(appt)
+            else:
+                past_appointments.append(appt)
+
+        return Response({
+            "upcoming": upcoming_appointments,
+            "past": past_appointments
+        })
+    
+
 
 
 
