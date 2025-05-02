@@ -35,6 +35,7 @@ urlpatterns = [
     path('users/', include('users.urls')),
 
     path('all-open-bookings/', all_open_bookings.as_view({'get': 'list'}), name='all_open_bookings'),
+    path('all-vendor-bookings/', all_vendor_bookings.as_view({'get': 'list'}), name='all_vendor_bookings'),
 
 
     
