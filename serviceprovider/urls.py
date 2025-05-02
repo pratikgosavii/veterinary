@@ -13,6 +13,8 @@ router.register(r'service-provider', ServiceProviderViewSet, basename='service-p
 
 urlpatterns = [
 
+    
+    path('get-services-count/', get_services_count.as_view(), name='get_services_count'),
 
 
     # path('add-service_provider/', add_service_provider, name='add_service_provider'),

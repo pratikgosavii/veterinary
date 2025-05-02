@@ -33,6 +33,16 @@ class medical_report(models.Model):
     report = models.TextField()
     date = models.DateField()
 
+
+
+STATUS_CHOICES = [
+    ('open', 'Open'),
+    ('accepted', 'Accepted'),
+    ('completed', 'Completed'),
+    ('cancelled', 'Cancelled'),
+]
+
+
 # appointment & orders
 class consultation_appointment(models.Model):
      
@@ -43,6 +53,7 @@ class consultation_appointment(models.Model):
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
 
 # appointment & orders
 class online_consultation_appointment(models.Model):
@@ -54,6 +65,7 @@ class online_consultation_appointment(models.Model):
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
     payment_status = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
 
 # appointment & orders
 class vaccination_appointment(models.Model):
@@ -65,6 +77,7 @@ class vaccination_appointment(models.Model):
     date = models.DateTimeField()
     address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
     payment_status = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
 
 
 # appointment & orders
@@ -77,6 +90,7 @@ class test_booking(models.Model):
     date = models.DateTimeField()
     address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
     payment_status = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
     
 
 
@@ -92,14 +106,9 @@ class service_booking(models.Model):
     address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
     at_home = models.BooleanField(default=False)
     payment_status = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
 
 
-STATUS_CHOICES = [
-    ('open', 'Open'),
-    ('accepted', 'Accepted'),
-    ('completed', 'Completed'),
-    ('cancelled', 'Cancelled'),
-]
 
 class day_care_booking(models.Model):
 
@@ -126,7 +135,7 @@ class pet_vaccination(models.Model):
     age = models.IntegerField()
     additional_questions = models.JSONField()
     date_given = models.DateField()
-
+    
 # lab reports
 class lab_report(models.Model):
     pet = models.ManyToManyField('pet.pet')

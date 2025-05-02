@@ -55,16 +55,16 @@ class ConsultationAppointmentReport(models.Model):
     appointment = models.ForeignKey(consultation_appointment, on_delete=models.CASCADE, related_name='reports')
     file = models.FileField(upload_to='reports/consultation/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
+    
 
 class OnlineConsultationAppointmentReport(models.Model):
     appointment = models.ForeignKey(online_consultation_appointment, on_delete=models.CASCADE, related_name='reports')
     file = models.FileField(upload_to='reports/online_consultation/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
+    
 
 class TestBookingReport(models.Model):
     booking = models.ForeignKey(test_booking, on_delete=models.CASCADE, related_name='reports')
     report = models.FileField(upload_to='reports/test_booking/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
+    

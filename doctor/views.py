@@ -116,18 +116,24 @@ class get_appointment_count(APIView):
         doctor_instance = doctor.objects.get(user = request.user)  # Assuming doctor is related to User
 
         # Consultation Appointment Report
-        consultation_counts = ConsultationAppointmentReport.objects.filter(
-            appointment__doctor=doctor_instance
+        consultation_counts = consultation_appointment.objects.filter(
+            doctor=doctor_instance
         ).values('status').annotate(total=Count('id'))
 
         # Online Consultation Appointment Report
-        online_counts = OnlineConsultationAppointmentReport.objects.filter(
-            appointment__doctor=doctor_instance
+        online_counts = online_consultation_appointment.objects.filter(
+            doctor=doctor_instance
         ).values('status').annotate(total=Count('id'))
 
         # Test Booking Report
-        test_counts = TestBookingReport.objects.filter(
-            booking__doctor=doctor_instance
+        vaccination_counts = vaccination_appointment.objects.filter(
+            doctor=doctor_instance
+        ).values('status').annotate(total=Count('id'))
+
+
+        # Test Booking Report
+        test_counts = test_booking.objects.filter(
+            doctor=doctor_instance
         ).values('status').annotate(total=Count('id'))
 
         def to_status_dict(queryset):
@@ -135,24 +141,27 @@ class get_appointment_count(APIView):
             for entry in queryset:
                 status = entry['status'].lower()
                 if status in data:
-                    data[status] += entry['count']
+                    data[status] += entry['total']
             return data
 
         # Individual breakdown
         consultation = to_status_dict(consultation_counts)
         online = to_status_dict(online_counts)
         test = to_status_dict(test_counts)
+        vaccination = to_status_dict(vaccination_counts)
 
         # Total combined
         combined = {
-            "accepted": consultation['accepted'] + online['accepted'] + test['accepted'],
-            "completed": consultation['completed'] + online['completed'] + test['completed'],
-            "cancelled": consultation['cancelled'] + online['cancelled'] + test['cancelled'],
+            "accepted": consultation['accepted'] + online['accepted'] + test['accepted'] + vaccination['accepted'],
+            "completed": consultation['completed'] + online['completed'] + test['completed'] + vaccination['completed'],
+            "cancelled": consultation['cancelled'] + online['cancelled'] + test['cancelled'] + vaccination['cancelled'] ,
         }
 
         return Response({
             "total": combined
         })
+
+
 
 class list_consultation_appointment(ListAPIView):
     serializer_class = consultation_appointment_Serializer
