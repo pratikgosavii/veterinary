@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'daycare',
     'doctor',
     'pet',
+    'vendor',
     'serviceprovider',
     'rest_framework',
     'drf_yasg',

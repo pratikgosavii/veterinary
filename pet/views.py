@@ -324,6 +324,12 @@ class CreateDayCareBooking(CreateAPIView):
     permission_classes = [IsCustomer]
 
 
+from rest_framework.generics import RetrieveAPIView
+
+class DayCareBookingDetailView(RetrieveAPIView):
+    queryset = day_care_booking.objects.all()
+    serializer_class = DayCareBookingSerializer
+    permission_classes = [IsCustomer]
 
 class ListDayCareBookings(ListAPIView):
     serializer_class = DayCareBookingSerializer
