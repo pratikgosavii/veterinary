@@ -317,7 +317,7 @@ class accept_order(APIView):
     def post(self, request):
         user = request.user
         order_type = request.data.get('order_type')
-        order_id = request.data.get('id')
+        order_id = request.data.get('order_id')
 
         # Map type to model and assign field
         type_map = {
@@ -333,6 +333,9 @@ class accept_order(APIView):
             return Response({"detail": "Invalid order type."}, status=status.HTTP_400_BAD_REQUEST)
 
         model_class, assign_field = type_map[order_type]
+
+        print(model_class)
+        print(order_id)
         booking = get_object_or_404(model_class, id=order_id)
 
         # Check if already assigned
