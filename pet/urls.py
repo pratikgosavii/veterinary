@@ -21,6 +21,8 @@ router.register(r'all-appointments', AllAppointmentsViewSet, basename='all-appoi
 urlpatterns = [
 
     path('book-daycare/', CreateDayCareBooking.as_view(), name='book_daycare'),
+    path('retrive-booking-daycare/<int:pk>/', DayCareBookingDetailView.as_view(), name='DayCareBookingDetailView'),
+    path('list-day-care-bookings/', ListDayCareBookings.as_view(), name='list_daycare_bookings'),
 
     path('cart/', CartView.as_view(), name='cart'),
     path('cart/<int:pk>/delete/', CartdeleteView.as_view(), name='cart'),
@@ -39,7 +41,6 @@ urlpatterns = [
     path("stream/token/", GenerateStreamToken.as_view()),
     path("stream/generateforvideo/", GenerateOrJoinCall.as_view()),
 
-    path('list-day-care-bookings/', ListDayCareBookings.as_view(), name='list_daycare_bookings'),
 
 ] + router.urls
 

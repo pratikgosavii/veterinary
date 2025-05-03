@@ -14,7 +14,7 @@ def current_time():
 
 class doctor(models.Model):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=120, unique=False)
     image = models.ImageField(upload_to='doctor_images/')
     address = models.CharField(max_length=120, unique=False)
