@@ -62,6 +62,7 @@ class consultation_appointment_ViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
 class online_consultation_appointment_ViewSet(ModelViewSet):
     serializer_class = online_consultation_appointment_Serializer
     permission_classes = [IsCustomer]
@@ -69,7 +70,7 @@ class online_consultation_appointment_ViewSet(ModelViewSet):
     filterset_fields = ['doctor', 'date', 'payment_status']
 
     def get_queryset(self):
-        return consultation_appointment.objects.filter(user=self.request.user).distinct()
+        return online_consultation_appointment.objects.filter(user=self.request.user).distinct()
     
     @action(detail=False, methods=['get'], url_path='upcoming')
     def upcoming_appointments(self, request):
