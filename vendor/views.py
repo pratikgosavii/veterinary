@@ -33,21 +33,6 @@ class all_open_bookings(viewsets.ViewSet):
     def list(self, request):
         user = request.user
 
-        print(user)
-
-        if user.is_customer:
-            print("Role: Customer")
-        elif user.is_doctor:
-            print("Role: Doctor")
-        elif user.is_daycare:
-            print("Role: Daycare")
-        elif user.is_service_provider:
-            print("Role: Service Provider")
-        else:
-            print("Role: Unknown")
-
-
-
         appointments = []
 
         def serialize(qs, appt_type):
@@ -114,7 +99,7 @@ class all_vendor_bookings(viewsets.ViewSet):
                     "type": appt_type,
                     "status": obj.status,
                     "date": obj.date,
-                    "amount": getattr(obj, 'amount', None),
+                    "amount": getattr(obj, "amount", getattr(obj, "total_amount", None)),
                     "name": f"{obj.user.first_name} {obj.user.last_name}",
                 }
                 for obj in qs
