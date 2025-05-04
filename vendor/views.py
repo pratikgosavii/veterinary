@@ -380,36 +380,7 @@ class serviceHistoryViewSet(viewsets.ViewSet):
     def list(self, request):
         user = request.user
         now = timezone.now()
-
-        # Fetch only completed and past appointments
-        consultations = consultation_appointment.objects.filter(
-            doctor=user.doctor, status="completed", date__lt=now
-        )
-        online_consultations = online_consultation_appointment.objects.filter(
-            doctor=user.doctor, status="completed", date__lt=now
-        )
-        vaccinations = vaccination_appointment.objects.filter(
-            doctor=user.doctor, status="completed", date__lt=now
-        )
-        tests = test_booking.objects.filter(
-            doctor=user.doctor, status="completed", date__lt=now
-        )
-        daycares = day_care_booking.objects.filter(
-            daycare=user.day_care, status="completed", date_from__lt=now
-        )
-        services = service_booking.objects.filter(
-            service_provider=user.service_provider, status="completed", date__lt=now
-        )
-
-        # Combine all with type tag
-        all_appointments = list(chain(
-            [("consultation", appt) for appt in consultations],
-            [("online_consultation", appt) for appt in online_consultations],
-            [("vaccination", appt) for appt in vaccinations],
-            [("test", appt) for appt in tests],
-            [("daycare", appt) for appt in daycares],
-            [("service", appt) for appt in services],
-        ))
+        all_appointments = []
 
         def serialize(appt_type, appt):
             serializers_map = {
@@ -425,6 +396,42 @@ class serviceHistoryViewSet(viewsets.ViewSet):
                 "type": appt_type,
                 "data": serializer_class(appt, context={"request": request}).data
             }
+
+        if user.is_doctor:
+            consultations = consultation_appointment.objects.filter(
+                doctor=user.doctor, status="completed", date__lt=now
+            )
+            online_consultations = online_consultation_appointment.objects.filter(
+                doctor=user.doctor, status="completed", date__lt=now
+            )
+            vaccinations = vaccination_appointment.objects.filter(
+                doctor=user.doctor, status="completed", date__lt=now
+            )
+            tests = test_booking.objects.filter(
+                doctor=user.doctor, status="completed", date__lt=now
+            )
+
+            all_appointments = list(chain(
+                [("consultation", appt) for appt in consultations],
+                [("online_consultation", appt) for appt in online_consultations],
+                [("vaccination", appt) for appt in vaccinations],
+                [("test", appt) for appt in tests],
+            ))
+
+        elif user.is_daycare:
+            daycares = day_care_booking.objects.filter(
+                daycare=user.day_care, status="completed", date_from__lt=now
+            )
+            all_appointments = [("daycare", appt) for appt in daycares]
+
+        elif user.is_service_provider:
+            services = service_booking.objects.filter(
+                service_provider=user.service_provider, status="completed", date__lt=now
+            )
+            all_appointments = [("service", appt) for appt in services]
+
+        else:
+            return Response({"detail": "Invalid user type"}, status=400)
 
         return Response({
             "past_completed": [serialize(t, a) for t, a in all_appointments]
