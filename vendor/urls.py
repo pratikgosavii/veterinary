@@ -29,6 +29,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'vendor-kyc', VendorKYCViewSet, basename='vendor-kyc')
+router.register(r'service-history', serviceHistoryViewSet, basename='serviceHistoryViewSet')
 
 urlpatterns = [
    
