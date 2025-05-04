@@ -33,6 +33,8 @@ class all_open_bookings(viewsets.ViewSet):
     def list(self, request):
         user = request.user
 
+        print(user)
+
         appointments = []
 
         def serialize(qs, appt_type):
@@ -361,3 +363,65 @@ class accept_order(APIView):
         booking.save()
 
         return Response({"detail": "Order accepted successfully."}, status=status.HTTP_200_OK)
+
+
+
+from django.utils import timezone
+
+
+class serviceHistoryViewSet(viewsets.ViewSet):
+    
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        user = request.user
+        now = timezone.now()
+
+        # Fetch only completed and past appointments
+        consultations = consultation_appointment.objects.filter(
+            doctor=user.doctor, status="completed", date__lt=now
+        )
+        online_consultations = online_consultation_appointment.objects.filter(
+            doctor=user.doctor, status="completed", date__lt=now
+        )
+        vaccinations = vaccination_appointment.objects.filter(
+            doctor=user.doctor, status="completed", date__lt=now
+        )
+        tests = test_booking.objects.filter(
+            doctor=user.doctor, status="completed", date__lt=now
+        )
+        daycares = day_care_booking.objects.filter(
+            daycare=user.day_care, status="completed", date_from__lt=now
+        )
+        services = service_booking.objects.filter(
+            service_provider=user.service_provider, status="completed", date__lt=now
+        )
+
+        # Combine all with type tag
+        all_appointments = list(chain(
+            [("consultation", appt) for appt in consultations],
+            [("online_consultation", appt) for appt in online_consultations],
+            [("vaccination", appt) for appt in vaccinations],
+            [("test", appt) for appt in tests],
+            [("daycare", appt) for appt in daycares],
+            [("service", appt) for appt in services],
+        ))
+
+        def serialize(appt_type, appt):
+            serializers_map = {
+                "consultation": consultation_appointment_Serializer,
+                "online_consultation": online_consultation_appointment_Serializer,
+                "vaccination": vaccination_appointment_Serializer,
+                "test": test_booking_Serializer,
+                "daycare": DayCareBookingSerializer,
+                "service": service_booking_Serializer,
+            }
+            serializer_class = serializers_map[appt_type]
+            return {
+                "type": appt_type,
+                "data": serializer_class(appt, context={"request": request}).data
+            }
+
+        return Response({
+            "past_completed": [serialize(t, a) for t, a in all_appointments]
+        })
