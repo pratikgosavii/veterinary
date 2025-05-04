@@ -35,6 +35,19 @@ class all_open_bookings(viewsets.ViewSet):
 
         print(user)
 
+        if user.is_customer:
+            print("Role: Customer")
+        elif user.is_doctor:
+            print("Role: Doctor")
+        elif user.is_daycare:
+            print("Role: Daycare")
+        elif user.is_service_provider:
+            print("Role: Service Provider")
+        else:
+            print("Role: Unknown")
+
+
+
         appointments = []
 
         def serialize(qs, appt_type):
