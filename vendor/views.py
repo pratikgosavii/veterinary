@@ -63,7 +63,7 @@ class all_open_bookings(viewsets.ViewSet):
                 for obj in qs
             ]
 
-        if hasattr(user, 'is_doctor'):
+        if user.is_doctor:
 
             print('---------1-------------------')
             online_consultations = online_consultation_appointment.objects.filter(status="open")
@@ -76,13 +76,13 @@ class all_open_bookings(viewsets.ViewSet):
                 serialize(tests, "test")
             )
 
-        elif hasattr(user, 'is_daycare'):
+        elif user.is_daycare:
             print('---------2-------------------')
 
             daycares = day_care_booking.objects.filter(status="open")
             appointments = serialize(daycares, "daycare")
 
-        elif hasattr(user, 'is_service_provider'):
+        elif user.is_service_provider:
             print('---------3-------------------')
 
             services = service_booking.objects.filter(status="open")
@@ -122,7 +122,7 @@ class all_vendor_bookings(viewsets.ViewSet):
 
         all_appointments = []
 
-        if hasattr(user, 'is_doctor'):
+        if user.is_doctor:
             print('----------------1-----------------')
             doctor_instance = doctor.objects.get(user=user)
             all_appointments += (
@@ -133,13 +133,13 @@ class all_vendor_bookings(viewsets.ViewSet):
             )
 
 
-        elif hasattr(user, 'is_daycare'):
+        elif user.is_daycare:
             print('----------------2-----------------')
 
             daycare_instance = day_care.objects.get(user=user)
             all_appointments += serialize(day_care_booking.objects.filter(daycare=daycare_instance), "daycare")
 
-        elif hasattr(user, 'is_service_provider'):
+        elif user.is_service_provider:
             print('----------------3-----------------')
 
             service_provider_instance = service_provider.objects.get(user=user)
@@ -176,7 +176,7 @@ class all_bookings_count(viewsets.ViewSet):
         user = request.user
         
 
-        if hasattr(user, 'is_doctor'):
+        if user.is_doctor:
 
         
             doctor_instance = doctor.objects.get(user = request.user)  # Assuming doctor is related to User
@@ -228,7 +228,7 @@ class all_bookings_count(viewsets.ViewSet):
             })
 
 
-        elif hasattr(user, 'is_daycare'):
+        elif user.is_daycare:
 
             daycare_instance = day_care.objects.get(user = request.user)  # Assuming daycare is related to User
 
@@ -262,7 +262,7 @@ class all_bookings_count(viewsets.ViewSet):
             })
 
 
-        elif hasattr(user, 'is_service_provider'):
+        elif user.is_service_provider:
 
             daycare_instance = service_booking.objects.get(user = request.user)  # Assuming daycare is related to User
 
