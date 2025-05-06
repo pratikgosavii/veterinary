@@ -18,6 +18,41 @@
                             </a>
                         </li>
 
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Users managemnt</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'customer_user_list' %}">Users List</a></li>
+                            </ul>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'provider_user_list' %}">Provider List</a></li>
+                            </ul>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'kyc_list' %}">KYC List</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="layers"></i>
+                                <span data-key="t-authentication">Bookings</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'admin_all_booking' %}">All Bookings</a></li>
+                            </ul>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'admin_all_open_booking' %}">All Open Bookings</a></li>
+                            </ul>
+                            {% comment %} <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'upcoming_bookings' %}">Upcoming Booking</a></li>
+                            </ul>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="{% url 'past_bookings' %}">Past Bookings</a></li>
+                            </ul> {% endcomment %}
+                        </li>
                    
                         <li>
                             <li>
@@ -34,65 +69,120 @@
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="layers"></i>
-                                    <span data-key="t-authentication">Product Category</span>
+                                    <span data-key="t-authentication">Product</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
                                     <li><a href="{% url 'add_product_category' %}">Add Product Category</a></li>
                                     <li><a href="{% url 'list_product_category' %}">Product Category List</a></li>
-                                </ul>
-                            </li> 
-    
-                             <li>
-                                <a href="javascript: void(0);" class="has-arrow">
-                                    <i data-feather="layers"></i>
-                                    <span data-key="t-authentication">Product</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
                                     <li><a href="{% url 'add_product' %}">Add Product</a></li>
                                     <li><a href="{% url 'list_product' %}">Product List</a></li>
                                 </ul>
                             </li> 
     
+                         
+    
 
 
-                        <li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="layers"></i>
                                     <span data-key="t-authentication">Doctor</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
-                                    {% comment %} <li><a href="{% url 'add_doctor' %}">Add Doctor</a></li> {% endcomment %}
                                     <li><a href="{% url 'list_doctor' %}">Doctor List</a></li>
+                            
+                                    <!-- Test Submenu -->
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow">Test</a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{% url 'add_test' %}">Add Test</a></li>
+                                            <li><a href="{% url 'list_test' %}">Test List</a></li>
+                                        </ul>
+                                    </li>
+                            
+                                    <!-- Vaccination Submenu -->
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow">Vaccination</a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{% url 'add_vaccination' %}">Add Vaccination</a></li>
+                                            <li><a href="{% url 'list_vaccination' %}">Vaccination List</a></li>
+                                        </ul>
+                                    </li>
+                            
+                                    <!-- Consultation Type Submenu -->
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow">Consultation Type</a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{% url 'add_consultation_type' %}">Consultation Type Add</a></li>
+                                            <li><a href="{% url 'list_consultation_type' %}">Consultation Type List</a></li>
+                                        </ul>
+                                    </li>
+                            
+                                    <!-- Online Consultation Type Submenu -->
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow">Online Consultation Type</a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{% url 'add_online_consultation_type' %}">Online Consultation Type Add</a></li>
+                                            <li><a href="{% url 'list_online_consultation_type' %}">Online Consultation Type List</a></li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
-                        <li>
+                            
+                            
 
-                        <li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="layers"></i>
                                     <span data-key="t-authentication">Day Care</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
-                                    {% comment %} <li><a href="{% url 'add_Day Care' %}">Add Day Care</a></li> {% endcomment %}
                                     <li><a href="{% url 'list_day_care' %}">Day Care List</a></li>
+                            
+                                    <!-- Amenity Submenu -->
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow">Amenity</a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{% url 'add_amenity' %}">Add Amenity</a></li>
+                                            <li><a href="{% url 'list_amenity' %}">Amenity List</a></li>
+                                        </ul>
+                                    </li>
+                            
+                                    <!-- Food Menu Submenu -->
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow">Food</a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{% url 'add_food_menu' %}">Add Food</a></li>
+                                            <li><a href="{% url 'list_food_menu' %}">Food List</a></li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
-                        <li>
+                            
 
                         <li>
                             <li>
                                 <a href="javascript: void(0);" class="has-arrow">
                                     <i data-feather="layers"></i>
-                                    <span data-key="t-authentication">Test</span>
+                                    <span data-key="t-authentication">Service Provider</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{% url 'add_test' %}">Add Test</a></li>
-                                    <li><a href="{% url 'list_test' %}">Test List</a></li>
+                                    {% comment %} <li><a href="{% url 'add_Day Care' %}">Add Day Care</a></li> {% endcomment %}
+                                    <li><a href="{% url 'list_service_provider' %}">Service Provider List</a></li>
+                                    <li><a href="{% url 'add_service' %}">Add Services</a></li>
+                                    <li><a href="{% url 'list_service' %}">Services List</a></li>
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow">Services SubCategory</a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{% url 'add_service_subcategory' %}">Add Services SubCategory</a></li>
+                                            <li><a href="{% url 'list_service_subcategory' %}">Services SubCategorry List</a></li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
                         <li>
+
+                       
 
 
                         <li>
@@ -134,20 +224,7 @@
                             </li>
                         <li>
 
-                        <li>
-                            <li>
-                                <a href="javascript: void(0);" class="has-arrow">
-                                    <i data-feather="layers"></i>
-                                    <span data-key="t-authentication">Amenity </span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{% url 'add_amenity' %}">Add Amenity</a></li>
-                                    <li><a href="{% url 'list_amenity' %}">Amenity List</a></li>
-                                </ul>
-                            </li>
-                        <li>
-
-
+                    
 
 
                         <li>
@@ -172,42 +249,6 @@
                         </li>
 
                         
-
-                         <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Services SubCategorry</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_service_subcategory' %}">Add Services SubCategory</a></li>
-                                <li><a href="{% url 'list_service_subcategory' %}">Services SubCategorry List</a></li>
-                            </ul>
-                        </li> 
-
-                         <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Services</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_service' %}">Add Services</a></li>
-                                <li><a href="{% url 'list_service' %}">Services List</a></li>
-                            </ul>
-                        </li> 
-
-                        
-                         <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Vaccination</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_vaccination' %}">Add Vaccination</a></li>
-                                <li><a href="{% url 'list_vaccination' %}">Vaccination List</a></li>
-                            </ul>
-                        </li> 
-
-
 
                         
                         <li>
@@ -235,54 +276,12 @@
                         </li>
 
                         
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Users</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'user_list' %}">Users List</a></li>
-
-                            </ul>
-                        </li>
+                      
                         
 
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Food Menu</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_food_menu' %}">Food Add</a></li>
-                                <li><a href="{% url 'list_food_menu' %}">Food List</a></li>
+                 
 
-                            </ul>
-                        </li>
-
-
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Consultation Type</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_consultation_type' %}">Consultation Type Add</a></li>
-                                <li><a href="{% url 'list_consultation_type' %}">Consultation Type List</a></li>
-
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow">
-                                <i data-feather="layers"></i>
-                                <span data-key="t-authentication">Online Consultation Type</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <li><a href="{% url 'add_online_consultation_type' %}">Online Consultation Type Add</a></li>
-                                <li><a href="{% url 'list_online_consultation_type' %}">Online Consultation Type List</a></li>
-
-                            </ul>
-                        </li>
+                       
 
                        
                         <li>

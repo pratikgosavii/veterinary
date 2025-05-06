@@ -268,6 +268,30 @@ class OnlineConsultationReportView(APIView):
             return Response({'error': 'Not found'}, status=404)
 
 
+class appointment_video_list(APIView):
+
+    def get(self, request):
+
+        user = request.user
+
+        try:
+            doctor_obj = doctor.objects.get(user=user)
+        except doctor.DoesNotExist:
+            return Response({"error": "Doctor not found for this user"}, status=404)
+
+        video_calls = Apoinments_video_details.objects.filter(doctor=doctor_obj)
+
+        data = []
+        for call in video_calls:
+            data.append({
+                "appoinment_id": call.appoinment_id,
+                "call_id": call.call_id,
+                "token": call.token,  # Assuming token is a string or converted from int
+            })
+
+        return Response(data)
+
+
 class TestReportView(APIView):
 
     permission_classes = [IsDoctor]

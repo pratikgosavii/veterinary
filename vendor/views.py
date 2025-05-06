@@ -436,3 +436,102 @@ class serviceHistoryViewSet(viewsets.ViewSet):
         return Response({
             "past_completed": [serialize(t, a) for t, a in all_appointments]
         })
+    
+
+
+
+
+
+def kyc_list(request):
+
+    data = vendor_kyc.objects.all()
+
+    return render(request, 'vendor_kyc_list.html', { 'data' : data})
+
+
+
+
+def admin_all_booking(request):
+
+    def serialize(qs, appt_type):
+        data = []
+        for obj in qs:
+            # Determine provider (doctor or service provider)
+            provider_user = None
+            if hasattr(obj, 'doctor') and obj.doctor:
+                provider_user = obj.doctor.user
+            elif hasattr(obj, 'service_provider') and obj.service_provider:
+                provider_user = obj.service_provider.user
+
+            # Fallback location or address field
+            location = ""
+            if hasattr(obj, 'address') and obj.address:
+                location = str(obj.address)
+
+            data.append({
+                "id": obj.id,
+                "type": appt_type,
+                "status": obj.status,
+                "date": getattr(obj, "date", None),
+                "amount": getattr(obj, "amount", getattr(obj, "total_cost", None)),
+                "name": f"{obj.user.first_name} {obj.user.last_name}",
+                "provider_type": appt_type,
+                "provider_name": f"{provider_user.first_name} {provider_user.last_name}" if provider_user else "N/A",
+                "location": location,
+            })
+        return data
+
+    appointments = []
+
+    appointments += serialize(online_consultation_appointment.objects.all(), "Online Consultation")
+    appointments += serialize(vaccination_appointment.objects.all(), "Vaccination")
+    appointments += serialize(test_booking.objects.all(), "Test")
+    appointments += serialize(day_care_booking.objects.all(), "Daycare")
+    appointments += serialize(service_booking.objects.all(), "Service")
+
+
+    return render(request, "admin_all_booking.html", {"appointments": appointments})
+
+
+
+def admin_all_open_booking(request):
+
+    def serialize(qs, appt_type):
+        data = []
+        for obj in qs:
+            # Determine provider (doctor or service provider)
+            provider_user = None
+            if hasattr(obj, 'doctor') and obj.doctor:
+                provider_user = obj.doctor.user
+            elif hasattr(obj, 'service_provider') and obj.service_provider:
+                provider_user = obj.service_provider.user
+
+            # Fallback location or address field
+            location = ""
+            if hasattr(obj, 'address') and obj.address:
+                location = str(obj.address)
+
+            data.append({
+                "id": obj.id,
+                "type": appt_type,
+                "status": obj.status,
+                "date": getattr(obj, "date", None),
+                "amount": getattr(obj, "amount", getattr(obj, "total_cost", None)),
+                "name": f"{obj.user.first_name} {obj.user.last_name}",
+                "provider_type": appt_type,
+                "provider_name": f"{provider_user.first_name} {provider_user.last_name}" if provider_user else "N/A",
+                "location": location,
+            })
+        return data
+
+    appointments = []
+
+    appointments += serialize(online_consultation_appointment.objects.filter(status="open"), "Online Consultation")
+    appointments += serialize(vaccination_appointment.objects.filter(status="open"), "Vaccination")
+    appointments += serialize(test_booking.objects.filter(status="open"), "Test")
+    appointments += serialize(day_care_booking.objects.filter(status="open"), "Daycare")
+    appointments += serialize(service_booking.objects.filter(status="open"), "Service")
+
+
+    return render(request, "all_open_appoinment.html", {"appointments": appointments})
+

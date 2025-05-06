@@ -303,7 +303,13 @@ def logout_page(request):
     logout(request)
     return redirect('login_admin')
 
-def user_list(request):
+def customer_user_list(request):
+
+    data = User.objects.all()
+
+    return render(request, 'user_list.html', { 'data' : data})
+
+def provider_user_list(request):
 
     data = User.objects.all()
 
