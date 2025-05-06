@@ -36,17 +36,22 @@ urlpatterns = [
     path('all-open-bookings/', all_open_bookings.as_view({'get': 'list'}), name='all_open_bookings'),
     path('all-vendor-bookings/', all_vendor_bookings.as_view({'get': 'list'}), name='all_vendor_bookings'),
 
-
     path('accept-order/', accept_order.as_view(), name='accept_order'),
 
-
-    
     # path('all-open-bookings-doctor/', all_open_bookings_doctor.as_view({'get': 'list'}), name='all_open_bookings_doctor'),
     # path('all-open-bookings-doctor-daycare/', all_open_bookings_daycare.as_view(), name='all_open_bookings_daycare'),
     # path('all-open-bookings-service-provider/', all_open_bookings_service_provider.as_view(), name='all_open_bookings_service_provider'),
     
-    
     path('all-bookings-count/', all_bookings_count.as_view({'get': 'list'}), name='all_bookings_count'),
+
+    path('kyc-list/', kyc_list, name='kyc_list'),
+   
+    path('admin-all-booking/', admin_all_booking, name='admin_all_booking'),
+    path('admin-all-open-booking/', admin_all_open_booking, name='admin_all_open_booking'),
+
+
+
+
 
 
 ] + router.urls

@@ -68,3 +68,10 @@ class TestBookingReport(models.Model):
     report = models.FileField(upload_to='reports/test_booking/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
+
+
+class Apoinments_video_details(models.Model):
+    appoinment_id = models.CharField(max_length=150)
+    call_id = models.CharField(max_length=150)
+    token = models.CharField(max_length=150)
+    doctor = models.CharField(max_length=150)

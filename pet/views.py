@@ -521,17 +521,32 @@ class GenerateOrJoinCall(APIView):
     def get(self, request):
         api_key = os.getenv("STREAM_API_KEY")
         api_secret = os.getenv("STREAM_API_SECRET")
-        user_id = request.GET.get("user_id")
+        user_id = str(request.user.id)
+        appoinment_id = request.GET.get("appoinment_id")
         call_id = request.GET.get("call_id") or str(uuid.uuid4())
 
-        if not api_key or not api_secret or not user_id:
+        if not api_key or not api_secret or not user_id or not appoinment_id:
             return Response({"error": "Missing required params"}, status=400)
+
+        try:
+            appointment = online_consultation_appointment.objects.get(id=appoinment_id)
+        except online_consultation_appointment.DoesNotExist:
+            return Response({"error": "Appointment not found"}, status=404)
+
+        doctor = appointment.doctor
 
         client = StreamChat(api_key=api_key, api_secret=api_secret)
         client.upsert_user({"id": user_id})
-
-        # Create or get the call — currently this needs to be handled via frontend SDK for video
         token = client.create_token(user_id)
+
+        # Save to Apoinments_video_details
+        Apoinments_video_details.objects.create(
+            appoinment_id=appointment.id,
+            call_id=call_id,
+            token=token,  # If token is string, update model field to CharField
+            doctor=doctor
+        )
+
 
         return Response({
             "user_id": user_id,

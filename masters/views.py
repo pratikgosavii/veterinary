@@ -145,6 +145,16 @@ def list_doctor(request):
 
 
 @login_required(login_url='login_admin')
+def list_service_provider(request):
+
+    data = service_provider.objects.all()
+    context = {
+        'data': data
+    }
+    return render(request, 'service_provider.html', context)
+
+
+@login_required(login_url='login_admin')
 def add_coupon(request):
 
     if request.method == 'POST':
