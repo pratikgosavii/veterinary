@@ -112,6 +112,7 @@
                                                 <th>User Type</th>
                                                 <th>Dcoument Type</th>
                                                 <th>KYC Status</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
                                             <tbody id="tableBody">
@@ -141,6 +142,10 @@
                                                         {% else %}
                                                     Not Approved Yet
                                                     {% endif %}
+                                                </td>
+
+                                                <td>
+                                                    <a href="{% url 'update_kyc' i.id %}"><i class="bi bi-pencil-square text-primary action-icons" title="Edit"></i></a>
                                                 </td>
                                                    
                                                 </tr>

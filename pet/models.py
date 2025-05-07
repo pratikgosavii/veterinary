@@ -5,6 +5,7 @@ from django.db import models
 
 
 from daycare.models import *
+from pet.utils import get_next_booking_id
 from users.models import *
 from masters.models import *
 
@@ -43,9 +44,14 @@ STATUS_CHOICES = [
 ]
 
 
+class BookingSequence(models.Model):
+    last_id = models.IntegerField(default=0)
+
+
 # appointment & orders
 class consultation_appointment(models.Model):
-     
+    
+    booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
     consultation_type = models.ManyToManyField('masters.consultation_type')
@@ -56,9 +62,16 @@ class consultation_appointment(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
+    def save(self, *args, **kwargs):
+        if not self.booking_id:
+            self.booking_id = get_next_booking_id()
+        super().save(*args, **kwargs)
+
+
 # appointment & orders
 class online_consultation_appointment(models.Model):
-     
+    
+    booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
     online_consultation_type = models.ManyToManyField('masters.online_consultation_type')
@@ -69,9 +82,16 @@ class online_consultation_appointment(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
+    def save(self, *args, **kwargs):
+        if not self.booking_id:
+            self.booking_id = get_next_booking_id()
+        super().save(*args, **kwargs)
+
+
 # appointment & orders
 class vaccination_appointment(models.Model):
     
+    booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
     vaccination = models.ManyToManyField('masters.vaccination')
@@ -83,9 +103,16 @@ class vaccination_appointment(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 
+    def save(self, *args, **kwargs):
+        if not self.booking_id:
+            self.booking_id = get_next_booking_id()
+        super().save(*args, **kwargs)
+
+
 # appointment & orders
 class test_booking(models.Model):
     
+    booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet = models.ManyToManyField('pet.pet')
     test = models.ManyToManyField('masters.test')
@@ -97,11 +124,16 @@ class test_booking(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
 
+    def save(self, *args, **kwargs):
+        if not self.booking_id:
+            self.booking_id = get_next_booking_id()
+        super().save(*args, **kwargs)
 
 from serviceprovider.models import *
 
 class service_booking(models.Model):
     
+    booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     service_provider = models.ForeignKey(service_provider, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     services = models.ManyToManyField('masters.service')
@@ -114,9 +146,14 @@ class service_booking(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 
+    def save(self, *args, **kwargs):
+        if not self.booking_id:
+            self.booking_id = get_next_booking_id()
+        super().save(*args, **kwargs)
 
 class day_care_booking(models.Model):
 
+    booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     daycare = models.ForeignKey("daycare.day_care", on_delete=models.CASCADE)
     pets = models.ManyToManyField('pet.pet')
@@ -133,6 +170,11 @@ class day_care_booking(models.Model):
     total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
 
+
+    def save(self, *args, **kwargs):
+        if not self.booking_id:
+            self.booking_id = get_next_booking_id()
+        super().save(*args, **kwargs)
     
 # vaccination
 class pet_vaccination(models.Model):
