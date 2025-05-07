@@ -91,7 +91,7 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
             'doctor', 'doctor_id',
             'date', 'payment_status', 'amount'
         ]
-        read_only_fields = ['user']
+        read_only_fields = ['user', 'booking_id']
 
     def create(self, validated_data):
         request = self.context['request']
@@ -132,7 +132,7 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
             'doctor', 'doctor_id',
             'date', 'payment_status', 'online_consultation_type', 'amount'
         ]
-        read_only_fields = ['user']
+        read_only_fields = ['user', 'booking_id']
 
     def create(self, validated_data):
         request = self.context['request']
@@ -175,7 +175,7 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
             'address', 'address_id',
             'date', 'payment_status', 'amount'
         ]
-        read_only_fields = ['user']
+        read_only_fields = ['user', 'booking_id']
 
     def create(self, validated_data):
         request = self.context['request']
@@ -209,7 +209,7 @@ class test_booking_Serializer(serializers.ModelSerializer):
     class Meta:
         model = test_booking
         fields = ['id', 'pet', 'pet_ids', 'address', 'address_id', 'test', 'test_ids', 'doctor', 'doctor_id', 'date', 'payment_status', 'amount']
-        read_only_fields = ['user']
+        read_only_fields = ['user', 'booking_id']
        
 
     def create(self, validated_data):
@@ -254,7 +254,7 @@ class DayCareBookingSerializer(serializers.ModelSerializer):
             'half_day', 'full_day',
             'payment_status', 'total_cost', 'status'
         ]
-        read_only_fields = ['id', 'user', 'daycare', 'pets', 'food_selection', 'total_cost', 'payment_status', 'status']
+        read_only_fields = ['id', 'user', 'daycare', 'pets', 'food_selection', 'total_cost', 'payment_status', 'status', 'booking_id']
 
     def validate(self, data):
         date_from = data.get('date_from')
@@ -327,7 +327,7 @@ class service_booking_Serializer(serializers.ModelSerializer):
             'at_home',
             'payment_status'
         ]
-        read_only_fields = ['user', 'user_details', 'services_details', 'pets_details', 'service_provider_details']
+        read_only_fields = ['user', 'user_details', 'services_details', 'pets_details', 'service_provider_details', 'booking_id']
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

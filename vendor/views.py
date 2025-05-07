@@ -1,5 +1,5 @@
 
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 
 from django.db.models import Sum
@@ -449,11 +449,45 @@ def kyc_list(request):
     return render(request, 'vendor_kyc_list.html', { 'data' : data})
 
 
+from .forms import *
+
+def update_kyc(request, kyc_id):
+
+    instance = vendor_kyc.objects.get(id = kyc_id)
+
+    if request.method == 'POST':
+
+
+        approved = request.POST.get("approved") == "on"
+        
+        if approved:
+            instance.approved = True
+            instance.save()
+            return redirect('kyc_list')
+
+
+        else:
+            return redirect('kyc_list')
+    
+    else:
+
+        forms = vendor_kyc_Form(instance=instance)
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'update_kyc.html', context)
+
+
+
+
 
 
 def admin_all_booking(request):
 
     def serialize(qs, appt_type):
+        status_filter = request.GET.get("status")  # Get status from GET params
+
         data = []
         for obj in qs:
             # Determine provider (doctor or service provider)
@@ -467,6 +501,10 @@ def admin_all_booking(request):
             location = ""
             if hasattr(obj, 'address') and obj.address:
                 location = str(obj.address)
+
+            # Apply status filter (if present)
+            if status_filter and obj.status != status_filter:
+                continue
 
             data.append({
                 "id": obj.id,
@@ -482,15 +520,15 @@ def admin_all_booking(request):
         return data
 
     appointments = []
-
     appointments += serialize(online_consultation_appointment.objects.all(), "Online Consultation")
     appointments += serialize(vaccination_appointment.objects.all(), "Vaccination")
     appointments += serialize(test_booking.objects.all(), "Test")
     appointments += serialize(day_care_booking.objects.all(), "Daycare")
     appointments += serialize(service_booking.objects.all(), "Service")
 
-
-    return render(request, "admin_all_booking.html", {"appointments": appointments})
+    return render(request, "admin_all_booking.html", {
+        "appointments": appointments,
+    })
 
 
 

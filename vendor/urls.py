@@ -45,6 +45,7 @@ urlpatterns = [
     path('all-bookings-count/', all_bookings_count.as_view({'get': 'list'}), name='all_bookings_count'),
 
     path('kyc-list/', kyc_list, name='kyc_list'),
+    path('update-kyc/<kyc_id>', update_kyc, name='update_kyc'),
    
     path('admin-all-booking/', admin_all_booking, name='admin_all_booking'),
     path('admin-all-open-booking/', admin_all_open_booking, name='admin_all_open_booking'),
