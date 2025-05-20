@@ -14,8 +14,6 @@ router.register('doctors', DoctorViewSet, basename='doctor')
 
 urlpatterns = [
 
-
-
     # path('add-doctor/', add_doctor, name='add_doctor'),
     # path('update-doctor/<int:doctor_id>/', update_doctor, name='update_doctor'),
     # path('list-doctor/', list_doctor, name='list_doctor'),
