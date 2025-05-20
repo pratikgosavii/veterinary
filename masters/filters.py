@@ -51,6 +51,11 @@ class consultation_typeFilter(django_filters.FilterSet):
         model = consultation_type
         exclude = ['image']  # ⛔ Exclude unsupported field
 
+class home_bannerFilter(django_filters.FilterSet):
+    class Meta:
+        model = home_banner
+        exclude = ['image']  # ⛔ Exclude unsupported field
+
 class online_consultation_typeFilter(django_filters.FilterSet):
     class Meta:
         model = online_consultation_type

@@ -269,6 +269,7 @@ class vaccination_Form(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control description-box'}),
             'age_limit': forms.NumberInput(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
 
         }
 
@@ -315,6 +316,12 @@ class customer_address_Form(forms.ModelForm):
 
 
 class home_banner_Form(forms.ModelForm):
+
+    is_for_web = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+
     class Meta:
         model = home_banner
         fields = '__all__'

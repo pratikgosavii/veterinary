@@ -108,6 +108,7 @@
                                             <tr>
                                                 <th>#</th>
                                                 <th>Title</th>
+                                                <th>For Web Only</th>
                                                 <th>Description</th>
                                                 <th>Action</th>
                                             </tr>
@@ -117,7 +118,8 @@
                                             {% for i in data %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
-                                                    <td>{{ i.name }}</td>
+                                                    <td>{{ i.title }}</td>
+                                                    <td>{{ i.is_for_web }}</td>
                                                     <td>{{ i.description }}</td>
                                                   
                                                     <td>

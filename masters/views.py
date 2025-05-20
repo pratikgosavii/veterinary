@@ -1740,10 +1740,9 @@ from django.views import View
 
 def get_home_banner(request):
   
-    data = home_banner.objects.all()  # Assuming home_banner is the model name
+    filtered_qs = home_bannerFilter(request.GET, queryset=home_banner.objects.all()).qs
 
-
-    serialized_data = HomeBannerSerializer(data, many=True, context={'request': request}).data
+    serialized_data = HomeBannerSerializer(filtered_qs, many=True, context={'request': request}).data
     return JsonResponse({"data": serialized_data}, status=200)
 
 

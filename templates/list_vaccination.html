@@ -62,6 +62,7 @@
                                             <th>Disease</th>
                                             <th>Description</th>
                                             <th>Age Limit</th>
+                                            <th>Image</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -73,6 +74,13 @@
                                             <td>{{ i.disease }}</td>
                                             <td>{{ i.description }}</td>
                                             <td>{{ i.age_limit }}</td>
+                                            <td>
+                                                {% if medicine.image %}
+                                                    <img src="{{ medicine.image.url }}" alt="Medicine Image" width="50" height="50">
+                                                {% else %}
+                                                    No Image
+                                                {% endif %}
+                                            </td>
                                             <td>
                                                 <a href="{% url 'update_vaccination' i.id %}">
                                                     <i class="bi bi-pencil-square text-primary" title="Edit"></i>
