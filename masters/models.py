@@ -187,7 +187,6 @@ class vaccination(models.Model):
     age_limit = models.PositiveIntegerField(help_text="Recommended age in weeks/months/years")
     date_created = models.DateTimeField(auto_now_add=True)
     price = models.IntegerField()
-    image = models.ImageField(upload_to='symptom_images/', null=True, blank=True)
 
     def __str__(self):
         return self.name

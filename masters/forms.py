@@ -269,7 +269,6 @@ class vaccination_Form(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control description-box'}),
             'age_limit': forms.NumberInput(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
 
         }
 
