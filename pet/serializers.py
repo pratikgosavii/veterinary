@@ -38,7 +38,7 @@ from django.contrib.contenttypes.models import ContentType
 class CartSerializer(serializers.ModelSerializer):
 
     product = serializers.PrimaryKeyRelatedField(queryset=product.objects.all(), write_only=True)
-    product_data = product_category_serializer(source='product', read_only=True)
+    product_data = product_serializer(source='product', read_only=True)
     quantity = serializers.IntegerField()
 
     class Meta:
