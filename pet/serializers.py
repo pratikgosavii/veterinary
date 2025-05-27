@@ -71,8 +71,13 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
         queryset=consultation_type.objects.all(), many=True, write_only=True, source="consultation_type"
     )
     doctor_id = serializers.PrimaryKeyRelatedField(
-        queryset=doctor.objects.all(), write_only=True, source="doctor"
+        queryset=doctor.objects.all(),
+        write_only=True,
+        source="doctor",
+        required=False,
+        allow_null=True
     )
+
 
 
     pet = PetSerializer(many=True, read_only=True)
@@ -115,7 +120,11 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
         queryset=online_consultation_type.objects.all(), many=True, write_only=True, source="online_consultation_type"
     )
     doctor_id = serializers.PrimaryKeyRelatedField(
-        queryset=doctor.objects.all(), write_only=True, source="doctor"
+        queryset=doctor.objects.all(),
+        write_only=True,
+        source="doctor",
+        required=False,
+        allow_null=True
     )
 
     pet = PetSerializer(many=True, read_only=True)
@@ -154,7 +163,11 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
         queryset=vaccination.objects.all(), many=True, write_only=True, source="vaccination"
     )
     doctor_id = serializers.PrimaryKeyRelatedField(
-        queryset=doctor.objects.all(), write_only=True, source="doctor"
+        queryset=doctor.objects.all(),
+        write_only=True,
+        source="doctor",
+        required=False,
+        allow_null=True
     )
     address_id = serializers.PrimaryKeyRelatedField(
         queryset=customer_address.objects.all(), write_only=True, source="address"
