@@ -136,7 +136,7 @@ class service_booking(models.Model):
     booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     service_provider = models.ForeignKey(service_provider, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    services = models.ManyToManyField('masters.service')
+    services = models.ManyToManyField('masters.service', null=True, blank=True)
     pets = models.ManyToManyField('pet.pet')
     date = models.DateTimeField()
     address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
@@ -155,7 +155,7 @@ class day_care_booking(models.Model):
 
     booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    daycare = models.ForeignKey("daycare.day_care", on_delete=models.CASCADE)
+    daycare = models.ForeignKey("daycare.day_care", on_delete=models.CASCADE, null=True, blank=True)
     pets = models.ManyToManyField('pet.pet')
     food_selection = models.ManyToManyField('masters.food_menu')  # ✅ Keep only this one
 

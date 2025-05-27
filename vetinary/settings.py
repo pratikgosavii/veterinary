@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'vendor',
     'serviceprovider',
     'rest_framework',
+    'corsheaders',
     'drf_yasg',
 ]
 
