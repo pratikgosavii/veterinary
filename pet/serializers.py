@@ -206,8 +206,13 @@ class test_booking_Serializer(serializers.ModelSerializer):
         queryset=pet.objects.all(), many=True, write_only=True, source='pet'
     )
     doctor_id = serializers.PrimaryKeyRelatedField(
-        queryset=doctor.objects.all(), write_only=True, source='doctor'
+        queryset=doctor.objects.all(),
+        write_only=True,
+        source="doctor",
+        required=False,
+        allow_null=True
     )
+    
     address_id = serializers.PrimaryKeyRelatedField(
         queryset=customer_address.objects.all(), write_only=True, source="address"
     )
