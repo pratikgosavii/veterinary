@@ -51,9 +51,7 @@ urlpatterns = [
     path('admin-all-open-booking/', admin_all_open_booking, name='admin_all_open_booking'),
 
 
-
-
-
+    
 
 ] + router.urls
 

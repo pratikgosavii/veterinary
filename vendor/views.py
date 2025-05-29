@@ -9,6 +9,7 @@ from django.db.models import Count
 
 
 
+from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework import viewsets
 from itertools import chain
@@ -505,6 +506,20 @@ def admin_all_booking(request):
             # Apply status filter (if present)
             if status_filter and obj.status != status_filter:
                 continue
+            
+
+            url_update_name = f"{appt_type.lower().replace(' ', '_')}_update"  # e.g. 'online_consultation_update'
+            url_delete_name = f"{appt_type.lower().replace(' ', '_')}_delete"
+
+            try:
+                url_update = reverse(url_update_name, args=[obj.id])
+            except:
+                url_update = "#"
+
+            try:
+                url_delete = reverse(url_delete_name, args=[obj.id])
+            except:
+                url_delete = "#"
 
             data.append({
                 "id": obj.id,
@@ -516,10 +531,14 @@ def admin_all_booking(request):
                 "provider_type": appt_type,
                 "provider_name": f"{provider_user.first_name} {provider_user.last_name}" if provider_user else "N/A",
                 "location": location,
+                "booking_id": obj.booking_id,
+                "url_update": url_update,
+                "url_delete": url_delete,
             })
         return data
 
     appointments = []
+    appointments += serialize(consultation_appointment.objects.all(), "Consultation")
     appointments += serialize(online_consultation_appointment.objects.all(), "Online Consultation")
     appointments += serialize(vaccination_appointment.objects.all(), "Vaccination")
     appointments += serialize(test_booking.objects.all(), "Test")

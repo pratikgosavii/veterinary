@@ -33,6 +33,27 @@ urlpatterns = [
     path('delete-order/<order_id>', delete_order, name='delete_order'),
     path('get-order/', ListOrderView.as_view(), name='list_order'),
 
+
+    path('online_consultation/update/<instance_id>', OnlineConsultationUpdateView, name='online_consultation_update'),
+    path('online_consultation/<instance_id>', OnlineConsultationDeleteView, name='online_consultation_delete'),
+
+    path('consultation/update/<instance_id>', ConsultationUpdateView, name='consultation_update'),
+    path('consultation/<instance_id>', ConsultationDeleteView, name='consultation_delete'),
+
+    path('vaccination/<instance_id>', VaccinationUpdateView, name='vaccination_update'),
+    path('vaccination/<instance_id>', VaccinationDeleteView, name='vaccination_delete'),
+
+    path('test/<instance_id>', TestBookingUpdateView, name='test_update'),
+    path('test/<instance_id>', TestBookingDeleteView, name='test_delete'),
+
+    path('daycare/<instance_id>', DayCareUpdateView, name='daycare_update'),
+    path('daycare/<instance_id>', DayCareDeleteView, name='daycare_delete'),
+
+    path('service/<instance_id>', ServiceBookingUpdateView, name='service_update'),
+    path('service/<instance_id>', ServiceBookingDeleteView, name='service_delete'),
+
+
+
     path('reports/consultation/', ConsultationReportListView.as_view()),
     path('reports/online-consultation/', OnlineConsultationReportListView.as_view()),
     path('reports/test-booking/', TestBookingReportListView.as_view()),

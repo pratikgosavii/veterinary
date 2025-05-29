@@ -30,3 +30,6 @@ class day_care(models.Model):
     amenities = models.ManyToManyField('masters.amenity', null=True, blank=True)
     rating = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.code

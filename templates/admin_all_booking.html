@@ -132,6 +132,8 @@
                                                     <th>Location </th>	
                                                 <th>  Amount</th>
                                                 <th>	Status</th>
+                                                    <th>Action</th>
+
                                             </tr>
                                             </thead>
                                             <tbody id="tableBody">
@@ -147,7 +149,16 @@
                                                     <td>{{ i.location }}</td>
                                                     <td>{{ i.amount }}</td>
                                                     <td>{{ i.status }}</td>
-                                                </tr>
+                                                   <td>
+                                                        <a href="{{ i.url_update }}">
+                                                            <i class="bi bi-pencil-square text-primary" title="Edit"></i>
+                                                        </a>
+                                                        <a href="{{ i.url_delete }}">
+                                                            <i class="bi bi-trash text-danger" title="Delete"></i>
+                                                        </a>
+                                                    </td>
+
+                                                    </tr>
                                                 {% endfor %}
                                             {% endif %}
                                             </tbody>

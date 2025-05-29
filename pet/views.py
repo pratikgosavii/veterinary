@@ -554,3 +554,184 @@ class GenerateOrJoinCall(APIView):
             "api_key": api_key,
             "call_id": call_id
         })
+    
+
+
+
+def OnlineConsultationUpdateView(request, instance_id):
+
+    instance = online_consultation_appointment.objects.get(id = instance_id)
+    forms = OnlineConsultationAppointmentForm(instance = instance, user=request.user)
+
+    if request.method == "POST":
+
+        forms = OnlineConsultationAppointmentForm(request.POST, request.FILES, instance = instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('admin_all_booking')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'online_consultation.html', context)
+    else:
+        return render(request, 'online_consultation.html', { 'form' : forms})
+
+def OnlineConsultationDeleteView(request, instance_id):
+
+    online_consultation_appointment.objects.get(id = instance_id).delete()
+
+    return redirect('admin_all_booking')
+
+
+
+def ConsultationUpdateView(request, instance_id):
+
+    instance = consultation_appointment.objects.get(id = instance_id)
+    forms = ConsultationAppointmentForm(instance = instance, user=request.user)
+
+    if request.method == "POST":
+
+        forms = ConsultationAppointmentForm(request.POST, request.FILES, instance = instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('admin_all_booking')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'consultation.html', context)
+    else:
+        return render(request, 'consultation.html', { 'form' : forms})
+    
+def ConsultationDeleteView(request, instance_id):
+
+    consultation_appointment.objects.get(id = instance_id).delete()
+
+    return redirect('admin_all_booking')
+
+
+
+
+def VaccinationUpdateView(request, instance_id):
+
+    instance = vaccination_appointment.objects.get(id = instance_id)
+    forms = VaccinationAppointmentForm(instance = instance, user=request.user)
+
+    if request.method == "POST":
+
+        forms = VaccinationAppointmentForm(request.POST, request.FILES, instance = instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('admin_all_booking')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'vaccination_booking.html', context)
+    else:
+        return render(request, 'vaccination_booking.html', { 'form' : forms})
+
+
+def VaccinationDeleteView(request, instance_id):
+
+    vaccination_appointment.objects.get(id = instance_id).delete()
+
+    return redirect('admin_all_booking')
+
+
+
+def TestBookingUpdateView(request, instance_id):
+
+    instance = test_booking.objects.get(id = instance_id)
+    forms = TestBookingForm(instance = instance, user=request.user)
+
+    if request.method == "POST":
+
+        forms = TestBookingForm(request.POST, request.FILES, instance = instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('admin_all_booking')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'test_boking.html', context)
+    else:
+        return render(request, 'test_booking.html', { 'form' : forms})
+
+
+def TestBookingDeleteView(request, instance_id):
+
+    test_booking.objects.get(id = instance_id).delete()
+
+    return redirect('admin_all_booking')
+
+
+
+def DayCareUpdateView(request, instance_id):
+
+    instance = day_care_booking.objects.get(id = instance_id)
+    forms = DayCareBookingForm(instance = instance, user=request.user)
+
+    if request.method == "POST":
+
+        forms = DayCareBookingForm(request.POST, request.FILES, instance = instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('admin_all_booking')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'dayCare_booking.html', context)
+    else:
+        return render(request, 'dayCare_booking.html', { 'form' : forms})
+
+
+def DayCareDeleteView(request, instance_id):
+
+    day_care_booking.objects.get(id = instance_id).delete()
+
+    return redirect('admin_all_booking')
+
+
+
+
+def ServiceBookingUpdateView(request, instance_id):
+
+    instance = service_booking.objects.get(id = instance_id)
+    forms = ServiceBookingForm(instance = instance, user=request.user)
+
+    if request.method == "POST":
+
+        forms = ServiceBookingForm(request.POST, request.FILES, instance = instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('admin_all_booking')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'service_booking.html', context)
+    else:
+        return render(request, 'service_booking.html', { 'form' : forms})
+
+
+def ServiceBookingDeleteView(request, instance_id):
+
+    service_booking.objects.get(id = instance_id).delete()
+
+    return redirect('admin_all_booking')
