@@ -23,10 +23,12 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 
 
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+
 
 class PetViewSet(ModelViewSet):
     serializer_class = PetSerializer
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     permission_classes = [IsCustomer]  # Or use IsAuthenticated if needed
 
     def get_queryset(self):
