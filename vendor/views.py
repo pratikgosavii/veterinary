@@ -482,33 +482,54 @@ def update_kyc(request, kyc_id):
 
 
 
+from django.utils.dateparse import parse_datetime
 
 
 def admin_all_booking(request):
+    status_filter = request.GET.get("status")
+    user_filter = request.GET.get("user")
+    date_from = request.GET.get("date_from")
+    date_to = request.GET.get("date_to")
 
     def serialize(qs, appt_type):
-        status_filter = request.GET.get("status")  # Get status from GET params
-
         data = []
         for obj in qs:
-            # Determine provider (doctor or service provider)
+            # Apply filters
+            if status_filter and obj.status != status_filter:
+                continue
+
+            if user_filter and str(obj.user.id) != user_filter:
+                continue
+
+            if date_from and getattr(obj, "date", None):
+                dt = parse_datetime(date_from)
+                if dt is not None:
+                    dt = make_aware(dt)
+                    if obj.date < dt:
+                        continue
+
+
+            if date_to and getattr(obj, "date", None):
+                dt = parse_datetime(date_to)
+                if dt is not None:
+                    dt = make_aware(dt)
+                    if obj.date > dt:
+                        continue
+
+
+            # Provider logic
             provider_user = None
             if hasattr(obj, 'doctor') and obj.doctor:
                 provider_user = obj.doctor.user
             elif hasattr(obj, 'service_provider') and obj.service_provider:
                 provider_user = obj.service_provider.user
 
-            # Fallback location or address field
+            # Fallback location
             location = ""
             if hasattr(obj, 'address') and obj.address:
                 location = str(obj.address)
 
-            # Apply status filter (if present)
-            if status_filter and obj.status != status_filter:
-                continue
-            
-
-            url_update_name = f"{appt_type.lower().replace(' ', '_')}_update"  # e.g. 'online_consultation_update'
+            url_update_name = f"{appt_type.lower().replace(' ', '_')}_update"
             url_delete_name = f"{appt_type.lower().replace(' ', '_')}_delete"
 
             try:
