@@ -132,6 +132,18 @@ class pet_test_booking_ViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
+class past_vaccination_ViewSet(ModelViewSet):
+    
+    serializer_class = PastVaccinationSerializer
+    permission_classes = [IsCustomer]
+    parser_classes = [MultiPartParser, FormParser]  # For file uploads
+
+    def get_queryset(self):
+        return PastVaccination.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 

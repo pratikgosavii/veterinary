@@ -322,3 +322,34 @@ class TestReportView(APIView):
         except TestBookingReport.DoesNotExist:
             return Response({'error': 'Not found'}, status=404)
 
+
+class VaccinationReportView(APIView):
+
+    permission_classes = [IsCustomer]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get(self, request):
+        reports = VaccinationBookingReport.objects.all()
+        serializer = VaccinationBookingReportSerializer(reports, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        
+        serializer = TestBookingReportSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def delete(self, request):
+        report_id = request.data.get('report_id')
+        if not report_id:
+            return Response({'error': 'report_id required'}, status=400)
+
+        try:
+            report = TestBookingReport.objects.get(id=report_id)
+            report.delete()
+            return Response({'status': 'deleted'})
+        except TestBookingReport.DoesNotExist:
+            return Response({'error': 'Not found'}, status=404)
+

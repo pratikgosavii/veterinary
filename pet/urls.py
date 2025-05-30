@@ -11,6 +11,7 @@ from .views import pet_test_booking_ViewSet
 
 router = DefaultRouter()
 router.register(r'pet-test-booking', pet_test_booking_ViewSet, basename='pet-test-booking')
+router.register(r'pet-past-vaccination', past_vaccination_ViewSet, basename='past_vaccination_ViewSet')
 router.register(r'pet-vaccination-appointment', vaccination_appointment_ViewSet, basename='pet-vaccination-appointment')
 router.register(r'pet-consultation-appointment', consultation_appointment_ViewSet, basename='pet-consultation-appointment')
 router.register(r'pet-online-consultation-appointment', online_consultation_appointment_ViewSet, basename='pet-online-consultation-appointment')
@@ -51,7 +52,6 @@ urlpatterns = [
 
     path('service/<instance_id>', ServiceBookingUpdateView, name='service_update'),
     path('service/<instance_id>', ServiceBookingDeleteView, name='service_delete'),
-
 
 
     path('reports/consultation/', ConsultationReportListView.as_view()),

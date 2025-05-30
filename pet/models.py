@@ -239,3 +239,13 @@ class order_item(models.Model):
     order = models.ForeignKey(order, related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey(product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+
+
+
+
+class PastVaccination(models.Model):
+    user = models.ForeignKey('users.user', on_delete=models.CASCADE, related_name='reports')
+    name = models.CharField(max_length=50)
+    report = models.FileField(upload_to='reports/test_booking/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    

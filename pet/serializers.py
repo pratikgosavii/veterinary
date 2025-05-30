@@ -383,3 +383,10 @@ class OrderSerializer(serializers.ModelSerializer):
 
         return order_instance
     
+
+
+class PastVaccinationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PastVaccination
+        fields = ['id', 'name', 'report', 'uploaded_at']
+        read_only_fields = ['uploaded_at']

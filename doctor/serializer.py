@@ -91,3 +91,20 @@ class TestBookingReportSerializer(serializers.ModelSerializer):
     def get_booking_details(self, obj):
         from pet.serializers import test_booking_Serializer
         return test_booking_Serializer(obj.booking).data
+
+
+class VaccinationBookingReportSerializer(serializers.ModelSerializer):
+
+    booking = serializers.PrimaryKeyRelatedField(
+        queryset=vaccination_appointment.objects.all(),
+        write_only=True
+    )
+    booking_details = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = VaccinationBookingReport
+        fields = ['id', 'report', 'booking', 'booking_details', 'uploaded_at']
+
+    def get_booking_details(self, obj):
+        from pet.serializers import vaccination_appointment_Serializer
+        return vaccination_appointment_Serializer(obj.booking).data

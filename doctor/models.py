@@ -69,6 +69,12 @@ class TestBookingReport(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
 
+class VaccinationBookingReport(models.Model):
+    booking = models.ForeignKey(vaccination_appointment, on_delete=models.CASCADE, related_name='reports')
+    report = models.FileField(upload_to='reports/test_booking/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+
 
 class Apoinments_video_details(models.Model):
     appoinment_id = models.CharField(max_length=150)

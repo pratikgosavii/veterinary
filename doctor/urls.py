@@ -34,6 +34,7 @@ urlpatterns = [
     path('consultation-reports/', ConsultationReportView.as_view()),
     path('online-consultation-reports/', OnlineConsultationReportView.as_view()),
     path('test-reports/', TestReportView.as_view()),
+    path('vaccination-reports/', VaccinationReportView.as_view()),
     
     path('appointment-video-list/', appointment_video_list.as_view()),
 
