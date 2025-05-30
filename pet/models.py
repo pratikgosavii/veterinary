@@ -57,7 +57,7 @@ class consultation_appointment(models.Model):
     
     booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    pet = models.ForeignKey('pet.pet', on_delete=models.CASCADE)
+    pet = models.ManyToManyField("pet.pet")
     consultation_type = models.ForeignKey('masters.consultation_type', on_delete=models.CASCADE)
     symptom = models.ForeignKey('masters.symptom', on_delete=models.CASCADE)
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
@@ -77,7 +77,7 @@ class online_consultation_appointment(models.Model):
     
     booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    pet = models.ForeignKey('pet.pet', on_delete=models.CASCADE)
+    pet = models.ManyToManyField("pet.pet")
     online_consultation_type = models.ForeignKey('masters.online_consultation_type', on_delete=models.CASCADE)
     symptom = models.ForeignKey('masters.symptom', on_delete=models.CASCADE)
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
@@ -97,7 +97,7 @@ class vaccination_appointment(models.Model):
     
     booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    pet = models.ForeignKey('pet.pet', on_delete=models.CASCADE)
+    pet = models.ManyToManyField("pet.pet")
     vaccination = models.ForeignKey('masters.vaccination', on_delete=models.CASCADE)
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
@@ -118,7 +118,7 @@ class test_booking(models.Model):
     
     booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    pet = models.ForeignKey('pet.pet', on_delete=models.CASCADE)
+    pet = models.ManyToManyField("pet.pet")
     test = models.ForeignKey('masters.test', on_delete=models.CASCADE)
     doctor = models.ForeignKey('doctor.doctor', on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField()
@@ -141,7 +141,7 @@ class service_booking(models.Model):
     service_provider = models.ForeignKey(service_provider, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     services = models.ForeignKey('masters.service', null=True, blank=True, on_delete=models.CASCADE)
-    pets = models.ForeignKey('pet.pet', on_delete=models.CASCADE)
+    pets = models.ManyToManyField("pet.pet")
     date = models.DateTimeField()
     address = models.ForeignKey('masters.customer_address', on_delete=models.CASCADE)
     at_home = models.BooleanField(default=False)
@@ -163,7 +163,7 @@ class day_care_booking(models.Model):
     booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     daycare = models.ForeignKey("daycare.day_care", on_delete=models.CASCADE, null=True, blank=True)
-    pets = models.ForeignKey('pet.pet', on_delete=models.CASCADE)
+    pets = models.ManyToManyField("pet.pet")
     food_selection = models.ManyToManyField('masters.food_menu')  # ✅ Keep only this one
 
     date_from = models.DateField()
