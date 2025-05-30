@@ -217,9 +217,8 @@ class test_booking_Serializer(serializers.ModelSerializer):
     class Meta:
         model = test_booking
         fields = [
-            'id', 'pet', 'pet_ids',  # Include both read and write fields
+            'id', 'pet', 'pet_ids',
             'test', 'test_id',
-            'lab', 'lab_id',
             'address', 'address_id',
             'date', 'payment_status', 'amount'
         ]
@@ -227,7 +226,7 @@ class test_booking_Serializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context['request']
-        pets = validated_data.pop('pet')  # This contains a list of pet instances
+        pets = validated_data.pop('pet')
         validated_data['user'] = request.user
         instance = test_booking.objects.create(**validated_data)
         instance.pet.set(pets)
