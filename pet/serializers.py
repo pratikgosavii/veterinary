@@ -58,22 +58,27 @@ from doctor.models import *
 
     
 class consultation_appointment_Serializer(serializers.ModelSerializer):
-    pet_ids = serializers.PrimaryKeyRelatedField(
+    # Single pet (ForeignKey)
+    pet_id = serializers.PrimaryKeyRelatedField(
         queryset=pet.objects.all(),
-        many=True,
         write_only=True,
         source='pet'
     )
-    symptom_id = serializers.PrimaryKeyRelatedField(
+
+    # Multiple symptoms (ManyToMany)
+    symptom_ids = serializers.PrimaryKeyRelatedField(
         queryset=symptom.objects.all(),
+        many=True,
         write_only=True,
         source='symptom'
     )
+
     consultation_type_id = serializers.PrimaryKeyRelatedField(
         queryset=consultation_type.objects.all(),
         write_only=True,
         source='consultation_type'
     )
+
     doctor_id = serializers.PrimaryKeyRelatedField(
         queryset=doctor.objects.all(),
         write_only=True,
@@ -82,16 +87,17 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
         allow_null=True
     )
 
-    pet = PetSerializer(many=True, read_only=True)
-    symptom = symptom_serializer(read_only=True)
+    # Read-only nested serializers
+    pet = PetSerializer(read_only=True)
+    symptom = symptom_serializer(many=True, read_only=True)
     consultation_type = consultation_type_serializer(read_only=True)
     doctor = doctor_serializer(read_only=True)
 
     class Meta:
         model = consultation_appointment
         fields = [
-            'id', 'pet', 'pet_ids',
-            'symptom', 'symptom_id',
+            'id', 'pet', 'pet_id',
+            'symptom', 'symptom_ids',
             'consultation_type', 'consultation_type_id',
             'doctor', 'doctor_id',
             'date', 'payment_status', 'amount'
@@ -100,10 +106,15 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context['request']
-        pets = validated_data.pop('pet')
+        symptoms = validated_data.pop('symptom')
         validated_data['user'] = request.user
+
+        # Create the appointment
         instance = consultation_appointment.objects.create(**validated_data)
-        instance.pet.set(pets)
+
+        # Set the ManyToMany field properly
+        instance.symptom.set(symptoms)
+
         return instance
 
 
@@ -118,10 +129,11 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
         write_only=True,
         source="pet"
     )
-    symptom_id = serializers.PrimaryKeyRelatedField(
+    symptom_ids = serializers.PrimaryKeyRelatedField(
         queryset=symptom.objects.all(),
+        many=True,
         write_only=True,
-        source="symptom"
+        source='symptom'
     )
     online_consultation_type_id = serializers.PrimaryKeyRelatedField(
         queryset=online_consultation_type.objects.all(),
@@ -137,7 +149,7 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
     )
 
     pet = PetSerializer(many=True, read_only=True)
-    symptom = symptom_serializer(read_only=True)
+    symptom = symptom_serializer(many=True, read_only=True)
     doctor = doctor_serializer(read_only=True)
     online_consultation_type = online_consultation_type_serializer(read_only=True)
 
@@ -145,7 +157,7 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
         model = online_consultation_appointment
         fields = [
             'id', 'pet', 'pet_ids',
-            'symptom', 'symptom_id',
+            'symptom', 'symptom_ids',
             'doctor', 'doctor_id',
             'date', 'payment_status',
             'online_consultation_type', 'online_consultation_type_id',
@@ -153,12 +165,13 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['user', 'booking_id']
 
+    
     def create(self, validated_data):
         request = self.context['request']
-        pets = validated_data.pop('pet')
+        symptoms = validated_data.pop('symptom')
         validated_data['user'] = request.user
         instance = online_consultation_appointment.objects.create(**validated_data)
-        instance.pet.set(pets)
+        instance.symptom.set(symptoms)
         return instance
 
 
