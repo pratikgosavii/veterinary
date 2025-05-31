@@ -245,6 +245,7 @@ class order_item(models.Model):
 
 class PastVaccination(models.Model):
     user = models.ForeignKey('users.user', on_delete=models.CASCADE, related_name='reports')
+    pet = models.ForeignKey('pet.pet', on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     report = models.FileField(upload_to='reports/test_booking/')
     uploaded_at = models.DateTimeField(auto_now_add=True)

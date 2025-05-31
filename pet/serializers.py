@@ -388,5 +388,5 @@ class OrderSerializer(serializers.ModelSerializer):
 class PastVaccinationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PastVaccination
-        fields = ['id', 'name', 'report', 'uploaded_at']
+        fields = ['id', 'name', 'report', 'pet', 'uploaded_at']
         read_only_fields = ['uploaded_at']
