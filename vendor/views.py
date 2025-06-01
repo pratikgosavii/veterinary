@@ -183,14 +183,12 @@ def vendor_booking_detail_view(request, type, id):
     elif type == "daycare":
         if not user.is_daycare:
             return Response({"detail": "Unauthorized"}, status=403)
-        daycare_instance = day_care.objects.get(user=user)
-        instance = model_class.objects.filter(pk=id, daycare=daycare_instance).first()
+        instance = model_class.objects.filter(pk=id).first()
 
     elif type == "service":
         if not user.is_service_provider:
             return Response({"detail": "Unauthorized"}, status=403)
-        service_instance = service_provider.objects.get(user=user)
-        instance = model_class.objects.filter(pk=id, service_provider=service_instance).first()
+        instance = model_class.objects.filter(pk=id).first()
 
     else:
         instance = None
