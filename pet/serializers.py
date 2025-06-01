@@ -11,6 +11,13 @@ from .models import *
 
 
 class PetSerializer(serializers.ModelSerializer):
+
+    vaccinations = serializers.SerializerMethodField()
+
+    def get_vaccinations(self, obj):
+        vaccinations = pet_vaccination.objects.filter(pet=obj)
+        return PastVaccinationSerializer(vaccinations, many=True).data
+
     class Meta:
         model = pet
         fields = '__all__'
