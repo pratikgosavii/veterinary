@@ -156,6 +156,7 @@ from users.permissions import *
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def vendor_booking_detail_view(request, type, id):
     user = request.user
 
@@ -178,17 +179,20 @@ def vendor_booking_detail_view(request, type, id):
     if type in ["consultation", "online_consultation", "vaccination", "test"]:
         if not user.is_doctor:
             return Response({"detail": "Unauthorized"}, status=403)
-        instance = model_class.objects.filter(pk=id).first()
+        doctor_instance = doctor.objects.get(user=user)
+        instance = model_class.objects.filter(pk=id, doctor=doctor_instance).first()
 
     elif type == "daycare":
         if not user.is_daycare:
             return Response({"detail": "Unauthorized"}, status=403)
-        instance = model_class.objects.filter(pk=id).first()
+        daycare_instance = day_care.objects.get(user=user)
+        instance = model_class.objects.filter(pk=id, daycare=daycare_instance).first()
 
     elif type == "service":
         if not user.is_service_provider:
             return Response({"detail": "Unauthorized"}, status=403)
-        instance = model_class.objects.filter(pk=id).first()
+        service_instance = service_provider.objects.get(user=user)
+        instance = model_class.objects.filter(pk=id, service_provider=service_instance).first()
 
     else:
         instance = None

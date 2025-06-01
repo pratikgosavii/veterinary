@@ -25,7 +25,9 @@ urlpatterns = [
     path('retrive-booking-daycare/<int:pk>/', DayCareBookingDetailView.as_view(), name='DayCareBookingDetailView'),
     path('list-day-care-bookings/', ListDayCareBookings.as_view(), name='list_daycare_bookings'),
 
-    
+    path('customer-booking-detail/<str:type>/<int:id>/', customer_booking_detail_view, name='customer-booking-detail'),
+
+
     path('cart/', CartView.as_view(), name='cart'),
     path('cart/<int:pk>/delete/', CartdeleteView.as_view(), name='cart'),
     
