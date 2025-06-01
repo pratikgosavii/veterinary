@@ -61,11 +61,11 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
     # Single pet (ForeignKey)
     pet_id = serializers.PrimaryKeyRelatedField(
         queryset=pet.objects.all(),
+        many=True,
         write_only=True,
         source='pet'
     )
 
-    # Multiple symptoms (ManyToMany)
     symptom_ids = serializers.PrimaryKeyRelatedField(
         queryset=symptom.objects.all(),
         many=True,
@@ -87,8 +87,8 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
         allow_null=True
     )
 
-    # Read-only nested serializers
-    pet = PetSerializer(read_only=True)
+    # Read-only nested fields
+    pet = PetSerializer(many=True, read_only=True)
     symptom = symptom_serializer(many=True, read_only=True)
     consultation_type = consultation_type_serializer(read_only=True)
     doctor = doctor_serializer(read_only=True)
@@ -100,22 +100,21 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
             'symptom', 'symptom_ids',
             'consultation_type', 'consultation_type_id',
             'doctor', 'doctor_id',
-            'date', 'payment_status', 'amount'
+            'date', 'payment_status', 'status', 'amount', 'booking_id'
         ]
         read_only_fields = ['user', 'booking_id']
 
     def create(self, validated_data):
         request = self.context['request']
         symptoms = validated_data.pop('symptom')
+        pets = validated_data.pop('pet')
         validated_data['user'] = request.user
 
-        # Create the appointment
         instance = consultation_appointment.objects.create(**validated_data)
-
-        # Set the ManyToMany field properly
         instance.symptom.set(symptoms)
-
+        instance.pet.set(pets)
         return instance
+
 
 
 
@@ -400,9 +399,16 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class PastVaccinationSerializer(serializers.ModelSerializer):
     
+    pet_id = serializers.PrimaryKeyRelatedField(
+        queryset=pet.objects.all(),
+        write_only=True,
+        source='pet'
+    )
+
+    # Read-only nested pet details
     pet = PetSerializer(read_only=True)
 
     class Meta:
         model = PastVaccination
-        fields = ['id', 'name', 'report', 'pet', 'uploaded_at']
+        fields = ['id', 'name', 'report', 'pet_id', 'pet', 'uploaded_at']
         read_only_fields = ['uploaded_at']
