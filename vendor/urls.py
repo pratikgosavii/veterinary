@@ -35,6 +35,7 @@ urlpatterns = [
    
     path('all-open-bookings/', all_open_bookings.as_view({'get': 'list'}), name='all_open_bookings'),
     path('all-vendor-bookings/', all_vendor_bookings.as_view({'get': 'list'}), name='all_vendor_bookings'),
+    path('vendor-booking-detail/<str:type>/<int:id>/', vendor_booking_detail_view, name='vendor-booking-detail'),
 
     path('accept-order/', accept_order.as_view(), name='accept_order'),
 

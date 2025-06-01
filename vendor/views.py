@@ -150,6 +150,60 @@ class all_vendor_bookings(viewsets.ViewSet):
     
 
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def vendor_booking_detail_view(request, type, id):
+    user = request.user
+
+    # Map type to model and serializer
+    model_map = {
+        "consultation": (consultation_appointment, consultation_appointment_Serializer),
+        "online_consultation": (online_consultation_appointment, online_consultation_appointment_Serializer),
+        "vaccination": (vaccination_appointment, vaccination_appointment_Serializer),
+        "test": (test_booking, test_booking_Serializer),
+        "daycare": (day_care_booking, DayCareBookingSerializer),
+        "service": (service_booking, service_booking_Serializer),
+    }
+
+    if type not in model_map:
+        return Response({"detail": "Invalid type"}, status=400)
+
+    model_class, serializer_class = model_map[type]
+
+    # Filter logic based on user type
+    if type in ["consultation", "online_consultation", "vaccination", "test"]:
+        if not user.is_doctor:
+            return Response({"detail": "Unauthorized"}, status=403)
+        doctor_instance = doctor.objects.get(user=user)
+        instance = model_class.objects.filter(pk=id, doctor=doctor_instance).first()
+
+    elif type == "daycare":
+        if not user.is_daycare:
+            return Response({"detail": "Unauthorized"}, status=403)
+        daycare_instance = day_care.objects.get(user=user)
+        instance = model_class.objects.filter(pk=id, daycare=daycare_instance).first()
+
+    elif type == "service":
+        if not user.is_service_provider:
+            return Response({"detail": "Unauthorized"}, status=403)
+        service_instance = service_provider.objects.get(user=user)
+        instance = model_class.objects.filter(pk=id, service_provider=service_instance).first()
+
+    else:
+        instance = None
+
+    if not instance:
+        return Response({"detail": "Booking not found"}, status=404)
+
+    serializer = serializer_class(instance)
+    return Response(serializer.data)
+
+
 
 
 class all_bookings_count(viewsets.ViewSet):
