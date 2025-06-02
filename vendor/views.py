@@ -219,7 +219,7 @@ class all_bookings_count(viewsets.ViewSet):
         if user.is_doctor:
 
         
-            doctor_instance = doctor.objects.get(user = request.user)  # Assuming doctor is related to User
+            doctor_instance = doctor.objects.filter(user = request.user)  # Assuming doctor is related to User
 
             # Consultation Appointment Report
             consultation_counts = consultation_appointment.objects.filter(
@@ -270,7 +270,7 @@ class all_bookings_count(viewsets.ViewSet):
 
         elif user.is_daycare:
 
-            daycare_instance = day_care.objects.get(user = request.user)  # Assuming daycare is related to User
+            daycare_instance = day_care.objects.filter(user = request.user)  # Assuming daycare is related to User
 
             # Consultation Appointment Report
             daycare_counts = day_care_booking.objects.filter(
@@ -304,7 +304,7 @@ class all_bookings_count(viewsets.ViewSet):
 
         elif user.is_service_provider:
 
-            daycare_instance = service_booking.objects.get(user = request.user)  # Assuming daycare is related to User
+            daycare_instance = service_booking.objects.filter(user = request.user)  # Assuming daycare is related to User
 
             # Consultation Appointment Report
             daycare_counts = service_booking.objects.filter(
