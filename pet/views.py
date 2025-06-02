@@ -362,49 +362,33 @@ from users.permissions import *
 
 
 @api_view(['GET'])
-@permission_classes([IsCustomer])
+@permission_classes([IsCustomer])  # Your custom permission to ensure user is a customer
 def customer_booking_detail_view(request, type, id):
     user = request.user
 
-    # Map type to model and serializer
     model_map = {
-        "consultation": (consultation_appointment, consultation_appointment_Serializer),
-        "online_consultation": (online_consultation_appointment, online_consultation_appointment_Serializer),
-        "vaccination": (vaccination_appointment, vaccination_appointment_Serializer),
-        "test": (test_booking, test_booking_Serializer),
-        "daycare": (day_care_booking, DayCareBookingSerializer),
-        "service": (service_booking, service_booking_Serializer),
+        "consultation": (consultation_appointment, consultation_appointment_Serializer, "customer"),
+        "online_consultation": (online_consultation_appointment, online_consultation_appointment_Serializer, "customer"),
+        "vaccination": (vaccination_appointment, vaccination_appointment_Serializer, "customer"),
+        "test": (test_booking, test_booking_Serializer, "customer"),
+        "daycare": (day_care_booking, DayCareBookingSerializer, "customer"),
+        "service": (service_booking, service_booking_Serializer, "customer"),
     }
 
     if type not in model_map:
         return Response({"detail": "Invalid type"}, status=400)
 
-    model_class, serializer_class = model_map[type]
+    model_class, serializer_class, user_field = model_map[type]
 
-    # Filter logic based on user type
-    if type in ["consultation", "online_consultation", "vaccination", "test"]:
-        if not user.is_doctor:
-            return Response({"detail": "Unauthorized"}, status=403)
-        doctor_instance = doctor.objects.get(user=user)
-        instance = model_class.objects.filter(pk=id, doctor=doctor_instance).first()
+    # Filter the booking by the customer user
+    # Assuming each booking model has a foreign key field to the customer (e.g. 'customer')
+    # and Customer has a OneToOne or ForeignKey relation to User
 
-    elif type == "daycare":
-        if not user.is_daycare:
-            return Response({"detail": "Unauthorized"}, status=403)
-        daycare_instance = day_care.objects.get(user=user)
-        instance = model_class.objects.filter(pk=id, daycare=daycare_instance).first()
-
-    elif type == "service":
-        if not user.is_service_provider:
-            return Response({"detail": "Unauthorized"}, status=403)
-        service_instance = service_provider.objects.get(user=user)
-        instance = model_class.objects.filter(pk=id, service_provider=service_instance).first()
-
-    else:
-        instance = None
-
-    if not instance:
-        return Response({"detail": "Booking not found"}, status=404)
+    try:
+        # Get the booking instance with matching id and customer user
+        instance = model_class.objects.get(pk=id, **{user_field: user.customer})
+    except model_class.DoesNotExist:
+        return Response({"detail": "Booking not found or you don't have permission"}, status=404)
 
     serializer = serializer_class(instance)
     return Response(serializer.data)
