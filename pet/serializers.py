@@ -11,7 +11,6 @@ from .models import *
 
 
 class PetSerializer(serializers.ModelSerializer):
-
     vaccinations = serializers.SerializerMethodField()
 
     def get_vaccinations(self, obj):
@@ -409,13 +408,12 @@ class PastVaccinationSerializer(serializers.ModelSerializer):
     pet_id = serializers.PrimaryKeyRelatedField(
         queryset=pet.objects.all(),
         write_only=True,
+        many=True,  # Because ManyToMany
         source='pet'
     )
-
-    # Read-only nested pet details
-    pet = PetSerializer(read_only=True)
+    pet = PetSerializer(read_only=True, many=True)  # Return list of pet details
 
     class Meta:
-        model = PastVaccination
-        fields = ['id', 'name', 'report', 'pet_id', 'pet', 'uploaded_at']
-        read_only_fields = ['uploaded_at']
+        model = pet_vaccination
+        fields = ['id', 'age', 'additional_questions', 'date_given', 'pet_id', 'pet']
+        read_only_fields = ['date_given']
