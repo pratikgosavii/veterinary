@@ -367,12 +367,12 @@ def customer_booking_detail_view(request, type, id):
     user = request.user
 
     model_map = {
-        "consultation": (consultation_appointment, consultation_appointment_Serializer, "customer"),
-        "online_consultation": (online_consultation_appointment, online_consultation_appointment_Serializer, "customer"),
-        "vaccination": (vaccination_appointment, vaccination_appointment_Serializer, "customer"),
-        "test": (test_booking, test_booking_Serializer, "customer"),
-        "daycare": (day_care_booking, DayCareBookingSerializer, "customer"),
-        "service": (service_booking, service_booking_Serializer, "customer"),
+        "consultation": (consultation_appointment, consultation_appointment_Serializer, "user"),
+        "online_consultation": (online_consultation_appointment, online_consultation_appointment_Serializer, "user"),
+        "vaccination": (vaccination_appointment, vaccination_appointment_Serializer, "user"),
+        "test": (test_booking, test_booking_Serializer, "user"),
+        "daycare": (day_care_booking, DayCareBookingSerializer, "user"),
+        "service": (service_booking, service_booking_Serializer, "user"),
     }
 
     if type not in model_map:
@@ -386,7 +386,7 @@ def customer_booking_detail_view(request, type, id):
 
     try:
         # Get the booking instance with matching id and customer user
-        instance = model_class.objects.get(pk=id, **{user_field: user.customer})
+        instance = model_class.objects.get(pk=id, **{user_field: user})
     except model_class.DoesNotExist:
         return Response({"detail": "Booking not found or you don't have permission"}, status=404)
 
