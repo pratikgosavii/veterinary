@@ -362,7 +362,7 @@ from users.permissions import *
 
 
 @api_view(['GET'])
-@permission_classes([IsDoctor])
+@permission_classes([IsCustomer])
 def customer_booking_detail_view(request, type, id):
     user = request.user
 
