@@ -123,6 +123,7 @@ from masters.serializers import *
     
 
 class online_consultation_appointment_Serializer(serializers.ModelSerializer):
+    
     pet_ids = serializers.PrimaryKeyRelatedField(
         queryset=pet.objects.all(),
         many=True,
@@ -165,13 +166,14 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['user', 'booking_id']
 
-    
     def create(self, validated_data):
         request = self.context['request']
-        symptoms = validated_data.pop('symptom')
+        symptoms = validated_data.pop('symptom', [])
+        pets = validated_data.pop('pet', [])
         validated_data['user'] = request.user
         instance = online_consultation_appointment.objects.create(**validated_data)
         instance.symptom.set(symptoms)
+        instance.pet.set(pets)
         return instance
 
 

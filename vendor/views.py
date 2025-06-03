@@ -304,7 +304,7 @@ class all_bookings_count(viewsets.ViewSet):
 
         elif user.is_service_provider:
 
-            daycare_instance = service_booking.objects.filter(user = request.user)  # Assuming daycare is related to User
+            daycare_instance = service_booking.objects.filter(service_provider = request.user)  # Assuming daycare is related to User
 
             # Consultation Appointment Report
             daycare_counts = service_booking.objects.filter(
