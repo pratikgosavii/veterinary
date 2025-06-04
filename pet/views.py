@@ -346,12 +346,18 @@ class DayCareBookingDetailView(RetrieveAPIView):
     serializer_class = DayCareBookingSerializer
     permission_classes = [IsCustomer]
 
-class ListDayCareBookings(ListAPIView):
+
+class ListDayCareBookings(generics.ListAPIView):
     serializer_class = DayCareBookingSerializer
     permission_classes = [IsCustomer]
 
+
     def get_queryset(self):
-        return day_care_booking.objects.filter(user=self.request.user).select_related('daycare').prefetch_related('pets').order_by('-id')
+        print('=----------------')
+        print('=----------------')
+        print('=----------------')
+        print(self.request.user)
+        return day_care_booking.objects.filter(user=self.request.user).order_by('-id')
     
 
 
