@@ -35,7 +35,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User  # Your custom user model
+from .models import  User  # Your custom user model
+from vendor.models import  *  # Your custom user model
 
 
 class SignupView(APIView):
@@ -105,6 +106,13 @@ class SignupView(APIView):
                 )
                 created = True
 
+            # Create wallet if not customer
+            wallet_amount = None
+            if not user.is_customer:
+                from masters.models import vendor_wallet
+                wallet, _ = vendor_wallet.objects.get_or_create(user=user)
+                wallet_amount = wallet.amount
+
             refresh = RefreshToken.for_user(user)
             return Response({
                 "access": str(refresh.access_token),
@@ -114,13 +122,14 @@ class SignupView(APIView):
                     "mobile": user.mobile,
                     "email": user.email,
                     "name": f"{user.first_name or ''} {user.last_name or ''}".strip(),
-                     "user_type": (
+                    "user_type": (
                         "doctor" if user.is_doctor else
                         "daycare" if user.is_daycare else
                         "customer" if user.is_customer else
                         "service_provider" if user.is_service_provider else
                         "unknown"
                     ),
+                    "wallet_amount": wallet_amount,
                     "created": created
                 }
             })
@@ -134,16 +143,14 @@ class LoginAPIView(APIView):
     def post(self, request):
         id_token = request.data.get("idToken")
 
-        if not id_token :
-            return Response({"error": "id_token are required"}, status=status.HTTP_400_BAD_REQUEST)
+        if not id_token:
+            return Response({"error": "id_token is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             decoded_token = firebase_auth.verify_id_token(id_token)
             uid = decoded_token["uid"]
             phone_number = decoded_token.get("phone_number")
             email = decoded_token.get("email")
-
-            print(phone_number)
 
             if not phone_number:
                 return Response({"error": "Phone number not found in token"}, status=400)
@@ -152,13 +159,18 @@ class LoginAPIView(APIView):
             created = False
 
             if user:
-
                 if user.firebase_uid != uid:
                     user.firebase_uid = uid
                     user.save()
-           
 
                 refresh = RefreshToken.for_user(user)
+
+                # Include wallet amount only for non-customer
+                wallet_amount = None
+                if not user.is_customer:
+                    wallet = vendor_wallet.objects.filter(user=user).first()
+                    wallet_amount = wallet.amount if wallet else 0
+
                 return Response({
                     "access": str(refresh.access_token),
                     "refresh": str(refresh),
@@ -174,15 +186,19 @@ class LoginAPIView(APIView):
                             "unknown"
                         ),
                         "name": f"{user.first_name or ''} {user.last_name or ''}".strip(),
+                        "wallet_amount": wallet_amount,
                         "created": created
                     }
                 })
-            
+
             else:
-                return Response({"error": "no user found try to signup"}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({"error": "no user found, try to signup"}, status=status.HTTP_401_UNAUTHORIZED)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+
 
 
 

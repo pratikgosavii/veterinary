@@ -504,6 +504,19 @@ def kyc_list(request):
     return render(request, 'vendor_kyc_list.html', { 'data' : data})
 
 
+def admin_wallet_debit_list(request):
+
+    data = vendor_wallet_transaction.objects.filter(transaction_type="debit")
+
+    return render(request, 'admin_wallet_debit_list.html', { 'data' : data})
+
+def admin_wallet_credit_list(request):
+
+    data = vendor_wallet_transaction.objects.filter(transaction_type="credit")
+
+    return render(request, 'vendor_admin_wallet_credit_list.html', { 'data' : data})
+
+
 from .forms import *
 
 def update_kyc(request, kyc_id):
@@ -667,3 +680,48 @@ def admin_all_open_booking(request):
 
     return render(request, "all_open_appoinment.html", {"appointments": appointments})
 
+
+
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status, permissions, viewsets
+from rest_framework.exceptions import PermissionDenied, ValidationError, MethodNotAllowed
+
+
+class VendorWalletTransactionViewSet(viewsets.ModelViewSet):
+
+
+    serializer_class = VendorWalletTransactionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return vendor_wallet_transaction.objects.filter(wallet__user=self.request.user).order_by('-created_at')
+
+    def perform_create(self, serializer):
+        wallet = vendor_wallet.objects.get(user=self.request.user)
+        serializer.save(wallet=wallet)
+
+    def update(self, request, *args, **kwargs):
+        raise MethodNotAllowed("PUT", detail="Updating transactions is not allowed.")
+
+    def partial_update(self, request, *args, **kwargs):
+        raise MethodNotAllowed("PATCH", detail="Partially updating transactions is not allowed.")
+
+    def destroy(self, request, *args, **kwargs):
+        raise MethodNotAllowed("DELETE", detail="Deleting transactions is not allowed.")
+
+    @action(detail=True, methods=['post'], url_path='cancel')
+    def cancel_transaction(self, request, pk=None):
+        transaction = self.get_object()
+
+        if transaction.wallet.user != request.user:
+            raise PermissionDenied("You can only cancel your own transactions.")
+
+        
+        if transaction.status in ['completed', 'cancelled_by_vendor', 'cancelled_by_admin']:
+            raise ValidationError("This transaction cannot be cancelled.")
+
+        transaction.status = 'cancelled_by_vendor'
+        transaction.save()
+
+        return Response({'detail': 'Transaction cancelled by vendor.'}, status=status.HTTP_200_OK)

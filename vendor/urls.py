@@ -30,6 +30,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'vendor-kyc', VendorKYCViewSet, basename='vendor-kyc')
 router.register(r'service-history', serviceHistoryViewSet, basename='serviceHistoryViewSet')
+router.register(r'Vendor-Wallet-Transaction', VendorWalletTransactionViewSet, basename='VendorWalletTransactionViewSet')
 
 urlpatterns = [
    
@@ -50,6 +51,8 @@ urlpatterns = [
    
     path('admin-all-booking/', admin_all_booking, name='admin_all_booking'),
     path('admin-all-open-booking/', admin_all_open_booking, name='admin_all_open_booking'),
+    path('admin-wallet-debit-list/', admin_wallet_debit_list, name='admin_wallet_debit_list'),
+    path('admin-wallet-credit-list/', admin_wallet_credit_list, name='admin_wallet_credit_list'),
 
 
     
