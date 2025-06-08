@@ -7,3 +7,4 @@ from django.contrib import admin
 from .models import *
 
 admin.site.register(day_care)
+admin.site.register(DayCareFoodMenu)

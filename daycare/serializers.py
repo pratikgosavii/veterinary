@@ -50,7 +50,7 @@ class day_care_serializer(serializers.ModelSerializer):
 
 
 class DayCareFoodMenuSerializer(serializers.ModelSerializer):
-  
+
     class Meta:
         model = DayCareFoodMenu
         fields = '__all__'
@@ -58,42 +58,46 @@ class DayCareFoodMenuSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context['request']
-        
         try:
-            daycare = day_care.objects.get(user=request.user)
+            daycare = day_care.objects.get(user=request.user, is_active=True)
         except day_care.DoesNotExist:
-            raise serializers.ValidationError("You are not registered with any daycare.")
+            raise serializers.ValidationError("You are not registered with any active daycare.")
         
         validated_data['daycare'] = daycare
-        instance = DayCareFoodMenu.objects.create(**validated_data)
-        return instance
+        return DayCareFoodMenu.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        # standard single update
+        # Standard update logic
         return super().update(instance, validated_data)
 
     def bulk_update(self, data_list):
         """
-        Custom method to handle bulk updates.
+        Custom method to handle bulk updates via POST or PUT.
+        Expects list of dicts with 'id' and the fields to update.
         """
         updated_instances = []
+        user = self.context['request'].user
 
         for item in data_list:
             try:
-                instance = DayCareFoodMenu.objects.get(id=item['id'])
+                # Only update items belonging to the user's daycare
+                instance = DayCareFoodMenu.objects.get(id=item['id'], daycare__user=user)
 
-                # Remove 'id' from data before passing to serializer
                 item_data = item.copy()
-                item_data.pop('id', None)
+                item_data.pop('id', None)  # remove id before passing to serializer
 
                 serializer = DayCareFoodMenuSerializer(
                     instance, data=item_data, partial=True, context=self.context
                 )
-
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
                 updated_instances.append(serializer.instance)
+
             except DayCareFoodMenu.DoesNotExist:
+                # Skip items not found or not belonging to user
+                continue
+            except Exception as e:
+                # Optional: log or handle unexpected errors
                 continue
 
         return updated_instances
