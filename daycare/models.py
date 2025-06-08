@@ -20,7 +20,7 @@ class DayCareFoodMenu(models.Model):
 
 class day_care(models.Model):
     
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField("users.User", on_delete=models.CASCADE)
     name = models.CharField(max_length=255, null=True, blank=True)
     images = models.ImageField(upload_to='daycare_photos/', null=True, blank=True)
     location = models.TextField(null=True, blank=True)

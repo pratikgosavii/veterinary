@@ -364,7 +364,7 @@ class accept_order(APIView):
             elif assign_field == 'service_provider':
                 assigned_obj = user.service_provider
             elif assign_field == 'daycare':
-                assigned_obj = user.daycare
+                assigned_obj = user.day_care  
             else:
                 return Response({"detail": "User role not authorized."}, status=status.HTTP_403_FORBIDDEN)
         except Exception:
