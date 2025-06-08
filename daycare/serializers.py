@@ -53,14 +53,14 @@ class DayCareFoodMenuSerializer(serializers.ModelSerializer):
 
     
 
-    food_menu = food_menu_serializer(read_only=True)  # Show full details in GET
+    food_menu_details = food_menu_serializer(source='food_menu', read_only=True)  # for GET
     food_menu_id = serializers.PrimaryKeyRelatedField(
-        queryset=food_menu.objects.all(), write_only=True, source='food_menu'
+        queryset=food_menu.objects.all(), write_only=True, source='food_menu'  # use model here
     )
 
     class Meta:
         model = DayCareFoodMenu
-        fields = ['id', 'daycare', 'food_menu', 'food_menu_id', 'custom_price']
+        fields = ['id', 'daycare', 'food_menu_details', 'food_menu_id', 'custom_price']
         extra_kwargs = {'daycare': {'read_only': True}}
 
     def create(self, validated_data):
