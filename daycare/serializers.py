@@ -51,8 +51,6 @@ class day_care_serializer(serializers.ModelSerializer):
 
 class DayCareFoodMenuSerializer(serializers.ModelSerializer):
 
-    
-
     food_menu_details = food_menu_serializer(source='food_menu', read_only=True)  # for GET
     food_menu_id = serializers.PrimaryKeyRelatedField(
         queryset=food_menu.objects.all(), write_only=True, source='food_menu'  # use model here
@@ -70,41 +68,27 @@ class DayCareFoodMenuSerializer(serializers.ModelSerializer):
         except day_care.DoesNotExist:
             raise serializers.ValidationError("You are not registered with any active daycare.")
         
+        food_menu = validated_data.get('food_menu')
+        
+        # Check if this food_menu already exists for this daycare
+        if DayCareFoodMenu.objects.filter(daycare=daycare, food_menu=food_menu).exists():
+            raise serializers.ValidationError("This food menu is already added to your daycare.")
+        
         validated_data['daycare'] = daycare
         return DayCareFoodMenu.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        # Standard update logic
+        # Get user daycare
+        request = self.context['request']
+        try:
+            daycare = day_care.objects.get(user=request.user, is_active=True)
+        except day_care.DoesNotExist:
+            raise serializers.ValidationError("You are not registered with any active daycare.")
+        
+        food_menu = validated_data.get('food_menu')
+        if food_menu and food_menu != instance.food_menu:
+            # Check if new food_menu already exists for daycare
+            if DayCareFoodMenu.objects.filter(daycare=daycare, food_menu=food_menu).exclude(id=instance.id).exists():
+                raise serializers.ValidationError("This food menu is already added to your daycare.")
+        
         return super().update(instance, validated_data)
-
-    def bulk_update(self, data_list):
-        """
-        Custom method to handle bulk updates via POST or PUT.
-        Expects list of dicts with 'id' and the fields to update.
-        """
-        updated_instances = []
-        user = self.context['request'].user
-
-        for item in data_list:
-            try:
-                # Only update items belonging to the user's daycare
-                instance = DayCareFoodMenu.objects.get(id=item['id'], daycare__user=user)
-
-                item_data = item.copy()
-                item_data.pop('id', None)  # remove id before passing to serializer
-
-                serializer = DayCareFoodMenuSerializer(
-                    instance, data=item_data, partial=True, context=self.context
-                )
-                serializer.is_valid(raise_exception=True)
-                serializer.save()
-                updated_instances.append(serializer.instance)
-
-            except DayCareFoodMenu.DoesNotExist:
-                # Skip items not found or not belonging to user
-                continue
-            except Exception as e:
-                # Optional: log or handle unexpected errors
-                continue
-
-        return updated_instances
