@@ -111,7 +111,7 @@ class SignupView(APIView):
             if not user.is_customer:
                 from masters.models import vendor_wallet
                 wallet, _ = vendor_wallet.objects.get_or_create(user=user)
-                wallet_amount = wallet.amount
+                wallet_amount = wallet.balance
 
             refresh = RefreshToken.for_user(user)
             return Response({
@@ -169,7 +169,7 @@ class LoginAPIView(APIView):
                 wallet_amount = None
                 if not user.is_customer:
                     wallet = vendor_wallet.objects.filter(user=user).first()
-                    wallet_amount = wallet.amount if wallet else 0
+                    wallet_amount = wallet.balance if wallet else 0
 
                 return Response({
                     "access": str(refresh.access_token),
