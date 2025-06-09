@@ -39,6 +39,7 @@ class all_open_bookings(viewsets.ViewSet):
         def serialize(qs, appt_type):
             return [
                 {
+                    "booking_id": obj.booking_id,
                     "id": obj.id,
                     "type": appt_type,
                     "status": obj.status,
@@ -77,7 +78,11 @@ class all_open_bookings(viewsets.ViewSet):
         else:
             return Response({"detail": "Invalid user type"}, status=400)
 
+
+        appointments.sort(key=lambda x: x["booking_id"], reverse=True)
+
         return Response({"appointments": appointments})
+    
     
 
 from datetime import date, datetime
@@ -96,6 +101,7 @@ class all_vendor_bookings(viewsets.ViewSet):
         def serialize(qs, appt_type):
             return [
                 {
+                    "booking_id": obj.booking_id,
                     "id": obj.id,
                     "type": appt_type,
                     "status": obj.status,
@@ -142,6 +148,15 @@ class all_vendor_bookings(viewsets.ViewSet):
                 upcoming_appointments.append(appt)
             else:
                 past_appointments.append(appt)
+
+                
+                # Sort upcoming by nearest date first
+        upcoming_appointments.sort(key=lambda x: x["date"])
+
+        # Sort past by most recent past date first
+        past_appointments.sort(key=lambda x: x["date"], reverse=True)
+
+
 
         return Response({
             "upcoming": upcoming_appointments,
