@@ -262,3 +262,16 @@ class online_consultation_type(models.Model):
 
 
 
+
+
+from django.db import models
+
+class Blog(models.Model):
+    heading = models.CharField(max_length=255)
+    subheading = models.CharField(max_length=500, blank=True)
+    image = models.ImageField(upload_to='blog_images/')
+    content = models.TextField(help_text="Use Markdown or HTML for rich formatting.")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.heading

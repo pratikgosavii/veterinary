@@ -1658,6 +1658,92 @@ class get_vaccination(ListAPIView):
     filterset_fields = '__all__'  # enables filtering on all fields
 
 
+@login_required(login_url='login_admin')
+def add_blog(request):
+
+    if request.method == 'POST':
+
+        forms = BlogForm(request.POST, request.FILES)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_blog')
+        else:
+            print(forms.errors)
+            context = {
+                'form': forms
+            }
+            return render(request, 'add_blog.html', context)
+    
+    else:
+
+        forms = BlogForm()
+
+        context = {
+            'form': forms
+        }
+        return render(request, 'add_blog.html', context)
+
+        
+
+@login_required(login_url='login_admin')
+def update_blog(request, blog_id):
+
+    if request.method == 'POST':
+
+        instance = Blog.objects.get(id=blog_id)
+
+        forms = BlogForm(request.POST, request.FILES, instance=instance)
+
+        if forms.is_valid():
+            forms.save()
+            return redirect('list_blog')
+        else:
+            print(forms.errors)
+    
+    else:
+
+        instance = Blog.objects.get(id=blog_id)
+        forms = BlogForm(instance=instance)
+
+        context = {
+            'form': forms
+        }
+        
+        return render(request, 'add_blog.html', context)
+
+        
+
+@login_required(login_url='login_admin')
+def delete_blog(request, blog_id):
+
+    Blog.objects.get(id=blog_id).delete()
+
+    return HttpResponseRedirect(reverse('list_blog'))
+
+
+@login_required(login_url='login_admin')
+def list_blog(request):
+
+    data = Blog.objects.all()
+
+    print(data)
+
+
+    context = {
+        'data': data
+    }
+    return render(request, 'list_blog.html', context)
+
+
+from django.http import JsonResponse
+
+
+class get_blog(ListAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+
+
 
 
 

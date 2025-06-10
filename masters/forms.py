@@ -330,3 +330,16 @@ class home_banner_Form(forms.ModelForm):
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
 
         }
+
+
+
+class BlogForm(forms.ModelForm):
+    class Meta:
+        model = Blog
+        fields = ['heading', 'subheading', 'image', 'content']
+        widgets = {
+            'heading': forms.TextInput(attrs={'class': 'form-control'}),
+            'subheading': forms.TextInput(attrs={'class': 'form-control'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control rich-text'}),
+        }

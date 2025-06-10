@@ -140,6 +140,12 @@ urlpatterns = [
     path('list-vaccination/', list_vaccination, name='list_vaccination'),
     path('get-vaccination/', get_vaccination.as_view(), name='get_vaccination'),
 
+    path('add-blog/', add_blog, name='add_blog'),
+    path('update-blog/<blog_id>', update_blog, name='update_blog'),
+    path('delete-blog/<blog_id>', delete_blog, name='delete_blog'),
+    path('list-blog/', list_blog, name='list_blog'),
+    path('get-blog/', get_blog.as_view(), name='get_blog'),
+
     path('get-day-care/', get_day_care.as_view(), name='get_day_care'),
 
     

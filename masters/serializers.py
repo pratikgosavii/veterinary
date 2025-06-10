@@ -131,3 +131,10 @@ class HomeBannerSerializer(serializers.ModelSerializer):
         if request:
             return request.build_absolute_uri(obj.image.url)
         return obj.image.url
+    
+
+
+class BlogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Blog
+        fields = ['id', 'heading', 'subheading', 'content', 'image', 'created_at']
