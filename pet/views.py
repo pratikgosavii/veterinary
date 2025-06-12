@@ -144,7 +144,7 @@ class past_vaccination_ViewSet(ModelViewSet):
         return pet_vaccination.objects.filter()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save()
 
 
     def get_queryset(self):

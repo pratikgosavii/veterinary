@@ -412,5 +412,4 @@ class PastVaccinationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pet_vaccination
-        fields = ['id', 'age', 'additional_questions', 'date_given', 'pet_id', 'pet']
-        read_only_fields = ['date_given']
+        fields = ['id', 'age', 'date_given', 'pet_id', 'pet']
