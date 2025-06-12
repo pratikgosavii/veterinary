@@ -187,7 +187,6 @@ class day_care_booking(models.Model):
 class pet_vaccination(models.Model):
     pet = models.ManyToManyField('pet.pet')
     age = models.IntegerField()
-    additional_questions = models.JSONField()
     date_given = models.DateField()
     
 # lab reports

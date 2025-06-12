@@ -11,11 +11,18 @@ from .models import *
 
 
 class PetSerializer(serializers.ModelSerializer):
-   
+
+    past_vaccinations = serializers.SerializerMethodField()
+
     class Meta:
         model = pet
         fields = '__all__'
         read_only_fields = ['owner']
+
+    def get_past_vaccinations(self, obj):
+        from .serializers import PastVaccinationSerializer  # Avoid circular import
+        vaccinations = pet_vaccination.objects.filter(pet=obj)
+        return PastVaccinationSerializer(vaccinations, many=True).data
 
     def create(self, validated_data):
         request = self.context.get('request')
@@ -412,5 +419,5 @@ class PastVaccinationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pet_vaccination
-        fields = ['id', 'age', 'additional_questions', 'date_given', 'pet_id', 'pet']
+        fields = ['id', 'age', 'date_given', 'pet_id', 'pet']
         read_only_fields = ['date_given']
