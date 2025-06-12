@@ -141,10 +141,19 @@ class past_vaccination_ViewSet(ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]  # For file uploads
 
     def get_queryset(self):
-        return PastVaccination.objects.filter(user=self.request.user)
+        return pet_vaccination.objects.filter()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+    def get_queryset(self):
+        pet_id = self.request.query_params.get('pet_id')
+        
+        if pet_id:
+            return pet_vaccination.objects.filter(pet__id=pet_id, pet__owner=self.request.user)
+        
+        return pet_vaccination.objects.none()  # Or all() if you want default behavior
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
