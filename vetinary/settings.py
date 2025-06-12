@@ -64,11 +64,11 @@ MIDDLEWARE = [
 ]
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000", 
-    "http://localhost:8081", # React frontend
-    "http://localhost:5173"
-]
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
