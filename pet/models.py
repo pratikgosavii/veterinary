@@ -138,7 +138,7 @@ from serviceprovider.models import *
 class service_booking(models.Model):
     
     booking_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
-    service_provider = models.ForeignKey(service_provider, on_delete=models.CASCADE, null=True, blank=True)
+    service_provider = models.ForeignKey("serviceprovider.service_provider", on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     services = models.ForeignKey('masters.service', null=True, blank=True, on_delete=models.CASCADE)
     pets = models.ManyToManyField("pet.pet")
@@ -183,6 +183,36 @@ class day_care_booking(models.Model):
             self.booking_id = get_next_booking_id()
         super().save(*args, **kwargs)
     
+
+
+
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
+
+class SupportTicket(models.Model):
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+
+    # Generic relation to any appointment model
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    appointment = GenericForeignKey('content_type', 'object_id')
+
+    subject = models.CharField(max_length=255)
+    is_resolved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Ticket #{self.pk} - {self.subject}"
+
+class TicketMessage(models.Model):
+    ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey('users.User', on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
 # vaccination
 class pet_vaccination(models.Model):
     pet = models.ManyToManyField('pet.pet')
@@ -249,3 +279,5 @@ class PastVaccination(models.Model):
     report = models.FileField(upload_to='reports/test_booking/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
+
+

@@ -413,3 +413,35 @@ class PastVaccinationSerializer(serializers.ModelSerializer):
     class Meta:
         model = pet_vaccination
         fields = ['id', 'age', 'date_given', 'pet_id', 'pet']
+
+
+
+
+
+
+class SupportTicketSerializer(serializers.ModelSerializer):
+    content_type = serializers.SlugRelatedField(
+        queryset=ContentType.objects.all(),
+        slug_field='model'
+    )
+    appointment_id = serializers.IntegerField(source='object_id')
+
+    class Meta:
+        model = SupportTicket
+        fields = ['id', 'subject', 'content_type', 'appointment_id', 'is_resolved', 'created_at']
+        read_only_fields = ['id', 'is_resolved', 'created_at']
+
+
+
+class TicketMessageSerializer(serializers.ModelSerializer):
+    sender_name = serializers.CharField(source='sender.name', read_only=True)
+    is_from_user = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TicketMessage
+        fields = ['id', 'ticket', 'sender', 'sender_name', 'message', 'created_at', 'is_from_user']
+        read_only_fields = ['sender', 'created_at']
+
+    def get_is_from_user(self, obj):
+        request = self.context.get('request')
+        return obj.sender == request.user if request else False

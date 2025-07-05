@@ -19,6 +19,10 @@ router.register(r'pet-services-booking', pet_services_booking_ViewSet, basename=
 router.register(r'pet', PetViewSet, basename='pet')
 router.register(r'all-appointments', AllAppointmentsViewSet, basename='all-appointments')
 
+router.register('tickets', SupportTicketViewSet, basename='tickets')
+router.register('ticket-messages', TicketMessageViewSet, basename='ticket-messages')
+
+
 urlpatterns = [
 
     path('book-daycare/', CreateDayCareBooking.as_view(), name='book_daycare'),
