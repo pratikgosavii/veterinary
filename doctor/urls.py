@@ -11,6 +11,7 @@ from django.urls import path, include
 
 router = DefaultRouter()
 router.register('doctors', DoctorViewSet, basename='doctor')
+router.register('Prescription', PrescriptionViewSet, basename='PrescriptionViewSet')
 
 urlpatterns = [
 
@@ -19,7 +20,7 @@ urlpatterns = [
     # path('list-doctor/', list_doctor, name='list_doctor'),
     # path('delete-doctor/<int:doctor_id>/', delete_doctor, name='delete_doctor'),
     path('get-doctor/', get_doctor.as_view(), name='get_doctor'),
-    path('get-apponemts/', get_doctor.as_view(), name='get_doctor'),
+    path('get-appointment/', get_doctor.as_view(), name='get_doctor'),
 
     path('get-appointment-count/', get_appointment_count.as_view(), name='get_appointment_count'),
 

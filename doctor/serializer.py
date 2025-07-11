@@ -108,3 +108,12 @@ class VaccinationBookingReportSerializer(serializers.ModelSerializer):
     def get_booking_details(self, obj):
         from pet.serializers import vaccination_appointment_Serializer
         return vaccination_appointment_Serializer(obj.booking).data
+
+
+from rest_framework import serializers
+
+class PrescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prescription
+        fields = ['id', 'consultation', 'medicine_name', 'price', 'created_at']
+        read_only_fields = ['id', 'created_at']

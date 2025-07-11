@@ -353,3 +353,22 @@ class VaccinationReportView(APIView):
         except TestBookingReport.DoesNotExist:
             return Response({'error': 'Not found'}, status=404)
 
+
+
+from rest_framework import viewsets, permissions
+from rest_framework.exceptions import PermissionDenied
+
+
+class PrescriptionViewSet(viewsets.ModelViewSet):
+    serializer_class = PrescriptionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self, request, *args, **kwargs):
+        appoinment_id = self.request.query_params.get('appoinment_id')
+        return Prescription.objects.filter(consultation__doctor=self.request.user.doctor, id = appoinment_id)
+
+    def perform_create(self, serializer):
+        consultation = serializer.validated_data['consultation']
+        if consultation.doctor != self.request.user.doctor:
+            raise PermissionDenied("You are not allowed to prescribe for this consultation.")
+        serializer.save()
