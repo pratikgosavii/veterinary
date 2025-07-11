@@ -47,7 +47,7 @@ class consultation_appointment_ViewSet(ModelViewSet):
     filterset_fields = ['doctor', 'date', 'payment_status']
 
     def get_queryset(self):
-        return consultation_appointment.objects.filter(user=self.request.user).distinct()
+        return consultation_appointment.objects.filter(user=self.request.user).order_by('date')
     
     @action(detail=False, methods=['get'], url_path='upcoming')
     def upcoming_appointments(self, request):
