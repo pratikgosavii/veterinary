@@ -337,6 +337,24 @@ class ListOrderView(generics.ListAPIView):
         return order.objects.filter(user=self.request.user)
 
 
+
+
+class get_prescription(generics.ListAPIView):
+
+    from doctor.serializer import PrescriptionSerializer
+    from doctor.models import Prescription
+
+    serializer_class = PrescriptionSerializer
+    permission_classes = [IsCustomer]
+    filter_backends = [DjangoFilterBackend]
+
+
+    def get_queryset(self):
+        appoinment_id = self.request.query_params.get('appoinment_id')
+
+        return Prescription.objects.filter(consultation__user=self.request.user, consultation__id = appoinment_id)
+
+
 from rest_framework.generics import CreateAPIView, ListAPIView
 from .models import day_care_booking
 from .serializers import DayCareBookingSerializer

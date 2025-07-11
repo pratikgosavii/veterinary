@@ -363,9 +363,9 @@ class PrescriptionViewSet(viewsets.ModelViewSet):
     serializer_class = PrescriptionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self, request, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs):
         appoinment_id = self.request.query_params.get('appoinment_id')
-        return Prescription.objects.filter(consultation__doctor=self.request.user.doctor, id = appoinment_id)
+        return Prescription.objects.filter(consultation__doctor=self.request.user.doctor, consultation__id = appoinment_id)
 
     def perform_create(self, serializer):
         consultation = serializer.validated_data['consultation']

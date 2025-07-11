@@ -52,13 +52,13 @@ STATUS_CHOICES = [
 
 
 class ConsultationAppointmentReport(models.Model):
-    appointment = models.ForeignKey(consultation_appointment, on_delete=models.CASCADE, related_name='reports')
+    appointment = models.ForeignKey("pet.consultation_appointment", on_delete=models.CASCADE, related_name='reports')
     file = models.FileField(upload_to='reports/consultation/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
 
 class OnlineConsultationAppointmentReport(models.Model):
-    appointment = models.ForeignKey(online_consultation_appointment, on_delete=models.CASCADE, related_name='reports')
+    appointment = models.ForeignKey("pet.online_consultation_appointment", on_delete=models.CASCADE, related_name='reports')
     file = models.FileField(upload_to='reports/online_consultation/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
@@ -84,7 +84,7 @@ class Apoinments_video_details(models.Model):
 
 
 class Prescription(models.Model):
-    consultation = models.ForeignKey('consultation_appointment', on_delete=models.CASCADE, related_name='prescriptions')
+    consultation = models.ForeignKey('pet.consultation_appointment', on_delete=models.CASCADE, related_name='fghprescriptions')
     medicine_name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 

@@ -40,6 +40,7 @@ urlpatterns = [
     path('list-order-admin/', list_order_admin, name='list_order_admin'),
     path('delete-order/<order_id>', delete_order, name='delete_order'),
     path('get-order/', ListOrderView.as_view(), name='list_order'),
+    path('get-prescription/', get_prescription.as_view(), name='get_prescription'),
 
 
     path('online_consultation/update/<instance_id>', OnlineConsultationUpdateView, name='online_consultation_update'),
