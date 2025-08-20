@@ -188,6 +188,7 @@ class day_care_booking(models.Model):
 
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
 
 
 class SupportTicket(models.Model):
@@ -204,6 +205,28 @@ class SupportTicket(models.Model):
 
     def __str__(self):
         return f"Ticket #{self.pk} - {self.subject}"
+    
+
+    @property
+    def booking_url(self):
+        """
+        Return the correct update URL for the related booking
+        """
+        model = self.content_type.model
+
+        mapping = {
+            "consultation_appointment": "consultation_update",
+            "online_consultation_appointment": "online_consultation_update",
+            "vaccination_appointment": "vaccination_update",
+            "test_booking": "test_update",
+            "day_care_booking": "daycare_update",
+            "service_booking": "service_update",
+        }
+
+        url_name = mapping.get(model)
+        if url_name:
+            return reverse(url_name, args=[self.object_id])
+        return "#"
 
 class TicketMessage(models.Model):
     ticket = models.ForeignKey(SupportTicket, on_delete=models.CASCADE, related_name='messages')

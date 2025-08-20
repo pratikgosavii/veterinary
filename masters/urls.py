@@ -158,7 +158,7 @@ urlpatterns = [
 
     path('admin/support-tickets/', list_support_tickets, name='list_support_tickets'),
     path('admin/support-tickets/<int:ticket_id>/', ticket_detail, name='ticket_detail'),
-
+    path("view-booking/<str:model>/<int:pk>/", view_booking, name="view_booking"),
 
 
 ]  + router.urls

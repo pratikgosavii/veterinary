@@ -194,7 +194,11 @@ img{ max-width:100%;}
                                 <span class="chat_date">{{ ticket.created_at|date:"M d" }}</span>
                             </h5>
                             <p>{{ ticket.description|truncatewords:10 }}</p>
-                            <a href="{% url 'ticket_detail' ticket.id %}">View</a>
+                            <a href="{% url 'ticket_detail' ticket.id %}" style="color:green; margin-right:20px;"> View Chat</a>
+                            <a href="{{ ticket.booking_url }}" class="btn btn-primary">View Booking</a>
+
+
+
                         </div>
                     </div>
                 </div>

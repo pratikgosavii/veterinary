@@ -1860,3 +1860,20 @@ def ticket_detail(request, ticket_id):
         'data': data,
         'active_id': ticket.id  # ✅ This enables active highlighting in template
     })
+
+
+def view_booking(request, model, pk):
+    if model == "consultation_appointment":
+        return redirect("consultation_detail", pk=pk)
+
+    elif model == "online_consultation_appointment":
+        return redirect("online_consultation_detail", pk=pk)
+
+    elif model == "test_booking":
+        return redirect("test_booking_detail", pk=pk)
+
+    elif model == "vaccination_appointment":
+        return redirect("vaccination_detail", pk=pk)
+
+    # fallback if not recognized
+    return redirect("support_ticket_list")
