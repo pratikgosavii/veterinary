@@ -81,10 +81,10 @@ class ConsultationAppointmentForm(forms.ModelForm):
 
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)  # Get the user from the view
+        user = kwargs.pop('user', None)  # Get the user passed from the view
         super().__init__(*args, **kwargs)
-        if user:
-            self.fields['pet'].queryset = pet.objects.filter(owner=user)  # Adjust model if needed
+        if user and not user.is_superuser:
+            self.fields['pet'].queryset = Pet.objects.filter(owner=user)  
 
 
 class OnlineConsultationAppointmentForm(forms.ModelForm):
