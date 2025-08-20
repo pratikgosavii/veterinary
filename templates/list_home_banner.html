@@ -107,6 +107,7 @@
                                             <thead>
                                             <tr>
                                                 <th>#</th>
+                                                <th>Category</th>
                                                 <th>Title</th>
                                                 <th>For Web Only</th>
                                                 <th>Description</th>
@@ -118,6 +119,7 @@
                                             {% for i in data %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
+                                                    <td>{{ i.category }}</td>
                                                     <td>{{ i.title }}</td>
                                                     <td>{{ i.is_for_web }}</td>
                                                     <td>{{ i.description }}</td>

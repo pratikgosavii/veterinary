@@ -326,6 +326,7 @@ class home_banner_Form(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
             'discription': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
 

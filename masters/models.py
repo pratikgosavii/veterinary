@@ -217,6 +217,22 @@ class food_menu(models.Model):
 
 
 class home_banner(models.Model):
+
+    CATEGORY_CHOICES = [
+        ("vaccination", "Vaccination"),
+        ("video_consultation", "Video Consultation"),
+        ("general_consultation", "General Consultation"),
+        ("grooming", "Grooming"),
+        ("boarding", "Boarding"),
+        ("lab_test", "Lab Test"),
+    ]
+
+    category = models.CharField(
+        max_length=50,
+        choices=CATEGORY_CHOICES,
+        blank=True,
+        null=True
+    )
     title = models.CharField(max_length=225, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='homeBanners/')
