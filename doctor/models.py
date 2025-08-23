@@ -7,10 +7,10 @@ from masters.models import *
 from users.models import User
 from pet.models import *
 
-from datetime.utils import datetime
+from django.utils import timezone
 
 def current_time():
-    return datetime.now().time()
+    return timezone.localtime(timezone.now()).time()
 
 class doctor(models.Model):
 

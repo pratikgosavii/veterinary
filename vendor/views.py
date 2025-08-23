@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 from itertools import chain
 from django.utils import timezone
-from datetime.utils import datetime, time
+from datetime import datetime, time
 from django.utils.timezone import make_aware, is_naive
 from rest_framework.generics import CreateAPIView, ListAPIView
 from pet.serializers import *
@@ -23,7 +23,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from itertools import chain
 from django.utils import timezone
-from datetime.utils import datetime, time
+from datetime import datetime, time
 from django.utils.timezone import make_aware, is_naive
 
 
@@ -380,6 +380,7 @@ class accept_order(APIView):
 
 
 from django.utils import timezone
+from datetime import time   # ✅ time object (not module)
 
 
 class serviceHistoryViewSet(viewsets.ViewSet):
