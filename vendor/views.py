@@ -114,7 +114,7 @@ class all_vendor_bookings(viewsets.ViewSet):
                 }
 
                 # ✅ If it's an online consultation, check if appointment time is in the future
-                if obj.date and obj.date > current_time:
+                if obj.date:
                     video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
                     appt_data["caller_id"] = video_detail.calazl_id if video_detail else None
 
