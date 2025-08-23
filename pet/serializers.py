@@ -109,6 +109,14 @@ class consultation_appointment_Serializer(serializers.ModelSerializer):
         request = self.context['request']
         symptoms = validated_data.pop('symptom')
         pets = validated_data.pop('pet')
+
+            # normalize date
+        if 'date' in validated_data:
+            date_val = validated_data['date']
+            if timezone.is_naive(date_val):
+                validated_data['date'] = timezone.make_aware(date_val, timezone.get_current_timezone())
+
+
         validated_data['user'] = request.user
 
         instance = consultation_appointment.objects.create(**validated_data)
@@ -170,6 +178,15 @@ class online_consultation_appointment_Serializer(serializers.ModelSerializer):
         request = self.context['request']
         symptoms = validated_data.pop('symptom', [])
         pets = validated_data.pop('pet', [])
+
+            # normalize date
+        if 'date' in validated_data:
+            date_val = validated_data['date']
+            if timezone.is_naive(date_val):
+                validated_data['date'] = timezone.make_aware(date_val, timezone.get_current_timezone())
+
+
+
         validated_data['user'] = request.user
         instance = online_consultation_appointment.objects.create(**validated_data)
         instance.symptom.set(symptoms)
@@ -213,6 +230,15 @@ class vaccination_appointment_Serializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context['request']
         pets = validated_data.pop('pet')
+
+            # normalize date
+        if 'date' in validated_data:
+            date_val = validated_data['date']
+            if timezone.is_naive(date_val):
+                validated_data['date'] = timezone.make_aware(date_val, timezone.get_current_timezone())
+
+
+
         validated_data['user'] = request.user
         instance = vaccination_appointment.objects.create(**validated_data)
         instance.pet.set(pets)
@@ -242,6 +268,14 @@ class test_booking_Serializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context['request']
         pets = validated_data.pop('pet')
+
+            # normalize date
+        if 'date' in validated_data:
+            date_val = validated_data['date']
+            if timezone.is_naive(date_val):
+                validated_data['date'] = timezone.make_aware(date_val, timezone.get_current_timezone())
+
+
         validated_data['user'] = request.user
         instance = test_booking.objects.create(**validated_data)
         instance.pet.set(pets)
