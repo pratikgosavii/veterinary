@@ -87,6 +87,8 @@ from rest_framework.response import Response
 from django.utils.timezone import now
 from datetime import date
 from django.shortcuts import get_object_or_404
+from datetime import timedelta
+
 
 class all_vendor_bookings(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
@@ -114,12 +116,18 @@ class all_vendor_bookings(viewsets.ViewSet):
                 }
 
                 # ✅ If it's an online consultation, check if appointment time is in the future
-                if appt_type == "online_consultation":
-                    if obj.date and obj.date > current_time:
-                        video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
-                        appt_data["caller_id"] = video_detail.call_id if video_detail else None
-                    else:
-                        appt_data["caller_id"] = None
+                if obj.date and obj.date > current_time:
+                    video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
+                    appt_data["caller_id"] = video_detail.calazl_id if video_detail else None
+
+                    # ✅ Add show_video_button logic (true only during appt time ± 30 min window)
+                    appt_start = obj.date
+                    appt_data["show_video_button"] = (
+                        appt_start <= current_time <= (appt_start + timedelta(minutes=30))
+                    )
+                else:
+                    appt_data["caller_id"] = None
+                    appt_data["show_video_button"] = False
 
                 results.append(appt_data)
             return results
