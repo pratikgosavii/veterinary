@@ -82,8 +82,13 @@ class all_open_bookings(viewsets.ViewSet):
 
 from datetime import date, datetime
 
+from rest_framework import viewsets
+from rest_framework.response import Response
+from django.utils.timezone import now
+from datetime import date
+from django.shortcuts import get_object_or_404
+
 class all_vendor_bookings(viewsets.ViewSet):
-    
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
@@ -94,8 +99,9 @@ class all_vendor_bookings(viewsets.ViewSet):
         past_appointments = []
 
         def serialize(qs, appt_type):
-            return [
-                {
+            results = []
+            for obj in qs:
+                appt_data = {
                     "id": obj.id,
                     "type": appt_type,
                     "status": obj.status,
@@ -103,13 +109,18 @@ class all_vendor_bookings(viewsets.ViewSet):
                     "amount": getattr(obj, "amount", getattr(obj, "total_amount", None)),
                     "name": f"{obj.user.first_name} {obj.user.last_name}",
                 }
-                for obj in qs
-            ]
+
+                # ✅ If it's an online consultation, add caller_id if exists
+                if appt_type == "online_consultation":
+                    video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
+                    appt_data["caller_id"] = video_detail.call_id if video_detail else None
+
+                results.append(appt_data)
+            return results
 
         all_appointments = []
 
         if user.is_doctor:
-            print('----------------1-----------------')
             doctor_instance = doctor.objects.get(user=user)
             all_appointments += (
                 serialize(online_consultation_appointment.objects.filter(doctor=doctor_instance), "online_consultation") +
@@ -118,27 +129,21 @@ class all_vendor_bookings(viewsets.ViewSet):
                 serialize(test_booking.objects.filter(doctor=doctor_instance), "test")
             )
 
-
         elif user.is_daycare:
-            print('----------------2-----------------')
-
             daycare_instance = day_care.objects.get(user=user)
             all_appointments += serialize(day_care_booking.objects.filter(daycare=daycare_instance), "daycare")
 
         elif user.is_service_provider:
-            print('----------------3-----------------')
-
             service_provider_instance = service_provider.objects.get(user=user)
             all_appointments += serialize(service_booking.objects.filter(service_provider=service_provider_instance), "service")
 
         else:
             return Response({"detail": "Invalid user type"}, status=400)
 
+        # Split into upcoming and past
         for appt in all_appointments:
             appt_date = appt["date"]
-           
             if appt_date and appt_date.date() >= today:
-                print('------------------------')
                 upcoming_appointments.append(appt)
             else:
                 past_appointments.append(appt)
@@ -147,6 +152,7 @@ class all_vendor_bookings(viewsets.ViewSet):
             "upcoming": upcoming_appointments,
             "past": past_appointments
         })
+
     
 
 
