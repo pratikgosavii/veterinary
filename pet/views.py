@@ -468,7 +468,7 @@ class TestBookingReportListView(APIView):
 from rest_framework import viewsets
 from itertools import chain
 from django.utils import timezone
-from datetime import datetime, time
+from datetime.utils import datetime, time
 from django.utils.timezone import make_aware, is_naive
 
 

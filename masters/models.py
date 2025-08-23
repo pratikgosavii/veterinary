@@ -5,7 +5,7 @@ from django.db import models
 
 from users.models import User
 from django.utils.timezone import now
-from datetime import datetime, timezone
+from datetime.utils import datetime, timezone
 
 import pytz
 ist = pytz.timezone('Asia/Kolkata')

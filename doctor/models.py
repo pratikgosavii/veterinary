@@ -7,7 +7,7 @@ from masters.models import *
 from users.models import User
 from pet.models import *
 
-from datetime import datetime
+from datetime.utils import datetime
 
 def current_time():
     return datetime.now().time()
