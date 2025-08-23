@@ -93,12 +93,10 @@ from datetime import timedelta
 class all_vendor_bookings(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
-    permission_classes = [IsAuthenticated]
-
     def list(self, request):
         user = request.user
         today = date.today()
-        current_time = now()
+        current_time = timezone.now()
 
         upcoming_appointments = []
         past_appointments = []
@@ -161,6 +159,9 @@ class all_vendor_bookings(viewsets.ViewSet):
                 upcoming_appointments.append(appt)
             else:
                 past_appointments.append(appt)
+
+
+                
 
         return Response({
             "upcoming": upcoming_appointments,
