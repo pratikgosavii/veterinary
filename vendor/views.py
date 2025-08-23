@@ -118,7 +118,7 @@ class all_vendor_bookings(viewsets.ViewSet):
 
                     # ✅ Caller ID logic
                     video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
-                    appt_data["caller_id"] = video_detail.calazl_id if video_detail else None
+                    appt_data["caller_id"] = video_detail.call_id if video_detail else None
 
                     # ✅ Show video button only during appointment window (start → +30 mins)
                     appt_data["show_video_button"] = (
