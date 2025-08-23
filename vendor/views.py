@@ -83,13 +83,15 @@ class all_open_bookings(viewsets.ViewSet):
 from datetime import date, datetime
 
 class all_vendor_bookings(viewsets.ViewSet):
-
-    permission_classes = [IsAuthenticated]
     
+    permission_classes = [IsAuthenticated]
+
     def list(self, request):
         user = request.user
+        today = date.today()
 
-        appointments = []
+        upcoming_appointments = []
+        past_appointments = []
 
         def serialize(qs, appt_type):
             return [
@@ -97,43 +99,54 @@ class all_vendor_bookings(viewsets.ViewSet):
                     "id": obj.id,
                     "type": appt_type,
                     "status": obj.status,
-                    "date": str(getattr(obj, "date", None)),  # Adjust as needed
+                    "date": obj.date,
                     "amount": getattr(obj, "amount", getattr(obj, "total_amount", None)),
-                    "name": f"{obj.user.first_name} {obj.user.last_name}".strip(),
+                    "name": f"{obj.user.first_name} {obj.user.last_name}",
                 }
                 for obj in qs
             ]
 
-        if user.is_doctor:
-            online_consultations = online_consultation_appointment.objects.filter(status="open")
-            vaccinations = vaccination_appointment.objects.filter(status="open")
-            tests = test_booking.objects.filter(status="open")
+        all_appointments = []
 
-            appointments = (
-                serialize(online_consultations, "online_consultation") +
-                serialize(vaccinations, "vaccination") +
-                serialize(tests, "test")
+        if user.is_doctor:
+            print('----------------1-----------------')
+            doctor_instance = doctor.objects.get(user=user)
+            all_appointments += (
+                serialize(online_consultation_appointment.objects.filter(doctor=doctor_instance), "online_consultation") +
+                serialize(consultation_appointment.objects.filter(doctor=doctor_instance), "consultation") +
+                serialize(vaccination_appointment.objects.filter(doctor=doctor_instance), "vaccination") +
+                serialize(test_booking.objects.filter(doctor=doctor_instance), "test")
             )
 
+
         elif user.is_daycare:
-            daycares = day_care_booking.objects.filter(status="open")
-            appointments = serialize(daycares, "daycare")
+            print('----------------2-----------------')
+
+            daycare_instance = day_care.objects.get(user=user)
+            all_appointments += serialize(day_care_booking.objects.filter(daycare=daycare_instance), "daycare")
 
         elif user.is_service_provider:
-            services = service_booking.objects.filter(status="open")
-            appointments = serialize(services, "service")
+            print('----------------3-----------------')
+
+            service_provider_instance = service_provider.objects.get(user=user)
+            all_appointments += serialize(service_booking.objects.filter(service_provider=service_provider_instance), "service")
 
         else:
             return Response({"detail": "Invalid user type"}, status=400)
 
-        # 🔥 Sort by date descending (latest first)
-        appointments = sorted(
-            appointments,
-            key=lambda x: x.get("date") or "",
-            reverse=True
-        )
+        for appt in all_appointments:
+            appt_date = appt["date"]
+           
+            if appt_date and appt_date.date() >= today:
+                print('------------------------')
+                upcoming_appointments.append(appt)
+            else:
+                past_appointments.append(appt)
 
-        return Response({"appointments": appointments})
+        return Response({
+            "upcoming": upcoming_appointments,
+            "past": past_appointments
+        })
     
 
 
