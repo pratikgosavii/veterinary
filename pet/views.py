@@ -517,10 +517,19 @@ class AllAppointmentsViewSet(viewsets.ViewSet):
             appt_datetime = normalize_date(appt)
             if not appt_datetime:
                 continue
-            if appt_datetime >= now:
-                upcoming.append((appt_type, appt, appt_datetime))
+
+            if appt_type == "online_consultation":
+                # Grace window: allow +30 mins
+                if appt_datetime + timedelta(minutes=30) >= now:
+                    upcoming.append((appt_type, appt, appt_datetime))
+                else:
+                    past.append((appt_type, appt, appt_datetime))
             else:
-                past.append((appt_type, appt, appt_datetime))
+                # Normal rule
+                if appt_datetime >= now:
+                    upcoming.append((appt_type, appt, appt_datetime))
+                else:
+                    past.append((appt_type, appt, appt_datetime))
 
         def serialize(appt_type, appt):
             serializers_map = {
