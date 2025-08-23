@@ -91,9 +91,12 @@ from django.shortcuts import get_object_or_404
 class all_vendor_bookings(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
+    permission_classes = [IsAuthenticated]
+
     def list(self, request):
         user = request.user
         today = date.today()
+        current_time = now()
 
         upcoming_appointments = []
         past_appointments = []
@@ -110,10 +113,14 @@ class all_vendor_bookings(viewsets.ViewSet):
                     "name": f"{obj.user.first_name} {obj.user.last_name}",
                 }
 
-                # ✅ If it's an online consultation, add caller_id if exists
+                # ✅ If it's an online consultation, check if appointment time is in the future
                 if appt_type == "online_consultation":
-                    video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
-                    appt_data["caller_id"] = video_detail.call_id if video_detail else None
+                    if obj.date and obj.date > current_time:
+                        video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
+                        appt_data["caller_id"] = video_detail.call_id if video_detail else None
+                        appt_data["show_video_button"] = True
+                    else:
+                        appt_data["show_video_button"] = False
 
                 results.append(appt_data)
             return results
