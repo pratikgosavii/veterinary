@@ -120,10 +120,13 @@ class all_vendor_bookings(viewsets.ViewSet):
                     video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
                     appt_data["caller_id"] = video_detail.call_id if video_detail else None
 
-                    # ✅ Show video button only during appointment window (start → +30 mins)
+
+                    # ✅ Add show_video_button logic (true in a window: 15 min before to 30 min after start)
+                    appt_start = obj.date
                     appt_data["show_video_button"] = (
-                        appt_start <= current_time <= (appt_start + timedelta(minutes=30))
+                        (appt_start - timedelta(minutes=15)) <= current_time <= (appt_start + timedelta(minutes=30))
                     )
+
                 else:
                     appt_data["caller_id"] = None
                     appt_data["show_video_button"] = False
