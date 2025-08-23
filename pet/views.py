@@ -475,7 +475,6 @@ from datetime import timedelta
 
 
 class AllAppointmentsViewSet(viewsets.ViewSet):
-    
     permission_classes = [IsCustomer]
 
     def list(self, request):
@@ -519,19 +518,19 @@ class AllAppointmentsViewSet(viewsets.ViewSet):
                 continue
 
             if appt_type == "online_consultation":
-                # Grace window: allow +30 mins
-                if appt_datetime + timedelta(minutes=30) >= now:
+                # ✅ Keep in upcoming until 30 mins after start
+                if now <= appt_datetime + timedelta(minutes=30):
                     upcoming.append((appt_type, appt, appt_datetime))
                 else:
                     past.append((appt_type, appt, appt_datetime))
             else:
-                # Normal rule
+                # Normal classification for other appointments
                 if appt_datetime >= now:
                     upcoming.append((appt_type, appt, appt_datetime))
                 else:
                     past.append((appt_type, appt, appt_datetime))
 
-        def serialize(appt_type, appt):
+        def serialize(appt_type, appt, appt_datetime):
             serializers_map = {
                 "consultation": consultation_appointment_Serializer,
                 "online_consultation": online_consultation_appointment_Serializer,
@@ -541,28 +540,24 @@ class AllAppointmentsViewSet(viewsets.ViewSet):
                 "service": service_booking_Serializer,
             }
             serializer_class = serializers_map[appt_type]
-
             data = serializer_class(appt, context={"request": request}).data
 
-            # ✅ Only for online consultations: attach caller_id if appointment is still valid
             if appt_type == "online_consultation":
-                
+                # ✅ Show video button only during appointment window (start → +30 mins)
                 data["show_video_button"] = (
-                appt_datetime <= now <= (appt_datetime + timedelta(minutes=30))
-                
+                    appt_datetime <= now <= (appt_datetime + timedelta(minutes=30))
                 )
 
-                return {
-                    "type": appt_type,
-                    "data": data
-                }
-
-           
+            return {
+                "type": appt_type,
+                "data": data
+            }
 
         return Response({
-            "upcoming": [serialize(t, a) for t, a, _ in sorted(upcoming, key=lambda x: x[2])],
-            "past": [serialize(t, a) for t, a, _ in sorted(past, key=lambda x: x[2], reverse=True)],
+            "upcoming": [serialize(t, a, d) for t, a, d in sorted(upcoming, key=lambda x: x[2])],
+            "past": [serialize(t, a, d) for t, a, d in sorted(past, key=lambda x: x[2], reverse=True)],
         })
+
 
 
 class AllConsultationReportsAPIView(APIView):
