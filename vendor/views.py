@@ -118,9 +118,8 @@ class all_vendor_bookings(viewsets.ViewSet):
                     if obj.date and obj.date > current_time:
                         video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
                         appt_data["caller_id"] = video_detail.call_id if video_detail else None
-                        appt_data["show_video_button"] = True
                     else:
-                        appt_data["show_video_button"] = False
+                        appt_data["caller_id"] = None
 
                 results.append(appt_data)
             return results

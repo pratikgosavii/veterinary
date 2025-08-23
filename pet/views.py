@@ -471,6 +471,8 @@ from django.utils import timezone
 from datetime import datetime, time
 from django.utils.timezone import make_aware, is_naive
 
+from datetime import timedelta
+
 
 class AllAppointmentsViewSet(viewsets.ViewSet):
     
@@ -530,10 +532,23 @@ class AllAppointmentsViewSet(viewsets.ViewSet):
                 "service": service_booking_Serializer,
             }
             serializer_class = serializers_map[appt_type]
-            return {
-                "type": appt_type,
-                "data": serializer_class(appt, context={"request": request}).data
-            }
+
+            data = serializer_class(appt, context={"request": request}).data
+
+            # ✅ Only for online consultations: attach caller_id if appointment is still valid
+            if appt_type == "online_consultation":
+                
+                data["show_video_button"] = (
+                appt_datetime <= now <= (appt_datetime + timedelta(minutes=30))
+                
+                )
+
+                return {
+                    "type": appt_type,
+                    "data": data
+                }
+
+           
 
         return Response({
             "upcoming": [serialize(t, a) for t, a, _ in sorted(upcoming, key=lambda x: x[2])],
