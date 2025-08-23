@@ -113,13 +113,14 @@ class all_vendor_bookings(viewsets.ViewSet):
                     "name": f"{obj.user.first_name} {obj.user.last_name}",
                 }
 
-                # ✅ If it's an online consultation, check if appointment time is in the future
-                if obj.date:
-                    video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
-                    appt_data["caller_id"] = video_detail.call_id if video_detail else None
-
-                    # ✅ Add show_video_button logic (true only during appt time ± 30 min window)
+                if appt_type == "online_consultation" and obj.date:
                     appt_start = obj.date
+
+                    # ✅ Caller ID logic
+                    video_detail = Apoinments_video_details.objects.filter(appoinment_id=obj.id).first()
+                    appt_data["caller_id"] = video_detail.calazl_id if video_detail else None
+
+                    # ✅ Show video button only during appointment window (start → +30 mins)
                     appt_data["show_video_button"] = (
                         appt_start <= current_time <= (appt_start + timedelta(minutes=30))
                     )
@@ -152,16 +153,22 @@ class all_vendor_bookings(viewsets.ViewSet):
         else:
             return Response({"detail": "Invalid user type"}, status=400)
 
-        # Split into upcoming and past
+        # ✅ Split into upcoming and past
         for appt in all_appointments:
             appt_date = appt["date"]
-            if appt_date and appt_date.date() >= today:
-                upcoming_appointments.append(appt)
+
+            if appt["type"] == "online_consultation" and appt_date:
+                # Keep in upcoming until 30 mins after start
+                if current_time <= (appt_date + timedelta(minutes=30)):
+                    upcoming_appointments.append(appt)
+                else:
+                    past_appointments.append(appt)
             else:
-                past_appointments.append(appt)
-
-
-                
+                # Normal classification for other appointments
+                if appt_date and appt_date.date() >= today:
+                    upcoming_appointments.append(appt)
+                else:
+                    past_appointments.append(appt)
 
         return Response({
             "upcoming": upcoming_appointments,
