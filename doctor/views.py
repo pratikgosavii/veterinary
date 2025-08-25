@@ -56,13 +56,18 @@ from rest_framework.exceptions import ValidationError
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
-
     queryset = doctor.objects.all()
     serializer_class = doctor_serializer
-    parser_classes = [MultiPartParser, JSONParser]  # ✅ Allow both JSON and form-data
+    parser_classes = [MultiPartParser, JSONParser]
+
+    def get_object(self):
+        """
+        Always return the doctor for the logged-in user,
+        so PUT /doctor/doctors/ works without ID.
+        """
+        return doctor.objects.get(user=self.request.user, is_active=True)
 
     def perform_create(self, serializer):
-        # Ensure that a user can only have one doctor
         if doctor.objects.filter(user=self.request.user).exists():
             raise ValidationError({"detail": "A doctor already exists for this user."})
         serializer.save(user=self.request.user)
@@ -82,16 +87,20 @@ class DoctorViewSet(viewsets.ModelViewSet):
         doc.is_active = True
         doc.save()
         return Response({"message": "Doctor reactivated"}, status=status.HTTP_200_OK)
-    
+
     @action(detail=False, methods=["get"])
     def my_profile(self, request):
+        """
+        GET /doctor/doctors/my_profile/
+        Returns the logged-in doctor profile.
+        """
         try:
             doctor_obj = doctor.objects.get(user=request.user, is_active=True)
             serializer = self.get_serializer(doctor_obj)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except doctor.DoesNotExist:
             return Response({"detail": "Doctor profile not found."}, status=status.HTTP_404_NOT_FOUND)
-        
+
 
 
 
