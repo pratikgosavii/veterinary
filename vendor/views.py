@@ -158,7 +158,12 @@ class all_vendor_bookings(viewsets.ViewSet):
 
         # ✅ Split into upcoming and past
         for appt in all_appointments:
-            appt_date = appt["date"]
+            if not appt["type"] == "daycare":
+                appt_date = appt["date"]
+
+            else:
+                appt_date = appt["date_from"]
+                
 
             if appt["type"] == "online_consultation" and appt_date:
                 # Keep in upcoming until 30 mins after start
@@ -166,6 +171,7 @@ class all_vendor_bookings(viewsets.ViewSet):
                     upcoming_appointments.append(appt)
                 else:
                     past_appointments.append(appt)
+                    
             else:
                 # Normal classification for other appointments
                 if appt_date and appt_date >= today:
