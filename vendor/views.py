@@ -168,7 +168,7 @@ class all_vendor_bookings(viewsets.ViewSet):
                     past_appointments.append(appt)
             else:
                 # Normal classification for other appointments
-                if appt_date and appt_date.date() >= today:
+                if appt_date and appt_date >= today:
                     upcoming_appointments.append(appt)
                 else:
                     past_appointments.append(appt)
