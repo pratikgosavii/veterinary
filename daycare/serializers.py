@@ -14,7 +14,7 @@ class day_care_serializer(serializers.ModelSerializer):
 
     # Read-only nested fields
     user = user_serializer(read_only=True)
-    amenities = amenity_serializer(souce = 'amenities', many=True, read_only=True)
+    amenities = amenity_serializer(source = 'amenities', many=True, read_only=True)
     # For writing amenity ids
     amenity_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=amenity.objects.all(), write_only=True, required=False
