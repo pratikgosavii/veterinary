@@ -28,7 +28,7 @@ class day_care_serializer(serializers.ModelSerializer):
     class Meta:
         model = day_care
         fields = '__all__'
-        read_only_fields = ['user']
+        read_only_fields = ['user', 'is_active']
 
     def update(self, instance, validated_data):
         """

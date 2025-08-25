@@ -19,7 +19,7 @@ class doctor_serializer(serializers.ModelSerializer):
     class Meta:
         model = doctor
         fields = '__all__'
-        read_only_fields = ['user']
+        read_only_fields = ['user', 'is_active']
 
     def update(self, instance, validated_data):
         user = instance.user
