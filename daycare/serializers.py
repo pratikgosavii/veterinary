@@ -15,7 +15,6 @@ class day_care_serializer(serializers.ModelSerializer):
     # Read-only nested fields
     user = user_serializer(read_only=True)
     amenities = serializers.StringRelatedField(many=True, read_only=True)
-    user_details = user_serializer(source='user', read_only=True)
 
     # For writing amenity ids
     amenity_ids = serializers.PrimaryKeyRelatedField(
