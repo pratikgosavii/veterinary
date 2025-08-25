@@ -52,9 +52,9 @@ class all_open_bookings(viewsets.ViewSet):
         if user.is_doctor:
 
             print('---------1-------------------')
-            online_consultations = online_consultation_appointment.objects.filter(status="open")
-            vaccinations = vaccination_appointment.objects.filter(status="open")
-            tests = test_booking.objects.filter(status="open")
+            online_consultations = online_consultation_appointment.objects.filter(status="open").order_by('-id')
+            vaccinations = vaccination_appointment.objects.filter(status="open").order_by('-id')
+            tests = test_booking.objects.filter(status="open").order_by('-id')
 
             appointments = (
                 serialize(online_consultations, "online_consultation") +
@@ -65,13 +65,13 @@ class all_open_bookings(viewsets.ViewSet):
         elif user.is_daycare:
             print('---------2-------------------')
 
-            daycares = day_care_booking.objects.filter(status="open")
+            daycares = day_care_booking.objects.filter(status="open").order_by('-id')
             appointments = serialize(daycares, "daycare")
 
         elif user.is_service_provider:
             print('---------3-------------------')
 
-            services = service_booking.objects.filter(status="open")
+            services = service_booking.objects.filter(status="open").order_by('-id')
             appointments = serialize(services, "service")
 
         else:
