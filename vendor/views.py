@@ -104,14 +104,29 @@ class all_vendor_bookings(viewsets.ViewSet):
         def serialize(qs, appt_type):
             results = []
             for obj in qs:
-                appt_data = {
-                    "id": obj.id,
-                    "type": appt_type,
-                    "status": obj.status,
-                    "date": obj.date,
-                    "amount": getattr(obj, "amount", getattr(obj, "total_amount", None)),
-                    "name": f"{obj.user.first_name} {obj.user.last_name}",
-                }
+                if appt_type == "daycare":
+                    appt_date = obj.date_from
+                    appt_data = {
+                        "id": obj.id,
+                        "type": appt_type,
+                        "status": obj.status,
+                        "date_from": obj.date_from,
+                        "date_to": obj.date_to,
+                        "amount": getattr(obj, "amount", getattr(obj, "total_amount", None)),
+                        "name": f"{obj.user.first_name} {obj.user.last_name}",
+                        "caller_id": None,
+                        "show_video_button": False,
+                    }
+                else:
+                    appt_date = getattr(obj, "date", None)
+                    appt_data = {
+                        "id": obj.id,
+                        "type": appt_type,
+                        "status": obj.status,
+                        "date": appt_date,
+                        "amount": getattr(obj, "amount", getattr(obj, "total_amount", None)),
+                        "name": f"{obj.user.first_name} {obj.user.last_name}",
+                    }
 
                 if appt_type == "online_consultation" and obj.date:
                     appt_start = obj.date
