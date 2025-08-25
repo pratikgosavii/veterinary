@@ -95,7 +95,7 @@ class all_vendor_bookings(viewsets.ViewSet):
 
     def list(self, request):
         user = request.user
-        today = date.today()
+        today = timezone.now()
         current_time = timezone.now()
 
         upcoming_appointments = []
