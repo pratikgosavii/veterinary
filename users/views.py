@@ -109,7 +109,6 @@ class SignupView(APIView):
             # Create wallet if not customer
             wallet_amount = None
             if not user.is_customer:
-                from masters.models import vendor_wallet
                 wallet, _ = vendor_wallet.objects.get_or_create(user=user)
                 wallet_amount = wallet.balance
 

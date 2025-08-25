@@ -8,41 +8,68 @@ from users.serializer import *
 
 class day_care_serializer(serializers.ModelSerializer):
     # For POST
+    email = serializers.EmailField(write_only=True, required=False)
     first_name = serializers.CharField(write_only=True, required=False)
     last_name = serializers.CharField(write_only=True, required=False)
 
+    # Read-only nested fields
+    user = user_serializer(read_only=True)
     amenities = serializers.StringRelatedField(many=True, read_only=True)
     user_details = user_serializer(source='user', read_only=True)
+
+    # For writing amenity ids
     amenity_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=amenity.objects.all(), write_only=True, required=False
     )
 
-    email = serializers.CharField(source="user.email", read_only=True)
-    mobile = serializers.CharField(source="user.mobile", required=False)
+    # Display-only user fields
+    email_display = serializers.CharField(source="user.email", read_only=True)
+    # mobile_display = serializers.CharField(source="user.mobile", read_only=True)
 
     class Meta:
         model = day_care
         fields = '__all__'
-        extra_kwargs = {'user': {'read_only': True}}
+        read_only_fields = ['user']
 
+    def update(self, instance, validated_data):
+        """
+        Update both the user and daycare info.
+        """
+        user = instance.user
+        user.email = validated_data.pop('email', user.email)
+        user.first_name = validated_data.pop('first_name', user.first_name)
+        user.last_name = validated_data.pop('last_name', user.last_name)
+        user.save()
+
+        # Handle amenities separately
+        amenities = validated_data.pop('amenity_ids', None)
+        instance = super().update(instance, validated_data)
+        if amenities is not None:
+            instance.amenities.set(amenities)
+
+        return instance
 
     def create(self, validated_data):
-        request = self.context['request']
-        user = request.user
+        """
+        Create daycare and update user details at the same time.
+        """
+        user = self.context['request'].user
 
         if day_care.objects.filter(user=user).exists():
             raise serializers.ValidationError("You have already registered a daycare.")
 
+        # update user info
+        user.email = validated_data.pop('email', user.email)
+        user.first_name = validated_data.pop('first_name', user.first_name)
+        user.last_name = validated_data.pop('last_name', user.last_name)
+        user.save()
+
+        # amenities
         amenities = validated_data.pop('amenity_ids', [])
-
-        # 🛠 Fix: Manually rebuild food_menus from request.POST (because of form-data)
-      
         instance = day_care.objects.create(**validated_data)
-
         if amenities:
             instance.amenities.set(amenities)
 
-       
         return instance
 
     
