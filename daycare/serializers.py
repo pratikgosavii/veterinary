@@ -50,6 +50,7 @@ class day_care_serializer(serializers.ModelSerializer):
        
         return instance
 
+    
 
 class DayCareFoodMenuSerializer(serializers.ModelSerializer):
 

@@ -72,8 +72,16 @@ class DoctorViewSet(viewsets.ModelViewSet):
             raise ValidationError({"detail": "A doctor already exists for this user."})
         serializer.save(user=self.request.user)
 
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
+    def update(self, request, *args, **kwargs):
+        try:
+            doctor_obj = doctor.objects.get(user=request.user, is_active=True)
+        except doctor.DoesNotExist:
+            return Response({"detail": "Doctor profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(doctor_obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
         doctor_obj = self.get_object()
