@@ -548,6 +548,13 @@ class AllAppointmentsViewSet(viewsets.ViewSet):
                     appt_datetime <= now <= (appt_datetime + timedelta(minutes=30))
                 )
 
+                video_detail = Apoinments_video_details.objects.filter(appoinment_id=appt.id).first()
+                data["caller_id"] = video_detail.call_id if video_detail else None
+
+            else:
+                data["caller_id"] = None
+                data["show_video_button"] = False
+
             return {
                 "type": appt_type,
                 "data": data
