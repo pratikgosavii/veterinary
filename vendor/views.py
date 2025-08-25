@@ -187,6 +187,13 @@ class all_vendor_bookings(viewsets.ViewSet):
                 else:
                     past_appointments.append(appt)
                     
+            elif appt["type"] == "daycare" and appt_date:
+                # Normal classification for other appointments
+                if appt_date and appt_date >= date.today():
+                    upcoming_appointments.append(appt)
+                else:
+                    past_appointments.append(appt)
+                    
             else:
                 # Normal classification for other appointments
                 if appt_date and appt_date >= today:
