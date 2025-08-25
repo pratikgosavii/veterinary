@@ -200,6 +200,37 @@ class LoginAPIView(APIView):
 
 
 
+from rest_framework import viewsets, mixins
+from rest_framework.permissions import IsAuthenticated
+from .serializer import user_serializer
+from .models import User
+from rest_framework.decorators import action
+
+
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+
+class UserProfileViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]  # 👈 necessary for photo uploads
+
+    @action(detail=False, methods=['get', 'put'], url_path='me')
+    def me(self, request):
+        user = request.user
+
+        if request.method == 'GET':
+            serializer = user_serializer(user)
+            return Response(serializer.data)
+
+        elif request.method == 'PUT':
+            serializer = user_serializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
 
 
 from .permissions import *

@@ -2,6 +2,16 @@ from django.urls import path
 
 from .views import *
 
+
+
+from rest_framework.routers import DefaultRouter
+
+
+router = DefaultRouter()
+
+router.register(r'profile', UserProfileViewSet, basename='user-profile')
+
+
 urlpatterns = [
     path('login/', LoginAPIView.as_view(), name='login'),
     path('login-admin/', login_admin, name='login_admin'),
@@ -13,4 +23,4 @@ urlpatterns = [
     
     path('customer_user_list/', customer_user_list, name='customer_user_list'),
     path('provider_user_list/', provider_user_list, name='provider_user_list'),
-]
+] + router.urls
