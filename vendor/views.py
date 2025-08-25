@@ -112,7 +112,7 @@ class all_vendor_bookings(viewsets.ViewSet):
                         "status": obj.status,
                         "date_from": obj.date_from,
                         "date_to": obj.date_to,
-                        "amount": getattr(obj, "amount", getattr(obj, "total_amount", None)),
+                        "amount": getattr(obj, "amount", getattr(obj, "total_cost", None)),
                         "name": f"{obj.user.first_name} {obj.user.last_name}",
                         "caller_id": None,
                         "show_video_button": False,
