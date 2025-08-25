@@ -16,10 +16,6 @@ router.register(r'customer-address', customer_address_ViewSet, basename='pet-tes
 
 urlpatterns = [
 
-
-    # path('add-doctor/', add_doctor, name='add_doctor'),
-    # path('add-doctor-json/', add_doctor_json, name='add_doctor_json'),
-    # path('update-doctor/<doctor_id>', update_doctor, name='update_doctor'),
     path('delete-doctor/<doctor_id>', delete_doctor, name='delete_doctor'),
     path('list-doctor/', list_doctor, name='list_doctor'),
     path('list-service-provider/', list_service_provider, name='list_service_provider'),

@@ -22,12 +22,7 @@ class day_care_serializer(serializers.ModelSerializer):
 
     class Meta:
         model = day_care
-        fields = [
-            'id', 'user', 'user_details', 'name', 'images', 'location', 'description',
-            'price_full_day', 'price_half_day',
-            'amenities', 'amenity_ids',
-            'rating', 'email', 'mobile'
-        ]
+        fields = '__all__'
         extra_kwargs = {'user': {'read_only': True}}
 
 
